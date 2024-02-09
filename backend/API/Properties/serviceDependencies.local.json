@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "identityapp1": {
+      "connectionInfo": "App registration: FIT, Tenant: Faculty of Information Technologies (edu.fit.ba - Microsoft Entra ID)",
+      "type": "identityapp.default"
+    }
+  }
+}
