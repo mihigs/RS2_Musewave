@@ -23,10 +23,6 @@ namespace DataContext
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Album>()
-                .HasOne(a => a.Artist)
-                .WithMany(a => a.Albums)
-                .HasForeignKey(a => a.ArtistId);
         }
     }
 }

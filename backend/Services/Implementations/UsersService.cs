@@ -1,25 +1,31 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Models;
 using Models.DTOs;
-using Models.Shared;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Services
+namespace Services.Implementations
 {
     public class UsersService
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<UsersService> _logger;
 
-        public UsersService(UserManager<User> userManager, IConfiguration configuration)
+        public UsersService(
+            UserManager<User> userManager,
+            IConfiguration configuration,
+            ILogger<UsersService> logger
+            )
         {
             _userManager = userManager;
             _configuration = configuration;
+            _logger = logger;
         }
 
         public List<User> GetAllUsers()
@@ -83,13 +89,18 @@ namespace Services
                     var token = GenerateJwtToken(user); // Generate JWT token
                     return token;
                 }
+                else if (result.Errors.Any())
+                {
+                    throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
 
                 return null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //Log error
-                throw;
+                _logger.LogError(ex, "Error adding user");
+                return null;
             }
         }
 

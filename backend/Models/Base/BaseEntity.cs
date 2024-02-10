@@ -1,4 +1,4 @@
-﻿namespace Models.Shared
+﻿namespace Models.Base
 {
     public class BaseEntity
     {

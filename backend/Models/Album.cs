@@ -1,8 +1,9 @@
-﻿namespace Models
+﻿using Models.Base;
+
+namespace Models
 {
-    public class Album
+    public class Album : BaseEntity
     {
-        public int AlbumId { get; set; }
         public string Title { get; set; }
         public string Genre { get; set; }
         public string ArtistId { get; set; }

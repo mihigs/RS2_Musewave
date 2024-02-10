@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.DTOs;
-using Services;
+using Services.Implementations;
 
 namespace API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("/[controller]")]
-    public class UserController : Controller
+    public class UserController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
         private readonly UsersService _usersService;

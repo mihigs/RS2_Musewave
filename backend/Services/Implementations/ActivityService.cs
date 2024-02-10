@@ -1,16 +1,12 @@
 ﻿using DataContext;
-using Models.Shared;
 
-namespace Services
+namespace Services.Implementations
 {
     public class ActivityService
     {
-        private readonly MusewaveDbContext _dbContext;
 
-        public ActivityService(MusewaveDbContext dbContext)
+        public ActivityService()
         {
-            _dbContext = dbContext;
-            //_activityService = activityService;
         }
 
         //public bool AddLoginActivity(LoginActivity activity)

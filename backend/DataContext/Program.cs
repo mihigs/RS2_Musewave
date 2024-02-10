@@ -1,4 +1,7 @@
 ﻿using DataContext;
+using DataContext.Repositories;
+using DataContext.Repositories.Interfaces;
+using DataContext.Seeder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var host = CreateDefaultApp(args).Build();
         using (var scope = host.Services.CreateScope())
@@ -28,9 +31,9 @@ public class Program
             }
             try
             {
-                //var seeder = services.GetRequiredService<MusewaveDbSeeder>();
-                logger.LogInformation("Started seeding...");
-                //seeder.Seed();
+                logger.LogInformation("Seeding database...");
+                var seeder = services.GetRequiredService<MusewaveDbSeeder>();
+                await seeder.Seed();
                 logger.LogInformation("Seeding finished.");
             }
             catch (Exception ex)
@@ -40,12 +43,13 @@ public class Program
         }
         host.StopAsync().GetAwaiter().GetResult();
     }
-    private static IHostBuilder CreateDefaultApp(string[] args)
+    private static IHostBuilder CreateDefaultApp(string[] args) // todo: refactor
     {
         var builder = Host.CreateDefaultBuilder(args);
         builder.ConfigureAppConfiguration((hostingContext, config) =>
         {
-            //config.AddJsonFile(appSettingsPath, optional: true, reloadOnChange: true);
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
+            config.AddJsonFile(path, optional: false, reloadOnChange: true);
         });
         builder.ConfigureServices((hostContext, services) =>
         {
@@ -53,7 +57,14 @@ public class Program
             var configurationManager = new ConfigurationManager();
             configurationManager.AddConfiguration(configuration);
 
-            services.AddDbContext<MusewaveDbContext>(options => options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IArtistRepository, ArtistRepository>();
+            services.AddDbContext<MusewaveDbContext>(options =>
+                options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection")
+            ), ServiceLifetime.Scoped);
+            services.AddScoped<MusewaveDbSeeder>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
             services.AddIdentityCore<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 //.AddClaimsPrincipalFactory<AdditionalUserClaimsPrincipalFactory>()
