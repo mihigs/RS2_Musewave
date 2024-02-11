@@ -10,7 +10,7 @@ namespace API.Controllers
 {
     //[Authorize]
     [ApiController]
-    [Route("/[controller]")]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly UserManager<User> _userManager;

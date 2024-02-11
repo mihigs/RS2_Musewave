@@ -7,7 +7,6 @@ namespace Models
     {
         public string ArtistId { get; set; }
 
-        [ForeignKey("ArtistId")]
         public User User { get; set; }
 
         public List<Album> Albums { get; set; }

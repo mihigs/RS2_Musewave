@@ -1,4 +1,3 @@
-using DataContext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
@@ -21,8 +20,10 @@ builder.Services.AddCors(options =>
         });
 });
 
-// Add controllers
-services.AddControllers();
+// Add controllers with newtonsoft json
+services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
 // Swagger
 services.AddEndpointsApiExplorer();
@@ -31,16 +32,8 @@ services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new() { Title = "API", Version = "v1" });
 });
 
-//// Add microsoft identity
-//services.AddIdentity<User, IdentityRole>(options =>
-//{
-//    options.User.RequireUniqueEmail = false;
-//})
-//    .AddEntityFrameworkStores<MusewaveDbContext>()
-//    .AddDefaultTokenProviders();
-
 // Add application services
-services.AddDbContext<MusewaveDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")))
+services.RegisterDbContext(configuration.GetConnectionString("DefaultConnection"))
     .AddRepositories()
     .AddApplicationServices()
     .RegisterIdentity();

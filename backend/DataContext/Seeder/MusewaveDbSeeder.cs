@@ -16,7 +16,7 @@ namespace DataContext.Seeder
         {
             try
             {
-                await new UserSeeder(_unitOfWork, _userRepository).Seed();
+                await new UserSeeder(_unitOfWork, _userRepository, _artistRepository).Seed();
                 return;
             }
             catch (Exception ex)

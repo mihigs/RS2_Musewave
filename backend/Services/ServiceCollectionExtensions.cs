@@ -43,7 +43,7 @@ namespace Services
             {
                 options.User.RequireUniqueEmail = false;
             })
-                .AddEntityFrameworkStores<MusewaveDbContext>();
+            .AddEntityFrameworkStores<MusewaveDbContext>();
 
             return services;
         }

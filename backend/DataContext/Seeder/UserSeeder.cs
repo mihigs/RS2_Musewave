@@ -8,10 +8,12 @@ namespace DataContext.Seeder
     internal class UserSeeder : BaseSeeder
     {
         private readonly IUserRepository _userRepository;
+        private readonly IArtistRepository _artistRepository;
 
-        public UserSeeder(IUnitOfWork unitOfWork, IUserRepository userRepository): base(unitOfWork)
+        public UserSeeder(IUnitOfWork unitOfWork, IUserRepository userRepository, IArtistRepository artistRepository): base(unitOfWork)
         {
             _userRepository = userRepository;
+            _artistRepository = artistRepository;
         }
         public async Task<bool> Seed()
         {
@@ -28,7 +30,9 @@ namespace DataContext.Seeder
                     PhoneNumberConfirmed = true,
                     TwoFactorEnabled = false,
                     LockoutEnabled = true,
-                    AccessFailedCount = 0
+                    AccessFailedCount = 0,
+                    Playlists = null,
+                    Likes = null
                 };
                 List<User> casualUsers = new List<User>
                 {
@@ -42,7 +46,9 @@ namespace DataContext.Seeder
                         PhoneNumberConfirmed = true,
                         TwoFactorEnabled = false,
                         LockoutEnabled = true,
-                        AccessFailedCount = 0
+                        AccessFailedCount = 0,
+                        Playlists = null,
+                        Likes = null
                     }
                 };
                 List<User> artistUsers = new List<User>
@@ -57,24 +63,26 @@ namespace DataContext.Seeder
                         PhoneNumberConfirmed = true,
                         TwoFactorEnabled = false,
                         LockoutEnabled = true,
-                        AccessFailedCount = 0
+                        AccessFailedCount = 0,
+                        Playlists = null,
+                        Likes = null
                     }
                 };
                 await _userRepository.Add(admin);
                 await _userRepository.AddRange(casualUsers);
                 await _userRepository.AddRange(artistUsers);
 
-                //foreach (var user in artistUsers)
-                //{
-                //    _modelBuilder.Entity<Artist>().HasData(new Artist
-                //    {
-                //        ArtistId = user.Id,
-                //        User = user
-                //        //Albums = new List<Album>()
-                //        //Followers = new List<Follow>(),
-                //        //Following = new List<Follow>()
-                //    });
-                //}
+                List<Artist> artists = new List<Artist>();
+                foreach (var user in artistUsers)
+                {
+                    artists.Add(new Artist
+                    {
+                        ArtistId = user.Id,
+                        User = user
+                    });
+                }
+                await _artistRepository.AddRange(artists);
+
                 return true;
             }
             catch (Exception ex)

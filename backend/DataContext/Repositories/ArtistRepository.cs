@@ -1,20 +1,26 @@
 ﻿using DataContext.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace DataContext.Repositories
 {
     public class ArtistRepository : IArtistRepository
     {
-        public ArtistRepository() { }
+        private readonly MusewaveDbContext _context;
+        public ArtistRepository(MusewaveDbContext musewaveDbContext) {
+            _context = musewaveDbContext;
+        }
 
         public Task<Artist> Add(Artist entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Artist>> AddRange(IEnumerable<Artist> entities)
+        public async Task<IEnumerable<Artist>> AddRange(IEnumerable<Artist> entities)
         {
-            throw new NotImplementedException();
+            await _context.Set<Artist>().AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
+            return entities;
         }
 
         public Task<IEnumerable<Artist>> GetAll()

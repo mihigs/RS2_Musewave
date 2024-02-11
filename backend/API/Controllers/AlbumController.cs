@@ -7,11 +7,11 @@ namespace API.Controllers
     //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class AlbumsController : ControllerBase
+    public class AlbumController : ControllerBase
     {
         private readonly AlbumService _albumService;
 
-        public AlbumsController(AlbumService albumService)
+        public AlbumController(AlbumService albumService)
         {
             _albumService = albumService ?? throw new ArgumentNullException(nameof(albumService));
         }

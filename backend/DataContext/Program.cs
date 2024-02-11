@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Models;
 
 public class Program
 {
@@ -65,12 +66,11 @@ public class Program
             services.AddScoped<MusewaveDbSeeder>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-
-            services.AddIdentityCore<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                //.AddClaimsPrincipalFactory<AdditionalUserClaimsPrincipalFactory>()
-                //.AddDefaultTokenProviders()
-                .AddEntityFrameworkStores<MusewaveDbContext>();
-            //services.AddScoped<MusewaveDbSeeder>();
+            services.AddIdentityCore<User>(options =>
+            {
+                options.User.RequireUniqueEmail = false;
+            })
+            .AddEntityFrameworkStores<MusewaveDbContext>();
         });
         builder.ConfigureLogging(conf =>
         {
