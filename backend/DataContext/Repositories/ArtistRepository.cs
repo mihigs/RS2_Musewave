@@ -1,8 +1,9 @@
 ﻿using DataContext.Repositories.Interfaces;
+using Models.Entities;
 
 namespace DataContext.Repositories
 {
-    public class ArtistRepository : Repository<IArtistRepository>
+    public class ArtistRepository : Repository<Artist>, IArtistRepository
     {
         private readonly MusewaveDbContext _dbContext;
         public ArtistRepository(MusewaveDbContext dbContext) : base(dbContext)

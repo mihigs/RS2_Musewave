@@ -74,12 +74,13 @@ namespace DataContext.Seeder
                 await _userRepository.AddRange(users);
 
                 List<Artist> artists = new List<Artist>();
-                foreach (var user in artistUsers)
+                foreach (var artist in artistUsers)
                 {
+
                     artists.Add(new Artist
                     {
-                        UserId = user.Id,
-                        User = user
+                        UserId = artist.Id,
+                        User = artist
                     });
                 }
                 await _artistRepository.AddRange(artists);

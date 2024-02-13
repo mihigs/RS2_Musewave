@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Models.Entities;
+﻿using Models.Entities;
 
 namespace DataContext.Repositories
 {
-    public class AlbumRepository : Repository<IAlbumRepository>
+    public class AlbumRepository : Repository<Album>, IAlbumRepository
     {
         private readonly MusewaveDbContext _dbContext;
 

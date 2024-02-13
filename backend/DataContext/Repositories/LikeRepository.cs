@@ -1,8 +1,9 @@
-﻿using Models.Entities;
+﻿using DataContext.Repositories.Interfaces;
+using Models.Entities;
 
 namespace DataContext.Repositories
 {
-    public class LikeRepository : Repository<Like>
+    public class LikeRepository : Repository<Like>, ILikeRepository
     {
         private readonly MusewaveDbContext _dbContext;
 

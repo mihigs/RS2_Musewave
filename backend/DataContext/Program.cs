@@ -58,19 +58,11 @@ public class Program
             var configurationManager = new ConfigurationManager();
             configurationManager.AddConfiguration(configuration);
 
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IArtistRepository, ArtistRepository>();
-            services.AddDbContext<MusewaveDbContext>(options =>
-                options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection")
-            ), ServiceLifetime.Scoped);
+            services.RegisterDbContext(configuration.GetConnectionString("DefaultConnection"))
+                    .AddRepositories()
+                    .RegisterIdentity();
             services.AddScoped<MusewaveDbSeeder>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            services.AddIdentityCore<User>(options =>
-            {
-                options.User.RequireUniqueEmail = false;
-            })
-            .AddEntityFrameworkStores<MusewaveDbContext>();
         });
         builder.ConfigureLogging(conf =>
         {

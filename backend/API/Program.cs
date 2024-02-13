@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Services;
+using DataContext;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -35,8 +36,8 @@ services.AddSwaggerGen(c =>
 // Add application services
 services.RegisterDbContext(configuration.GetConnectionString("DefaultConnection"))
     .AddRepositories()
-    .AddApplicationServices()
-    .RegisterIdentity();
+    .RegisterIdentity()
+    .AddApplicationServices();
 
 // Authentication and authorization
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

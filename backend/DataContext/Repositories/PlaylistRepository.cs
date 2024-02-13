@@ -1,8 +1,9 @@
-﻿using Models.Entities;
+﻿using DataContext.Repositories.Interfaces;
+using Models.Entities;
 
 namespace DataContext.Repositories
 {
-    public class PlaylistRepository : Repository<Playlist>
+    public class PlaylistRepository : Repository<Playlist>, IPlaylistRepository
     {
         private readonly MusewaveDbContext _dbContext;
 

@@ -3,12 +3,12 @@
     public interface IRepository<T> where T : class
     {
         abstract Task<IEnumerable<T>> GetAll();
-        Task<T> GetById(int id);
-        Task<T> Add(T entity);
-        Task<T> Update(T entity);
-        Task<T> Remove(int id);
-        Task<IEnumerable<T>> AddRange(IEnumerable<T> entities);
-        Task<IEnumerable<T>> UpdateRange(IEnumerable<T> entities);
-        Task<IEnumerable<T>> RemoveRange(IEnumerable<T> entities);
+        abstract Task<T> GetById(int id);
+        abstract Task<T> Add(T entity);
+        abstract Task<T> Update(T entity);
+        abstract Task<T> Remove(int id);
+        abstract Task<IEnumerable<T>> AddRange(IEnumerable<T> entities);
+        abstract Task<IEnumerable<T>> UpdateRange(IEnumerable<T> entities);
+        abstract Task<IEnumerable<T>> RemoveRange(IEnumerable<T> entities);
     }
 }
