@@ -1,0 +1,18 @@
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Models.Entities
+{
+    public class User : IdentityUser
+    {
+        public List<Playlist> Playlists { get; set; }
+        public List<Like> Likes { get; set; }
+        public Artist? Artist { get; set; }
+        public int? ArtistId { get; set; }
+
+        public User()
+        {
+            Playlists = new List<Playlist>();
+            Likes = new List<Like>();
+        }
+    }
+}

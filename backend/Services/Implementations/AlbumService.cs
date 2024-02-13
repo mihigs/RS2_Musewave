@@ -1,5 +1,5 @@
 ﻿using DataContext.Repositories;
-using Models;
+using Models.Entities;
 
 namespace Services.Implementations
 {

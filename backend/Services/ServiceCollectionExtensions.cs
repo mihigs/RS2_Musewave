@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Services.Implementations;
 using DataContext;
 using Microsoft.EntityFrameworkCore;
-using Models;
+using Models.Entities;
 using DataContext.Repositories.Interfaces;
 
 namespace Services

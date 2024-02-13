@@ -1,13 +1,17 @@
 ﻿using Models.Base;
 
-namespace Models
+namespace Models.Entities
 {
     public class Album : BaseEntity
     {
         public string Title { get; set; }
-        public string Genre { get; set; }
-        public string ArtistId { get; set; }
+        public int ArtistId { get; set; }
         public Artist Artist { get; set; }
         public List<Track> Tracks { get; set; }
+
+        public Album()
+        {
+            Tracks = new List<Track>();
+        }
     }
 }

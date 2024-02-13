@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Models;
+using Models.Entities;
 using Models.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

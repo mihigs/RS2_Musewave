@@ -1,4 +1,4 @@
-﻿using Models;
+﻿using Models.Entities;
 
 namespace DataContext.Repositories.Interfaces
 {

@@ -1,6 +1,8 @@
-﻿namespace Models
+﻿using Models.Base;
+
+namespace Models.Entities
 {
-    public class Like
+    public class Like : BaseEntity
     {
         public string UserId { get; set; }
         public User User { get; set; }

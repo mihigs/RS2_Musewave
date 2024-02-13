@@ -1,7 +1,8 @@
 ﻿using DataContext.Repositories;
 using DataContext.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using Models;
+using Models.Entities;
+using System.Collections.ObjectModel;
 
 namespace DataContext.Seeder
 {
@@ -68,16 +69,16 @@ namespace DataContext.Seeder
                         Likes = null
                     }
                 };
-                await _userRepository.Add(admin);
-                await _userRepository.AddRange(casualUsers);
-                await _userRepository.AddRange(artistUsers);
+
+                Collection<User> users = [admin, ..casualUsers, ..artistUsers];
+                await _userRepository.AddRange(users);
 
                 List<Artist> artists = new List<Artist>();
                 foreach (var user in artistUsers)
                 {
                     artists.Add(new Artist
                     {
-                        ArtistId = user.Id,
+                        UserId = user.Id,
                         User = user
                     });
                 }
