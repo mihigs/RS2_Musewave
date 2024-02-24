@@ -8,9 +8,9 @@ class Album {
   List<Track> tracks;
 
   Album({
-    this.title,
-    this.artistId,
-    this.artist,
-    this.tracks,
+    required this.title,
+    required this.artistId,
+    required this.artist,
+    required this.tracks,
     });
 }
