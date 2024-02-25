@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/router.dart';
 import 'package:frontend/services/authentication_service.dart';
+import 'package:frontend/services/base/api_service.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -20,6 +21,8 @@ class MyHttpOverrides extends HttpOverrides {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized before using SecureStorage
 
+  // const baseUrl = String.fromEnvironment('BASE_URL'); // 'https://10.0.2.2:7074/api'
+
   final getIt = GetIt.instance;
 
   // Allow network requests to localhost over HTTP
@@ -29,7 +32,8 @@ void main() async {
   final secureStorage = await getIt.registerSingleton(FlutterSecureStorage());
 
   // Register services
-  final authService = await getIt.registerSingleton(AuthenticationService(baseUrl: 'https://10.0.2.2:7074/api', secureStorage: secureStorage));
+  final apiService = await getIt.registerSingleton(ApiService(secureStorage: secureStorage));
+  final authService = await getIt.registerSingleton(AuthenticationService(secureStorage: secureStorage));
   final tracksService = await getIt.registerSingleton(TracksService(secureStorage));
 
   // Get the token from secure storage

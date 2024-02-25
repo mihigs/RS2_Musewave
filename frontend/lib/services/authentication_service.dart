@@ -5,18 +5,17 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class AuthenticationService extends ApiService {
-  final String baseUrl;
   final FlutterSecureStorage secureStorage;
   final LoggedInStateInfo loggedInState = new LoggedInStateInfo();
 
-  AuthenticationService({required this.baseUrl, required this.secureStorage}) : super(secureStorage: secureStorage);
+  AuthenticationService({required this.secureStorage}) : super(secureStorage: secureStorage);
 
   Future<UserLoginResponse> login(String email, String password) async {
     UserLoginResponse result = new UserLoginResponse();
 
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/User/login'),
+        Uri.parse('${ApiService.baseUrl}/User/login'),
         body: jsonEncode({'Email': email, 'Password': password}),
         headers: {'Content-Type': 'application/json'},
       );

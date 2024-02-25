@@ -7,7 +7,7 @@ import 'package:jwt_decoder/jwt_decoder.dart'; // For decoding JWT tokens
 
 class ApiService {
   final FlutterSecureStorage secureStorage;
-  final String _baseUrl = 'https://10.0.2.2:7074/api';
+  static const String baseUrl = String.fromEnvironment('BASE_URL');
 
   ApiService({required this.secureStorage});
 
@@ -15,7 +15,7 @@ class ApiService {
     final token = await getTokenFromStorage();
     final response = await http.get(
       Uri.parse(
-          '$_baseUrl/$endpoint${queryParams.isNotEmpty ? '/${queryParams.join('&')}' : ""}'),
+          '$baseUrl/$endpoint${queryParams.isNotEmpty ? '/${queryParams.join('&')}' : ""}'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -32,7 +32,7 @@ class ApiService {
       return null;
     }
     final response = await http.post(
-      Uri.parse('$_baseUrl/$endpoint'),
+      Uri.parse('$baseUrl/$endpoint'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
