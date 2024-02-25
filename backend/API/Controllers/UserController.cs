@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using Models.Entities;
 using Models.DTOs;
 using Services.Implementations;
+using Services.Responses;
+using Microsoft.IdentityModel.Tokens;
 
 namespace API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
@@ -42,12 +44,32 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLogin model)
         {
-            var token = await _usersService.Login(model);
-            if (token != null)
+            if (model.Email.IsNullOrEmpty() || model.Password.IsNullOrEmpty())
             {
-                return Ok(new{ token });
+                return BadRequest();
             }
-            return Unauthorized(); // Invalid login credentials or the user does not exist
+            try
+            {
+                UserLoginResponse response = await _usersService.Login(model);
+                if (response.Token != null)
+                {
+                    return Ok(new { response.Token });
+                }
+                else if (response.Error == LoginError.UserDoesNotExist)
+                {
+                    return NotFound();
+                }
+                else if (response.Error == LoginError.InvalidLoginCredentials)
+                {
+                    return Unauthorized();
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                // Log error
+                return BadRequest();
+            }
         }
 
         [HttpPost("newUser")]

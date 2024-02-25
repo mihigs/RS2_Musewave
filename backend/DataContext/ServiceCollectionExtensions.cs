@@ -35,7 +35,10 @@ namespace DataContext
 
             services.AddIdentityCore<User>(options =>
             {
-                options.User.RequireUniqueEmail = false;
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequireDigit = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
             })
             .AddEntityFrameworkStores<MusewaveDbContext>();
 

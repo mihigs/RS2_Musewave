@@ -1,7 +1,34 @@
-import 'package:flutter/material.dart';
-import 'package:frontend/views/home_page.dart';
+import 'dart:io';
 
-void main() {
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/services/authentication_service.dart';
+import 'package:frontend/views/home_page.dart';
+import 'package:frontend/views/login_page.dart';
+import 'package:get_it/get_it.dart';
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
+void main() async {
+  final getIt = GetIt.instance;
+
+  // Allow network requests to localhost over HTTP
+  HttpOverrides.global = MyHttpOverrides();
+
+  // Register services
+  await getIt.registerSingleton(AuthenticationService(baseUrl: 'https://10.0.2.2:7074/api', secureStorage: FlutterSecureStorage()));
+
+  // Register views
+  getIt.registerFactory<LoginPage>(() => LoginPage());
+  // getIt.registerFactory<HomePage>(() => HomePage());
+
   runApp(const MyApp());
 }
 
@@ -32,7 +59,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const HomePage(title: 'Musewave'),
+      // home: const HomePage(title: 'Musewave'),
+      home: LoginPage(),
     );
   }
 }

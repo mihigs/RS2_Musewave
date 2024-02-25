@@ -8,6 +8,7 @@ using Models.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Services.Responses;
 
 namespace Services.Implementations
 {
@@ -41,34 +42,31 @@ namespace Services.Implementations
             }
         }
 
-        public async Task<string> Login(UserLogin model)
+        public async Task<UserLoginResponse> Login(UserLogin model)
         {
             try
             {
-                var user = await _userManager.FindByNameAsync(model.Email);
+                var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
-                    return null; // User not found
+                    return new UserLoginResponse { Error = LoginError.UserDoesNotExist };
                 }
 
                 var result = await _userManager.CheckPasswordAsync(user, model.Password);
                 if (result)
                 {
-                    // Generate token
-                    var tokenString = GenerateJwtToken(user);
-
-                    // Return token
-                    return tokenString;
+                    // Return generated token
+                    return new UserLoginResponse { Token = GenerateJwtToken(user) };
                 }
                 else
                 {
-                    return null;
+                    return new UserLoginResponse { Error = LoginError.InvalidLoginCredentials };
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //Log error
-                throw;
+                throw new Exception("Error logging in user", ex);
             }
 
         }
@@ -126,10 +124,10 @@ namespace Services.Implementations
                 );
                 return new JwtSecurityTokenHandler().WriteToken(token);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //Log error
-                throw;
+                throw new Exception("Error generating JWT token", ex);
             }
         }
 
