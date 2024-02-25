@@ -13,4 +13,16 @@ class Like {
     required this.trackId,
     required this.track,
   });
+
+  static fromJson(like) {
+    if (like is! Map<String, dynamic>) {
+      return null;
+    }
+    return Like(
+      userId: like['userId'],
+      user: like['user'],
+      trackId: like['trackId'],
+      track: like['track'],
+    );
+  }
 }

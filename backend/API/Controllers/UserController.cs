@@ -17,11 +17,13 @@ namespace API.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly UsersService _usersService;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(UserManager<User> userManager, UsersService usersService)
+        public UserController(UserManager<User> userManager, UsersService usersService, ILogger<UserController> logger)
         {
             _userManager = userManager;
             _usersService = usersService;
+            _logger = logger;
         }
 
         [HttpGet("allUsers")]
@@ -68,6 +70,7 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 // Log error
+                _logger.LogError(ex, "Error logging in user");
                 return BadRequest();
             }
         }

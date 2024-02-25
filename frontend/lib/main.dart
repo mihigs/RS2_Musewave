@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/router.dart';
 import 'package:frontend/services/authentication_service.dart';
-import 'package:frontend/views/home_page.dart';
-import 'package:frontend/views/login_page.dart';
+import 'package:frontend/services/tracks_service.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -17,29 +18,41 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized before using SecureStorage
+
   final getIt = GetIt.instance;
 
   // Allow network requests to localhost over HTTP
   HttpOverrides.global = MyHttpOverrides();
 
+  // Register secure storage
+  final secureStorage = await getIt.registerSingleton(FlutterSecureStorage());
+
   // Register services
-  await getIt.registerSingleton(AuthenticationService(baseUrl: 'https://10.0.2.2:7074/api', secureStorage: FlutterSecureStorage()));
+  final authService = await getIt.registerSingleton(AuthenticationService(baseUrl: 'https://10.0.2.2:7074/api', secureStorage: secureStorage));
+  final tracksService = await getIt.registerSingleton(TracksService(secureStorage));
 
-  // Register views
-  getIt.registerFactory<LoginPage>(() => LoginPage());
-  // getIt.registerFactory<HomePage>(() => HomePage());
+  // Get the token from secure storage
+  final access_token = await authService.getTokenFromStorage();
 
-  runApp(const MyApp());
+  final router = routerGenerator(authService.getLoggedInState());
+
+  runApp(MyApp(
+    // initialRoute: access_token != null ? '/home' : '/login',
+    router: router,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final GoRouter router;
+  MyApp({required this.router});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Musewave',
+      routerConfig: router,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -59,8 +72,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // home: const HomePage(title: 'Musewave'),
-      home: LoginPage(),
+      // routes: {
+      //   '/': (context) => HomePage(title: 'Musewave'),
+      //   '/login': (context) => LoginPage(),
+      //   '/home': (context) => HomePage(title: 'Musewave'),
+      //   // '/search': (context) => (),
+      //   '/user': (context) => PersonalPage(),
+      //   // Add more routes as needed
+      // },
     );
   }
 }

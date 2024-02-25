@@ -20,6 +20,18 @@ class Track {
     this.genreId,
     this.genre,
   });
+
+  static fromJson(track) {
+    return Track(
+      title: track['title'],
+      duration: track['duration'],
+      albumId: track['albumId'],
+      album: track['album'],
+      likes: Like.fromJson(track['likes']),
+      genreId: track['genreId'],
+      genre: track['genre'],
+    );
+  }
 }
 
 class TrackGenre {

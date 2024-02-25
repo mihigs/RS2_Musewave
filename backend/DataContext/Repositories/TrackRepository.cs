@@ -19,5 +19,13 @@ namespace DataContext.Repositories
                 .Where(t => t.GenreId == genreId)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Track>> GetLikedTracksAsync(string userId)
+        {
+            return await _dbContext.Set<Like>()
+                .Where(l => l.UserId == userId)
+                .Select(l => l.Track)
+                .ToListAsync();
+        }
     }
 }

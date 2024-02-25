@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class SearchWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
+  final ValueChanged<String> onChanged;
 
-  SearchWidget({super.key});
+  SearchWidget({Key? key, required this.onChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +20,7 @@ class SearchWidget extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(25.0)),
           ),
         ),
-        onChanged: (value) {
-          // Perform the search operation
-        },
+        onChanged: onChanged,
       ),
     );
   }

@@ -1,13 +1,15 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:frontend/models/base/logged_in_state_info.dart';
+import 'package:frontend/services/base/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:jwt_decoder/jwt_decoder.dart'; // For decoding JWT tokens
+import 'package:http/http.dart' as http;
 
-class AuthenticationService {
+class AuthenticationService extends ApiService {
   final String baseUrl;
   final FlutterSecureStorage secureStorage;
+  final LoggedInStateInfo loggedInState = new LoggedInStateInfo();
 
-  AuthenticationService({required this.baseUrl, required this.secureStorage});
+  AuthenticationService({required this.baseUrl, required this.secureStorage}) : super(secureStorage: secureStorage);
 
   Future<UserLoginResponse> login(String email, String password) async {
     UserLoginResponse result = new UserLoginResponse();
@@ -19,11 +21,11 @@ class AuthenticationService {
         headers: {'Content-Type': 'application/json'},
       );
 
-
       if (response.statusCode == 200) {
         final token = jsonDecode(response.body)['token'] as String;
         await secureStorage.write(key: 'access_token', value: token);
         result.token = token;
+        loggedInState.login();
       } else if (response.statusCode == 401 || response.statusCode == 404) {
         result.error = 'Email or password is incorrect';
       } else {
@@ -39,10 +41,11 @@ class AuthenticationService {
 
   Future<void> logout() async {
     await secureStorage.delete(key: 'access_token');
+    loggedInState.logout();
   }
 
-  bool isTokenValid(String token) {
-    return !JwtDecoder.isExpired(token);
+  LoggedInStateInfo getLoggedInState() {
+    return loggedInState;
   }
 }
 

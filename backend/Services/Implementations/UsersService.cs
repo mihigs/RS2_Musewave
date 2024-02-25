@@ -106,30 +106,47 @@ namespace Services.Implementations
         {
             try
             {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, user.Email),
-                    // Add more claims as needed
-                };
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                var expires = DateTime.Now.AddSeconds(Convert.ToDouble(_configuration["Jwt:AccessExpirationSeconds"]));
+                var claims = GetClaims(user);
+                var signingCredentials = GetSigningCredentials();
+                var expires = GetExpirationTime();
 
                 var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Issuer"],
-                claims,
-                expires: expires,
-                signingCredentials: creds
+                    issuer: _configuration["Jwt:Issuer"],
+                    audience: _configuration["Jwt:Issuer"],
+                    claims: claims,
+                    expires: expires,
+                    signingCredentials: signingCredentials
                 );
+
                 return new JwtSecurityTokenHandler().WriteToken(token);
             }
             catch (Exception ex)
             {
-                //Log error
+                // Log error
                 throw new Exception("Error generating JWT token", ex);
             }
         }
+
+        private IEnumerable<Claim> GetClaims(User user)
+        {
+            return new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            };
+        }
+
+        private SigningCredentials GetSigningCredentials()
+        {
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]));
+            return new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        }
+
+        private DateTime GetExpirationTime()
+        {
+            return DateTime.Now.AddSeconds(Convert.ToDouble(_configuration["Jwt:AccessExpirationSeconds"]));
+        }
+
 
         //public async Task<PaginationResponseDto> FilterUsers(FilterUsersDto model)
         //{
