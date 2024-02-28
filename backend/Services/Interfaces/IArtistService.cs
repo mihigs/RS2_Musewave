@@ -1,8 +1,8 @@
 ﻿using Models.Entities;
 
-namespace DataContext.Repositories.Interfaces
+namespace Services.Interfaces
 {
-    public interface IArtistRepository : IRepository<Artist>
+    public interface IArtistService
     {
         Task<IEnumerable<Artist>> GetArtistsByNameAsync(string name);
     }

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models.Entities;
 using Models.DTOs;
-using Services.Implementations;
 using Services.Responses;
 using Microsoft.IdentityModel.Tokens;
+using Services.Interfaces;
 
 namespace API.Controllers
 {
@@ -16,10 +16,10 @@ namespace API.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        private readonly UsersService _usersService;
+        private readonly IUsersService _usersService;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(UserManager<User> userManager, UsersService usersService, ILogger<UserController> logger)
+        public UserController(UserManager<User> userManager, IUsersService usersService, ILogger<UserController> logger)
         {
             _userManager = userManager;
             _usersService = usersService;
@@ -75,6 +75,7 @@ namespace API.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("newUser")]
         public async Task<IActionResult> AddUser(UserLogin model)
         {

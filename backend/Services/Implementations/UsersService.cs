@@ -9,10 +9,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Services.Responses;
+using Services.Interfaces;
 
 namespace Services.Implementations
 {
-    public class UsersService
+    public class UsersService : IUsersService
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;

@@ -8,7 +8,7 @@ namespace Models.Entities
         public string UserId { get; set; }
         public User User { get; set; }
         public List<Track> Tracks { get; set; }
-
+        public bool IsPublic { get; set; }
         public Playlist()
         {
             Tracks = new List<Track>();

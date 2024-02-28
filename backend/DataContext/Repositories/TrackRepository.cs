@@ -27,5 +27,12 @@ namespace DataContext.Repositories
                 .Select(l => l.Track)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Track>> GetTracksByNameAsync(string name)
+        {
+            return await _dbContext.Set<Track>()
+                .Where(t => t.Title.Contains(name))
+                .ToListAsync();
+        }
     }
 }

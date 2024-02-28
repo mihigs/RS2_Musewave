@@ -1,10 +1,9 @@
 ﻿using Models.Entities;
 
-namespace DataContext.Repositories.Interfaces
+namespace Services.Interfaces
 {
-    public interface ITrackRepository : IRepository<Track>
+    public interface ITracksService
     {
-        Task<IEnumerable<Track>> GetTracksByGenreAsync(int genreId);
         Task<IEnumerable<Track>> GetLikedTracksAsync(string userId);
         Task<IEnumerable<Track>> GetTracksByNameAsync(string name);
     }

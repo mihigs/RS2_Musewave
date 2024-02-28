@@ -65,6 +65,7 @@ namespace DataContext
                 .WithOne(l => l.User);
 
             #endregion
+
         }
     }
 }

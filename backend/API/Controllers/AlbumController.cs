@@ -1,79 +1,137 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Models.DTOs;
 using Models.Entities;
-using Services.Implementations;
+using Services.Interfaces;
 
 namespace API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class AlbumController : ControllerBase
     {
-        private readonly AlbumService _albumService;
+        private readonly IAlbumService _albumService;
 
-        public AlbumController(AlbumService albumService)
+        public AlbumController(IAlbumService albumService)
         {
             _albumService = albumService ?? throw new ArgumentNullException(nameof(albumService));
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Album>>> GetAllAlbums()
+        public async Task<ApiResponse> GetAllAlbums()
         {
-            var albums = await _albumService.GetAllAlbumsAsync();
-            return Ok(albums);
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                apiResponse.Data = await _albumService.GetAllAlbumsAsync();
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Album>> GetAlbumById(int id)
+        public async Task<ApiResponse> GetAlbumById(int id)
         {
-            var album = await _albumService.GetAlbumByIdAsync(id);
-            if (album == null)
-                return NotFound();
-
-            return Ok(album);
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                apiResponse.Data = await _albumService.GetAlbumByIdAsync(id);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Album>> AddAlbum(Album album)
+        public async Task<ApiResponse> AddAlbum(Album album)
         {
+            ApiResponse apiResponse = new ApiResponse();
             try
             {
                 var addedAlbum = await _albumService.AddAlbumAsync(album);
-                return CreatedAtAction(nameof(GetAlbumById), new { id = addedAlbum.Id }, addedAlbum);
+                apiResponse.Data = addedAlbum;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.Created;
             }
             catch (Exception ex)
             {
-                // Handle any validation or other exceptions
-                return BadRequest(ex.Message);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
             }
+            return apiResponse;
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Album>> UpdateAlbum(int id, Album album)
+        public async Task<ApiResponse> UpdateAlbum(int id, Album album)
         {
-            if (id != album.Id)
-                return BadRequest("Album ID mismatch");
-
+            ApiResponse apiResponse = new ApiResponse();
             try
             {
                 var updatedAlbum = await _albumService.UpdateAlbumAsync(album);
-                return Ok(updatedAlbum);
+                apiResponse.Data = updatedAlbum;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
-                // Handle any validation or other exceptions
-                return BadRequest(ex.Message);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
             }
+            return apiResponse;
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Album>> RemoveAlbum(int id)
+        public async Task<ApiResponse> RemoveAlbum(int id)
         {
-            var removedAlbum = await _albumService.RemoveAlbumAsync(id);
-            if (removedAlbum == null)
-                return NotFound();
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var removedAlbum = await _albumService.RemoveAlbumAsync(id);
+                if (removedAlbum == null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    return apiResponse;
+                }
+                apiResponse.Data = removedAlbum;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
 
-            return Ok(removedAlbum);
+        [HttpGet("GetAlbumsByName")]
+        public async Task<ApiResponse> GetAlbumsByTitle(string title)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                apiResponse.Data = await _albumService.GetAlbumsByTitleAsync(title);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
         }
     }
 }

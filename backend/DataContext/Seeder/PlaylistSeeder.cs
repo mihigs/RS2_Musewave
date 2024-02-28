@@ -43,7 +43,8 @@ namespace DataContext.Seeder
                         {
                             Name = $"Best of {genre.Name} by {user.UserName}",
                             UserId = user.Id,
-                            Tracks = tracks.Take(5).ToList() // Take the first 5 tracks
+                            Tracks = tracks.Take(5).ToList(), // Take the first 5 tracks
+                            IsPublic = true
                         };
 
                         playlists.Add(playlist);

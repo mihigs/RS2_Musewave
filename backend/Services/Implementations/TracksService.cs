@@ -1,23 +1,27 @@
 ﻿using DataContext.Repositories;
 using DataContext.Repositories.Interfaces;
 using Models.Entities;
+using Services.Interfaces;
 
 namespace Services.Implementations
 {
-    public class TracksService
+    public class TracksService : ITracksService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly ITrackRepository _trackRespository;
 
-        public TracksService(IUnitOfWork unitOfWork, ITrackRepository trackRespository)
+        public TracksService(ITrackRepository trackRespository)
         {
-            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             _trackRespository = trackRespository ?? throw new ArgumentNullException(nameof(trackRespository));
         }
 
-        public async Task<IEnumerable<Track>> GetLikedTracksAsync()
+        public async Task<IEnumerable<Track>> GetLikedTracksAsync(string userId)
         {
-            return await _trackRespository.GetLikedTracksAsync(_unitOfWork.GetCurrentUserId());
+            return await _trackRespository.GetLikedTracksAsync(userId);
+        }
+
+        public async Task<IEnumerable<Track>> GetTracksByNameAsync(string name)
+        {
+            return await _trackRespository.GetTracksByNameAsync(name);
         }
     }
 }

@@ -1,15 +1,14 @@
 ﻿using DataContext.Repositories;
 using Models.Entities;
+using Services.Interfaces;
 
 namespace Services.Implementations
 {
-    public class AlbumService
+    public class AlbumService : IAlbumService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IAlbumRepository _albumRepository;
-        public AlbumService(IUnitOfWork unitOfWork, IAlbumRepository albumRepository)
+        public AlbumService(IAlbumRepository albumRepository)
         {
-            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             _albumRepository = albumRepository ?? throw new ArgumentNullException(nameof(albumRepository));
         }
         public async Task<IEnumerable<Album>> GetAllAlbumsAsync()
@@ -44,9 +43,13 @@ namespace Services.Implementations
             if (album != null)
             {
                 _ = await _albumRepository.Remove(id);
-                await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
             }
             return album;
+        }
+
+        public async Task<IEnumerable<Album>> GetAlbumsByTitleAsync(string title)
+        {
+            return await _albumRepository.GetAlbumsByTitleAsync(title).ConfigureAwait(false);
         }
     }
 }
