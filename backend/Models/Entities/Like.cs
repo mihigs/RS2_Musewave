@@ -5,8 +5,8 @@ namespace Models.Entities
     public class Like : BaseEntity
     {
         public string UserId { get; set; }
-        public User User { get; set; }
+        public virtual User User { get; set; }
         public int TrackId { get; set; }
-        public Track Track { get; set; }
+        public virtual Track Track { get; set; }
     }
 }

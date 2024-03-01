@@ -16,6 +16,7 @@ namespace DataContext.Repositories
         {
             return await _dbContext.Set<Artist>()
                 .Where(a => a.User.UserName.Contains(name))
+                .Include(a => a.User)
                 .ToListAsync();
         }
     }

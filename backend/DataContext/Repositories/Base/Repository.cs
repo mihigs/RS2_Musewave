@@ -68,5 +68,15 @@ namespace DataContext.Repositories
             await _context.SaveChangesAsync();
             return entities;
         }
+
+        public virtual async Task<IEnumerable<T>> GetAllInculding(T entity, string[] includes)
+        {
+            var query = _context.Set<T>().AsQueryable();
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+            return await query.ToListAsync();
+        }
     }
 }

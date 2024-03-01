@@ -5,9 +5,9 @@ namespace Models.Entities
     public class Artist : BaseEntity
     {
         public string UserId { get; set; }
-        public User User { get; set; }
-        public List<Album> Albums { get; set; }
-        public List<Track> Tracks { get; set; }
+        public virtual User User { get; set; }
+        public virtual List<Album> Albums { get; set; }
+        public virtual List<Track> Tracks { get; set; }
 
         public Artist()
         {

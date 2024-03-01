@@ -25,7 +25,6 @@ namespace DataContext
         {
             services.AddDbContext<MusewaveDbContext>(options =>
             {
-                //options.UseLazyLoadingProxies();
                 options.UseSqlServer(connectionString);
             }, ServiceLifetime.Scoped);
 

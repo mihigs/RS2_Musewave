@@ -6,8 +6,8 @@ namespace Models.Entities
     {
         public string Title { get; set; }
         public int ArtistId { get; set; }
-        public Artist Artist { get; set; }
-        public List<Track> Tracks { get; set; }
+        public virtual Artist Artist { get; set; }
+        public virtual List<Track> Tracks { get; set; }
 
         public Album()
         {

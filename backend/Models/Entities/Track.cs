@@ -7,10 +7,10 @@ namespace Models.Entities
         public string Title { get; set; }
         public int Duration { get; set; }
         public int? AlbumId { get; set; }
-        public Album? Album { get; set; }
-        public List<Like> Likes { get; set; }
+        public virtual Album? Album { get; set; }
+        public virtual List<Like> Likes { get; set; }
         public int? GenreId { get; set; }
-        public Genre? Genre { get; set; }
+        public virtual Genre? Genre { get; set; }
         public Track()
         {
             Likes = new List<Like>();
@@ -21,8 +21,8 @@ namespace Models.Entities
     {
         public int Id { get; set; }
         public int TrackId { get; set; }
-        public Track Track { get; set; }
+        public virtual Track Track { get; set; }
         public int GenreId { get; set; }
-        public Genre Genre { get; set; }
+        public virtual Genre Genre { get; set; }
     }
 }
