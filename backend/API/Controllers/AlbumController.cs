@@ -116,7 +116,7 @@ namespace API.Controllers
             return apiResponse;
         }
 
-        [HttpGet("GetAlbumsByName")]
+        [HttpGet("GetAlbumsByTitle")]
         public async Task<ApiResponse> GetAlbumsByTitle(string title)
         {
             ApiResponse apiResponse = new ApiResponse();

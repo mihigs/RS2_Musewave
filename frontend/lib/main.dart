@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/router.dart';
+import 'package:frontend/services/album_service.dart';
 import 'package:frontend/services/authentication_service.dart';
 import 'package:frontend/services/base/api_service.dart';
 import 'package:frontend/services/tracks_service.dart';
@@ -35,6 +36,7 @@ void main() async {
   final apiService = await getIt.registerSingleton(ApiService(secureStorage: secureStorage));
   final authService = await getIt.registerSingleton(AuthenticationService(secureStorage: secureStorage));
   final tracksService = await getIt.registerSingleton(TracksService(secureStorage));
+  final albumService = await getIt.registerSingleton(AlbumService(secureStorage));
 
   // Get the token from secure storage
   final access_token = await authService.getTokenFromStorage();
@@ -73,7 +75,9 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        iconTheme: IconThemeData(color: Colors.black),
+        hintColor: Colors.black,
         useMaterial3: true,
       ),
       // routes: {

@@ -32,6 +32,8 @@ namespace DataContext.Repositories
         {
             return await _dbContext.Set<Track>()
                 .Where(t => t.Title.Contains(name))
+                .Include(t => t.Artist)
+                .ThenInclude(Artist => Artist.User)
                 .ToListAsync();
         }
     }

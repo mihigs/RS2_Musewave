@@ -18,9 +18,6 @@ namespace DataContext.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.2")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -326,7 +323,7 @@ namespace DataContext.Migrations
                     b.Property<int?>("AlbumId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ArtistId")
+                    b.Property<int>("ArtistId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -483,7 +480,7 @@ namespace DataContext.Migrations
             modelBuilder.Entity("Models.Entities.Album", b =>
                 {
                     b.HasOne("Models.Entities.Artist", "Artist")
-                        .WithMany("Albums")
+                        .WithMany()
                         .HasForeignKey("ArtistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -496,7 +493,7 @@ namespace DataContext.Migrations
                     b.HasOne("Models.Entities.User", "User")
                         .WithOne("Artist")
                         .HasForeignKey("Models.Entities.Artist", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -507,13 +504,13 @@ namespace DataContext.Migrations
                     b.HasOne("Models.Entities.Track", "Track")
                         .WithMany("Likes")
                         .HasForeignKey("TrackId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Models.Entities.User", "User")
                         .WithMany("Likes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Track");
@@ -526,7 +523,7 @@ namespace DataContext.Migrations
                     b.HasOne("Models.Entities.User", "User")
                         .WithMany("Playlists")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -557,13 +554,16 @@ namespace DataContext.Migrations
                         .WithMany("Tracks")
                         .HasForeignKey("AlbumId");
 
-                    b.HasOne("Models.Entities.Artist", null)
-                        .WithMany("Tracks")
-                        .HasForeignKey("ArtistId");
+                    b.HasOne("Models.Entities.Artist", "Artist")
+                        .WithMany()
+                        .HasForeignKey("ArtistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Models.Entities.Genre", "Genre")
                         .WithMany()
-                        .HasForeignKey("GenreId");
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Models.Entities.Playlist", null)
                         .WithMany("Tracks")
@@ -571,18 +571,13 @@ namespace DataContext.Migrations
 
                     b.Navigation("Album");
 
+                    b.Navigation("Artist");
+
                     b.Navigation("Genre");
                 });
 
             modelBuilder.Entity("Models.Entities.Album", b =>
                 {
-                    b.Navigation("Tracks");
-                });
-
-            modelBuilder.Entity("Models.Entities.Artist", b =>
-                {
-                    b.Navigation("Albums");
-
                     b.Navigation("Tracks");
                 });
 

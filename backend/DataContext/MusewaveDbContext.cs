@@ -25,23 +25,16 @@ namespace DataContext
 
             #region Relationship Configuration
             modelBuilder.Entity<Track>()
-                .HasOne(t => t.Album)
-                .WithMany(a => a.Tracks)
-                .HasForeignKey(t => t.AlbumId);
-
-            modelBuilder.Entity<Track>()
                 .HasOne(t => t.Genre)
                 .WithMany()
-                .HasForeignKey(t => t.GenreId);
-
-            modelBuilder.Entity<Artist>()
-                .HasMany(a => a.Albums)
-                .WithOne(a => a.Artist);
+                .HasForeignKey(t => t.GenreId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Artist>()
                 .HasOne(a => a.User)
                 .WithOne(u => u.Artist)
-                .HasForeignKey<Artist>(a => a.UserId);
+                .HasForeignKey<Artist>(a => a.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<PlaylistTrack>()
                 .HasKey(pt => new { pt.PlaylistId, pt.TrackId });
@@ -54,15 +47,18 @@ namespace DataContext
             modelBuilder.Entity<Like>()
                 .HasOne(l => l.Track)
                 .WithMany(t => t.Likes)
-                .HasForeignKey(l => l.TrackId);
+                .HasForeignKey(l => l.TrackId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Playlists)
-                .WithOne(p => p.User);
+                .WithOne(p => p.User)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Likes)
-                .WithOne(l => l.User);
+                .WithOne(l => l.User)
+                .OnDelete(DeleteBehavior.NoAction);
 
             #endregion
 

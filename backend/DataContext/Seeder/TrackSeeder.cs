@@ -38,106 +38,108 @@ namespace DataContext.Seeder
                         {
                             Title = $"Epic Journey Through {genre.Name}",
                             AlbumId = album.Id,
-                            GenreId = genre.Id
+                            GenreId = genre.Id,
+                            Artist = album.Artist
                         });
 
                         tracks.Add(new Track
                         {
                             Title = $"Mystical Echoes of {album.Title}",
                             AlbumId = album.Id,
-                            GenreId = genre.Id
+                            GenreId = genre.Id,
+                            Artist = album.Artist
                         });
                         tracks.Add(new Track
                         {
                             Title = $"Soulful Rhythms of {album.Title}",
                             AlbumId = album.Id,
-                            GenreId = genre.Id
+                            GenreId = genre.Id,
+                            Artist = album.Artist
                         });
                         tracks.Add(new Track
                         {
                             Title = $"The {genre.Name} Concerto",
                             AlbumId = null,
-                            GenreId = genre.Id
+                            GenreId = genre.Id,
+                            Artist = album.Artist
                         });
                         tracks.Add(new Track
                         {
                             Title = $"The {genre.Name} beneath",
                             AlbumId = null,
-                            GenreId = genre.Id
+                            GenreId = genre.Id,
+                            Artist = album.Artist
                         });
                     }
                 }
 
                 // Create tracks that don't belong to any album
-                foreach (var genre in genres)
-                {
-                    tracks.Add(new Track
-                    {
-                        Title = $"Unchained Melody of {genre.Name}",
-                        AlbumId = null,
-                        GenreId = genre.Id
-                    });
+                // For each artist from the albums, create a few tracks
+                 var artists = albums.Select(a => a.Artist).Distinct().ToList();
 
-                    tracks.Add(new Track
+                foreach (var artist in artists)
+                {
+                    // For each genre, create a track
+                    foreach (var genre in genres)
                     {
-                        Title = $"Lonely Ballad in {genre.Name}",
-                        AlbumId = null,
-                        GenreId = genre.Id
-                    });
-                    tracks.Add(new Track
-                    {
-                        Title = $"{genre.Name} time",
-                        AlbumId = null,
-                        GenreId = genre.Id
-                    });
-                    tracks.Add(new Track
-                    {
-                        Title = $"The {genre.Name} Symphony",
-                        AlbumId = null,
-                        GenreId = genre.Id
-                    });
-                    tracks.Add(new Track
-                    {
-                        Title = $"The {genre.Name} Overture",
-                        AlbumId = null,
-                        GenreId = genre.Id
-                    });
-                    tracks.Add(new Track
-                    {
-                        Title = $"The {genre.Name} Sonata",
-                        AlbumId = null,
-                        GenreId = genre.Id
-                    });
-                    tracks.Add(new Track
-                    {
-                        Title = $"Its {genre.Name} time!",
-                        AlbumId = null,
-                        GenreId = genre.Id
-                    });
-                    tracks.Add(new Track
-                    {
-                        Title = $"The {genre.Name} Rhapsody",
-                        AlbumId = null,
-                        GenreId = genre.Id
-                    });
-                    tracks.Add(new Track
-                    {
-                        Title = $"The {genre.Name} Nocturne",
-                        AlbumId = null,
-                        GenreId = genre.Id
-                    });
-                    tracks.Add(new Track
-                    {
-                        Title = $"The {genre.Name} Etude",
-                        AlbumId = null,
-                        GenreId = genre.Id
-                    });
-                    tracks.Add(new Track
-                    {
-                        Title = $"The {genre.Name} Prelude",
-                        AlbumId = null,
-                        GenreId = genre.Id
-                    });
+                        tracks.Add(new Track
+                        {
+                            Title = $"The {genre.Name} Symphony",
+                            AlbumId = null,
+                            GenreId = genre.Id,
+                            Artist = artist
+                        });
+
+                        tracks.Add(new Track
+                        {
+                            Title = $"The {genre.Name} Overture",
+                            AlbumId = null,
+                            GenreId = genre.Id,
+                            Artist = artist
+                        });
+                        tracks.Add(new Track
+                        {
+                            Title = $"The {genre.Name} Sonata",
+                            AlbumId = null,
+                            GenreId = genre.Id,
+                            Artist = artist
+                        });
+                        tracks.Add(new Track
+                        {
+                            Title = $"Its {genre.Name} time!",
+                            AlbumId = null,
+                            GenreId = genre.Id,
+                            Artist = artist
+                        });
+                        tracks.Add(new Track
+                        {
+                            Title = $"The {genre.Name} Rhapsody",
+                            AlbumId = null,
+                            GenreId = genre.Id,
+                            Artist = artist
+                        });
+                        tracks.Add(new Track
+                        {
+                            Title = $"The {genre.Name} Nocturne",
+                            AlbumId = null,
+                            GenreId = genre.Id,
+                            Artist = artist
+                        });
+                        tracks.Add(new Track
+                        {
+                            Title = $"The {genre.Name} Etude",
+                            AlbumId = null,
+                            GenreId = genre.Id,
+                            Artist = artist
+                        });
+                        tracks.Add(new Track
+                        {
+                            Title = $"The {genre.Name} Prelude",
+                            AlbumId = null,
+                            GenreId = genre.Id,
+                            Artist = artist
+                        });
+                    }
                 }
 
                 // Add the tracks to the database

@@ -1,7 +1,12 @@
 import 'package:frontend/models/album.dart';
+import 'package:frontend/models/artist.dart';
 import 'package:frontend/models/like.dart';
 import 'package:frontend/models/genre.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'track.g.dart';
+
+@JsonSerializable()
 class Track {
   String title;
   int duration;
@@ -10,6 +15,8 @@ class Track {
   List<Like>? likes;
   int? genreId;
   Genre? genre;
+  int artistId;
+  Artist artist;
 
   Track({
     required this.title,
@@ -19,19 +26,33 @@ class Track {
     this.likes,
     this.genreId,
     this.genre,
+    required this.artist,
+    required this.artistId,
   });
 
-  static fromJson(track) {
-    return Track(
-      title: track['title'],
-      duration: track['duration'],
-      albumId: track['albumId'],
-      album: track['album'],
-      likes: Like.fromJson(track['likes']),
-      genreId: track['genreId'],
-      genre: track['genre'],
-    );
-  }
+    // A necessary factory constructor for creating a new Track instance
+  // from a map. Pass the map to the generated `_$TrackFromJson()` constructor.
+  // The constructor is named after the source class, in this case, Track.
+  factory Track.fromJson(Map<String, dynamic> json) => _$TrackFromJson(json);
+
+  // A necessary instance method for converting a Track instance to a map.
+  // Pass the map to the generated `_$TrackToJson()` method.
+  // The method is named after the source class, in this case, Track.
+  Map<String, dynamic> toJson() => _$TrackToJson(this);
+
+  // static fromJson(track) {
+  //   return Track(
+  //     title: track['title'] ?? '',
+  //     duration: track['duration'] ?? 0,
+  //     albumId: track['albumId'],
+  //     album: track['album'] != null ? Album.fromJson(track['album']) : null,
+  //     likes: track['likes'] != null ? Like.fromJson(track['likes']) : null,
+  //     genreId: track['genreId'] ?? '',
+  //     genre: track['genre'] != null ? Genre.fromJson(track['genre']) : null,
+  //     artistId: track['artistId'] ?? '',
+  //     artist: Artist.fromJson(track['artist'])!,
+  //   );
+  // }
 }
 
 class TrackGenre {

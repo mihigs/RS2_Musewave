@@ -17,6 +17,7 @@ namespace DataContext.Repositories
             return await _dbContext.Set<Album>()
                 .Where(g => g.Title.Contains(title))
                 .Include(a => a.Artist)
+                .ThenInclude(Artist => Artist.User)
                 .ToListAsync();
         }
     }
