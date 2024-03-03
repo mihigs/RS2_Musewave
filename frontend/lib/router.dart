@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 
 GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
   return GoRouter(
-    initialLocation: Routes.login,
+    initialLocation: Routes.home,
     refreshListenable: loggedInState,
     redirect: (BuildContext context, GoRouterState state) {
       final isOnLogin = state.uri.toString() == Routes.login;

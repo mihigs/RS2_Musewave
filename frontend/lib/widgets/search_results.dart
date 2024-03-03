@@ -3,7 +3,7 @@ import 'package:frontend/models/album.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/widgets/result_item_card.dart';
 
-class SearchResults extends StatelessWidget {
+class SearchResults extends StatefulWidget {
   final Future<List<Track>> tracksFuture;
   final Future<List<Album>> albumsFuture;
 
@@ -14,12 +14,17 @@ class SearchResults extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<SearchResults> createState() => _SearchResultsState();
+}
+
+class _SearchResultsState extends State<SearchResults> {
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-      future: Future.wait([tracksFuture, albumsFuture]),
+      future: Future.wait([widget.tracksFuture, widget.albumsFuture]),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {

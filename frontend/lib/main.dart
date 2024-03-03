@@ -39,7 +39,7 @@ void main() async {
   final albumService = await getIt.registerSingleton(AlbumService(secureStorage));
 
   // Get the token from secure storage
-  final access_token = await authService.getTokenFromStorage();
+  final access_token = await authService.checkLocalStorageForToken();
 
   final router = routerGenerator(authService.getLoggedInState());
 

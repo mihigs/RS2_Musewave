@@ -46,6 +46,16 @@ class AuthenticationService extends ApiService {
   LoggedInStateInfo getLoggedInState() {
     return loggedInState;
   }
+
+  Future<String?> checkLocalStorageForToken() async {
+    final token = await getTokenFromStorage();
+    if (token != null) {
+      loggedInState.login();
+      return token;
+    }
+    loggedInState.logout();
+    return null;
+  }
 }
 
 class UserLoginResponse {

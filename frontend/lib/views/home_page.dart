@@ -33,17 +33,20 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           Container(
             margin: EdgeInsets.fromLTRB(10, 35, 10, 10), // left, top, right, bottom
-            child: SearchBarWidget(
-              key: null,
+            child: GestureDetector(
+              child: AbsorbPointer(
+                absorbing: true,
+                child: SearchBarWidget(
+                  key: null,
+                ),
+              ),
               onTap: () {
                 // Navigate to search
                 widget.changePage(1);
               },
             ),
           ),
-          Container(
-            child: ForYouResults(likedTracksFuture: likedTracksFuture),
-          ),
+          Expanded(child: ForYouResults(likedTracksFuture: likedTracksFuture)),
         ],
       );
   }
