@@ -50,12 +50,16 @@ class _LoginPageState extends State<LoginPage> {
         // Show error message
         final errorMessage = loginResponse.error!;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage)),
+          SnackBar(content: Text(errorMessage),
+          duration: const Duration(seconds: 3),
+          ),
         );
       } else {
         // Show error message
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('An error occurred')),
+          const SnackBar(content: Text('An error occurred'),
+          duration: Duration(seconds: 3),
+          ),
         );
       }
       setState(() => _isLoading = false);
@@ -154,9 +158,6 @@ class _LoginPageState extends State<LoginPage> {
                                     new TextEditingValue(text: "Test_123");
                                 if (_formKey.currentState?.validate() ??
                                     false) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Processing Data')),
-                                  );
                                   await _login();
                                 }
                               },

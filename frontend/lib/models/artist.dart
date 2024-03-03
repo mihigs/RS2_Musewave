@@ -1,25 +1,24 @@
-import 'package:frontend/models/album.dart';
-import 'package:frontend/models/track.dart';
+import 'package:frontend/models/base/base_entity.dart';
 import 'package:frontend/models/user.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'artist.g.dart';
 
 @JsonSerializable()
-class Artist {
+class Artist extends BaseEntity {
   String userId;
   User user;
 
   Artist({
+    required super.id,
+    required super.createdAt,
+    required super.updatedAt,
     required this.userId,
     required this.user,
   });
 
   factory Artist.fromJson(Map<String, dynamic> json) => _$ArtistFromJson(json);
-
-  // A necessary instance method for converting a Artist instance to a map.
-  // Pass the map to the generated `_$ArtistToJson()` method.
-  // The method is named after the source class, in this case, Artist.
+  
   Map<String, dynamic> toJson() => _$ArtistToJson(this);
 
   // static fromJson(item) {

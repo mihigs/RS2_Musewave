@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/album.dart';
+import 'package:frontend/models/artist.dart';
+import 'package:frontend/models/playlist.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/services/album_service.dart';
+import 'package:frontend/services/artist_service.dart';
+import 'package:frontend/services/playlist_service.dart';
 import 'package:frontend/services/tracks_service.dart';
-import 'package:frontend/widgets/navigation_menu.dart';
 import 'package:frontend/widgets/search_bar.dart';
 import 'package:frontend/widgets/search_results.dart';
 import 'package:get_it/get_it.dart';
@@ -11,37 +14,29 @@ import 'package:get_it/get_it.dart';
 class SearchPage extends StatefulWidget {
   final TracksService tracksService = GetIt.I<TracksService>();
   final AlbumService albumService = GetIt.I<AlbumService>();
+  final ArtistService artistService = GetIt.I<ArtistService>();
+  final PlaylistService playlistService = GetIt.I<PlaylistService>();
 
   SearchPage({super.key});
-
 
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  late Future<List<Track>> likedTracksFuture;
   late FocusNode _focusNode;
   bool isSearching = false;
   late Future<List<Track>> _tracksFuture;
   late Future<List<Album>> _albumsFuture;
-
+  late Future<List<Artist>> _artistsFuture;
+  late Future<List<Playlist>> _playlistsFuture;
+  
   void handleSubmitted(String value) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Searching for $value ...')),
-    );
-
     setState(() {
       _tracksFuture = widget.tracksService.getTracksByName(value);
       _albumsFuture = widget.albumService.getAlbumsByTitle(value);
-      _tracksFuture.then((value) {
-        var temp2 = value;
-        return temp2;
-      });
-      _albumsFuture.then((value) {
-        var temp2 = value;
-        return temp2;
-      });
+      _artistsFuture = widget.artistService.getArtistsByName(value);
+      _playlistsFuture = widget.playlistService.getPlaylistsByName(value);
     });
   }
 
@@ -53,6 +48,8 @@ class _SearchPageState extends State<SearchPage> {
     _focusNode.requestFocus();
     _tracksFuture = Future.value([]);
     _albumsFuture = Future.value([]);
+    _artistsFuture = Future.value([]);
+    _playlistsFuture = Future.value([]);
   }
 
   @override
@@ -77,6 +74,8 @@ class _SearchPageState extends State<SearchPage> {
             child: SearchResults(
                 tracksFuture: _tracksFuture,
                 albumsFuture: _albumsFuture,
+                artistsFuture: _artistsFuture,
+                playlistsFuture: _playlistsFuture
             ),
           ),
         ],

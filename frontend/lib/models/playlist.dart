@@ -1,3 +1,4 @@
+import 'package:frontend/models/base/base_entity.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/models/track.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -5,18 +6,21 @@ import 'package:json_annotation/json_annotation.dart';
 part 'playlist.g.dart';
 
 @JsonSerializable()
-class Playlist {
-  int id;
+class Playlist extends BaseEntity {
   String name;
   String userId;
-  User user;
+  User? user;
+  bool isPublic;
   List<Track> tracks;
 
   Playlist({
-    required this.id,
+    required super.id,
+    required super.createdAt,
+    required super.updatedAt,
     required this.name,
     required this.userId,
-    required this.user,
+    this.user,
+    required this.isPublic,
     required this.tracks,
   });
 

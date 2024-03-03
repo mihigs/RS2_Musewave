@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/services/tracks_service.dart';
 import 'package:frontend/views/home_page.dart';
 import 'package:frontend/views/personal_page.dart';
 import 'package:frontend/views/search_view.dart';
@@ -46,7 +45,7 @@ class _ContainerWithNavigationState extends State<ContainerWithNavigation>  with
             _selectedIndex = index;
           });
         },
-        physics: NeverScrollableScrollPhysics(), // Prevents swiping to switch tabs
+        physics: const NeverScrollableScrollPhysics(), // Prevents swiping to switch tabs
       ),
       bottomNavigationBar: NavigationMenu(
         selectedIndex: _selectedIndex,
@@ -55,34 +54,3 @@ class _ContainerWithNavigationState extends State<ContainerWithNavigation>  with
     );
   }
 }
-
-
-
-// class ContainerWithNavigation extends StatefulWidget {
-//   final Widget child;
-
-//   ContainerWithNavigation({super.key, required this.child});
-
-
-//   final TracksService tracksService = GetIt.I<TracksService>();
-
-//   @override
-//   State<ContainerWithNavigation> createState() => _ContainerWithNavigationState();
-// }
-
-// class _ContainerWithNavigationState extends State<ContainerWithNavigation> {
-//   get child => widget.child;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             Expanded(child: child!),
-//           ],
-//         ),
-//       bottomNavigationBar: const NavigationMenu(),
-//     );
-//   }
-// }

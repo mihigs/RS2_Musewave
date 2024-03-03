@@ -1,5 +1,6 @@
 import 'package:frontend/models/album.dart';
 import 'package:frontend/models/artist.dart';
+import 'package:frontend/models/base/base_entity.dart';
 import 'package:frontend/models/like.dart';
 import 'package:frontend/models/genre.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -7,7 +8,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'track.g.dart';
 
 @JsonSerializable()
-class Track {
+class Track extends BaseEntity {
   String title;
   int duration;
   int? albumId;
@@ -19,6 +20,9 @@ class Track {
   Artist artist;
 
   Track({
+    required super.id,
+    required super.createdAt,
+    required super.updatedAt,
     required this.title,
     required this.duration,
     this.albumId,

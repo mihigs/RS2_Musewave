@@ -21,7 +21,6 @@ class SearchBarWidget extends StatelessWidget {
       onFieldSubmitted: onSubmitted,
       decoration: InputDecoration(
         labelText: 'Search for music, artists, playlists...',
-        // hintText: 'Search for music, artists, playlists...',
         prefixIcon: const Icon(Icons.search),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(25.0)),

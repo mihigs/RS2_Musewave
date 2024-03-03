@@ -7,6 +7,9 @@ part of 'track.dart';
 // **************************************************************************
 
 Track _$TrackFromJson(Map<String, dynamic> json) => Track(
+      id: json['id'] as int,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
       title: json['title'] as String,
       duration: json['duration'] as int,
       albumId: json['albumId'] as int?,
@@ -25,6 +28,9 @@ Track _$TrackFromJson(Map<String, dynamic> json) => Track(
     );
 
 Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
+      'id': instance.id,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'updatedAt': instance.updatedAt.toIso8601String(),
       'title': instance.title,
       'duration': instance.duration,
       'albumId': instance.albumId,

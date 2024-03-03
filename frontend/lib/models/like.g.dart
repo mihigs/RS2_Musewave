@@ -7,6 +7,9 @@ part of 'like.dart';
 // **************************************************************************
 
 Like _$LikeFromJson(Map<String, dynamic> json) => Like(
+      id: json['id'] as int,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
       userId: json['userId'] as String,
       user: User.fromJson(json['user'] as Map<String, dynamic>),
       trackId: json['trackId'] as int,
@@ -14,6 +17,9 @@ Like _$LikeFromJson(Map<String, dynamic> json) => Like(
     );
 
 Map<String, dynamic> _$LikeToJson(Like instance) => <String, dynamic>{
+      'id': instance.id,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'updatedAt': instance.updatedAt.toIso8601String(),
       'userId': instance.userId,
       'user': instance.user,
       'trackId': instance.trackId,
