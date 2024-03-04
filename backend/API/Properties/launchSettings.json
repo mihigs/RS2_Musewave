@@ -4,17 +4,24 @@
       "commandName": "Project",
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AzureAd__Instance": "https://login.microsoftonline.com/",
+        "AzureAd__Domain": "edu.fit.ba",
+        "AzureAd__TenantId": "ad67980b-eef9-43c8-8204-a44911390130",
+        "AzureAd__ClientId": "cb0d01f9-b3fa-4e12-a4ab-eaea7f7e30d2",
+        "AzureAd__CallbackPath": "/signin-oidc",
+        "AzureAd__Scopes": "access_as_user",
+        "Logging__LogLevel__Default": "Information",
+        "Logging__LogLevel__Microsoft.AspNetCore": "Warning",
+        "DbConnectionString": "Server=localhost;Database=MusewaveDbDev;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True",
+        "Jwt__Key": "Efc5yLrV5QUntZef6PsdJuzfEnLGv+HVYhtBHEyo00A=",
+        "Jwt__Issuer": "http://localhost:7074",
+        "Jwt__Audience": "http://localhost:5234",
+        "Jwt__AccessExpirationSeconds": "999999",
+        "AllowedHosts": "*"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7074;http://localhost:5234"
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
     },
     "Docker": {
       "commandName": "Docker",
@@ -22,7 +29,21 @@
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
         "ASPNETCORE_HTTPS_PORTS": "8081",
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_HTTP_PORTS": "8080",
+        "AzureAd__Instance": "https://login.microsoftonline.com/",
+        "AzureAd__Domain": "edu.fit.ba",
+        "AzureAd__TenantId": "ad67980b-eef9-43c8-8204-a44911390130",
+        "AzureAd__ClientId": "cb0d01f9-b3fa-4e12-a4ab-eaea7f7e30d2",
+        "AzureAd__CallbackPath": "/signin-oidc",
+        "AzureAd__Scopes": "access_as_user",
+        "Logging__LogLevel__Default": "Information",
+        "Logging__LogLevel__Microsoft.AspNetCore": "Warning",
+        "DbConnectionString": "Server=localhost;Database=MusewaveDbDev;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True",
+        "Jwt__Key": "Efc5yLrV5QUntZef6PsdJuzfEnLGv+HVYhtBHEyo00A=",
+        "Jwt__Issuer": "http://localhost:8080",
+        "Jwt__Audience": "http://localhost:8080",
+        "Jwt__AccessExpirationSeconds": "999999",
+        "AllowedHosts": "*"
       },
       "publishAllPorts": true,
       "useSSL": true

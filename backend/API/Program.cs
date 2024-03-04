@@ -62,7 +62,7 @@ services.AddSwaggerGen(c =>
 });
 
 // Add application services
-services.RegisterDbContext(configuration.GetConnectionString("DefaultConnection"))
+services.RegisterDbContext(configuration.GetConnectionString("DbConnectionString"))
     .AddRepositories()
     .RegisterIdentity()
     .AddApplicationServices();
@@ -71,6 +71,11 @@ services.RegisterDbContext(configuration.GetConnectionString("DefaultConnection"
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        // console writeline all the configuration entries names
+        foreach (var item in configuration.AsEnumerable())
+        {
+            Console.WriteLine(item.Key);
+        }
         var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]);
         options.RequireHttpsMetadata = false;
         options.TokenValidationParameters = new TokenValidationParameters

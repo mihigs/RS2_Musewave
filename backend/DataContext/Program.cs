@@ -1,14 +1,10 @@
 ﻿using DataContext;
 using DataContext.Repositories;
-using DataContext.Repositories.Interfaces;
 using DataContext.Seeder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Models.Entities;
 
 public class Program
 {
@@ -29,6 +25,7 @@ public class Program
             catch (Exception ex)
             {
                 logger.LogError(ex, "An error occurred while applying migrations.");
+                return;
             }
             try
             {
@@ -44,21 +41,19 @@ public class Program
         }
         host.StopAsync().GetAwaiter().GetResult();
     }
-    private static IHostBuilder CreateDefaultApp(string[] args) // todo: refactor
+    private static IHostBuilder CreateDefaultApp(string[] args)
     {
-        var builder = Host.CreateDefaultBuilder(args);
-        builder.ConfigureAppConfiguration((hostingContext, config) =>
+        var connectionString = Environment.GetEnvironmentVariable("DbConnectionString");
+
+        if (string.IsNullOrEmpty(connectionString))
         {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
-            config.AddJsonFile(path, optional: false, reloadOnChange: true);
-        });
+            throw new ArgumentNullException("ConnectionString", "Connection string is required.");
+        }
+
+        var builder = Host.CreateDefaultBuilder(args);
         builder.ConfigureServices((hostContext, services) =>
         {
-            var configuration = hostContext.Configuration;
-            var configurationManager = new ConfigurationManager();
-            configurationManager.AddConfiguration(configuration);
-
-            services.RegisterDbContext(configuration.GetConnectionString("DefaultConnection"))
+            services.RegisterDbContext(connectionString)
                     .AddRepositories()
                     .RegisterIdentity();
             services.AddScoped<MusewaveDbSeeder>();
