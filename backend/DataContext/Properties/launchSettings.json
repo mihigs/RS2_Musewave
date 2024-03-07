@@ -3,7 +3,7 @@
     "DataContext": {
       "commandName": "Project",
       "environmentVariables": {
-        "DbConnectionString": "Server=localhost;Database=MusewaveDbDev;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+        "ConnectionString": "Server=localhost;Database=MusewaveDbDev;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
       }
     }
   }

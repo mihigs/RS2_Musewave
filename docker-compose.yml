@@ -1,19 +1,37 @@
 version: '3.8'
 services:
-  db:
+  mssql:
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       ACCEPT_EULA: 'Y'
       SA_PASSWORD: 'Test_123'
     ports:
       - '1433:1433'
+    networks:
+      - app-network
   api:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.API
     ports:
       - '8080:8080'
       - '8081:8081'
     depends_on:
-      - db
+      - mssql
+    networks:
+      - app-network
+  seeder:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.DataContext
+    depends_on:
+      - api
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
   # frontend:
   #   build: ./frontend/web
   #   depends_on:

@@ -4,7 +4,7 @@ using DataContext.Seeder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Models.Entities;
 
 public class Program
 {
@@ -14,36 +14,46 @@ public class Program
         using (var scope = host.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
-            var logger = services.GetRequiredService<ILogger<Program>>();
             try
             {
                 var context = services.GetRequiredService<MusewaveDbContext>();
-                logger.LogInformation("Applying migrations...");
+                Console.WriteLine("Applying migrations...");
+                Console.Write("Connection string: ");
+                Console.WriteLine(Environment.GetEnvironmentVariable("ConnectionString"));
                 context.Database.Migrate();
-                logger.LogInformation("Migrations finished.");
+                Console.WriteLine("Migrations finished.");
+
+                // Check if the database is already seeded
+                if (context.Set<Artist>().Any())
+                {
+                    Console.WriteLine("Database already seeded. Skipping seeding.");
+                    return;
+                }
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occurred while applying migrations.");
+                Console.WriteLine("An error occurred while applying migrations.");
+                Console.WriteLine(ex.ToString());
                 return;
             }
             try
             {
-                logger.LogInformation("Seeding database...");
+                Console.WriteLine("Seeding database...");
                 var seeder = services.GetRequiredService<MusewaveDbSeeder>();
                 await seeder.Seed();
-                logger.LogInformation("Seeding finished.");
+                Console.WriteLine("Seeding finished.");
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occurred while seeding the database.");
+                Console.WriteLine("An error occurred while seeding the database.");
+                Console.WriteLine(ex.ToString());
             }
         }
         host.StopAsync().GetAwaiter().GetResult();
     }
     private static IHostBuilder CreateDefaultApp(string[] args)
     {
-        var connectionString = Environment.GetEnvironmentVariable("DbConnectionString");
+        var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
 
         if (string.IsNullOrEmpty(connectionString))
         {
@@ -58,11 +68,6 @@ public class Program
                     .RegisterIdentity();
             services.AddScoped<MusewaveDbSeeder>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-        });
-        builder.ConfigureLogging(conf =>
-        {
-            conf.ClearProviders();
-            conf.AddConsole();
         });
         builder.UseConsoleLifetime();
 

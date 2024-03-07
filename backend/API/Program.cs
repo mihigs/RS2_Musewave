@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Web;
 using Services;
 using DataContext;
 using Microsoft.OpenApi.Models;
@@ -10,7 +9,24 @@ using System.Text;
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+configuration.AddEnvironmentVariables();
+var connectionString = configuration["ConnectionString"];
 var services = builder.Services;
+
+Console.WriteLine("Configuration: " + configuration);
+// Log the configuration entries
+foreach (var item in configuration.AsEnumerable())
+{
+    Console.Write(item.Key + ":");
+    Console.WriteLine(item.Value);
+}
+
+Console.WriteLine("Connection string: " + connectionString);
+// Check if the connection string is set
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new ArgumentNullException("ConnectionString", "Connection string is required.");
+}
 
 // Enable CORS
 builder.Services.AddCors(options =>
@@ -62,7 +78,7 @@ services.AddSwaggerGen(c =>
 });
 
 // Add application services
-services.RegisterDbContext(configuration.GetConnectionString("DbConnectionString"))
+services.RegisterDbContext(connectionString)
     .AddRepositories()
     .RegisterIdentity()
     .AddApplicationServices();
