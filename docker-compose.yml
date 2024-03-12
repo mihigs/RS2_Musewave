@@ -31,12 +31,3 @@ services:
 
 networks:
   app-network:
-
-  # frontend:
-  #   build: ./frontend/web
-  #   depends_on:
-  #     - api
-  # microservice:
-  #   build: ./microservice
-  #   depends_on:
-  #     - api
