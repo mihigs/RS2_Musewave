@@ -9,5 +9,6 @@ namespace Services.Interfaces
         List<User> GetAllUsers();
         Task<UserLoginResponse> Login(UserLogin model);
         Task<string> AddUser(UserLogin model);
+        Task<User> GetUserDetails(string userId);
     }
 }

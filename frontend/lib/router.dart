@@ -5,13 +5,13 @@ import 'package:frontend/views/artist_page.dart';
 import 'package:frontend/views/home_page.dart';
 import 'package:frontend/views/login_page.dart';
 import 'package:frontend/views/media_player_page.dart';
-import 'package:frontend/views/personal_page.dart';
+import 'package:frontend/views/personal_page/personal_page.dart';
 import 'package:frontend/views/playlist_page.dart';
 import 'package:frontend/views/search_view.dart';
 import 'package:frontend/views/track_page.dart';
-import 'package:frontend/widgets/base_widget.dart';
+import 'package:frontend/widgets/containers/persistent_player_container.dart';
 import 'package:frontend/widgets/tracks_collection.dart';
-import 'package:frontend/widgets/containers/container_with_navigation.dart';
+import 'package:frontend/widgets/containers/navigation_container.dart';
 import 'package:go_router/go_router.dart';
 
 GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
@@ -30,23 +30,23 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
     routes: [
       GoRoute(
         path: Routes.signup,
-        builder: (_, __) => BaseWidget(child: LoginPage()),
+        builder: (_, __) => PersistentPlayerContainer(child: LoginPage()),
       ),
       GoRoute(
         path: Routes.login,
-        builder: (_, __) => BaseWidget(child: LoginPage()),
+        builder: (_, __) => LoginPage(),
       ),
       GoRoute(
         path: Routes.home,
-        builder: (_, __) => BaseWidget(child: ContainerWithNavigation()),
+        builder: (_, __) => ContainerWithNavigation(),
       ),
       GoRoute(
         path: Routes.search,
-        builder: (_, __) => BaseWidget(child: ContainerWithNavigation()),
+        builder: (_, __) => ContainerWithNavigation(),
       ),
       GoRoute(
         path: Routes.profile,
-        builder: (_, __) => BaseWidget(child: ContainerWithNavigation()),
+        builder: (_, __) => ContainerWithNavigation(),
       ),
       GoRoute(
         path: Routes.track,
@@ -54,15 +54,15 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
       ),
       GoRoute(
         path: Routes.album,
-        builder: (_, __) => BaseWidget(child: AlbumPage()),
+        builder: (_, __) => PersistentPlayerContainer(child: AlbumPage()),
       ),
       GoRoute(
         path: Routes.artist,
-        builder: (_, __) => BaseWidget(child: ArtistPage()),
+        builder: (_, __) => PersistentPlayerContainer(child: ArtistPage()),
       ),
       GoRoute(
         path: Routes.playlist,
-        builder: (_, __) => BaseWidget(child: PlaylistPage()),
+        builder: (_, __) => PersistentPlayerContainer(child: PlaylistPage()),
       ),
     ],
   );

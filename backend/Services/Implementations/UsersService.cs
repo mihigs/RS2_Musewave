@@ -103,6 +103,24 @@ namespace Services.Implementations
             }
         }
 
+        public async Task<User> GetUserDetails(string userId)
+        {
+            try
+            {
+                User result = await _userManager.FindByIdAsync(userId);
+                if (result == null)
+                {
+                    throw new Exception("User not found");
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                //Log error
+                throw new Exception("Error getting user details", ex);
+            }
+        }
+
         private string GenerateJwtToken(User user)
         {
             try

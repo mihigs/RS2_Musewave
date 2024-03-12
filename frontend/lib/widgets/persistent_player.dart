@@ -17,7 +17,6 @@ class _PersistentPlayerState extends State<PersistentPlayer> {
         GoRouter.of(context).go(Routes.track);
       },
       child: Container(
-        margin: EdgeInsets.fromLTRB(0, 0, 0, 90),
         height: 65,
         width: MediaQuery.of(context).size.width,
         color: Colors.blueGrey,

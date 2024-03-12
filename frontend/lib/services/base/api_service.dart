@@ -59,6 +59,11 @@ class ApiService {
     return null;
   }
 
+  Future<String?> getUserIdFromStorage() async {
+    String? userId = await secureStorage.read(key: 'user_id');
+    return userId;
+  }
+
   bool isTokenValid(String token) {
     bool isTokenValid = !JwtDecoder.isExpired(token);
     return isTokenValid;

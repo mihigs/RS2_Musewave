@@ -7,6 +7,8 @@ using Models.DTOs;
 using Services.Responses;
 using Microsoft.IdentityModel.Tokens;
 using Services.Interfaces;
+using Services.Implementations;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -85,6 +87,32 @@ namespace API.Controllers
                 return Ok(new { token });
             }
             return BadRequest();
+        }
+
+        [HttpGet("getUserDetails")]
+        public async Task<ApiResponse> GetUserDetails()
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                apiResponse.Data = await _usersService.GetUserDetails(userId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
         }
     }
 }

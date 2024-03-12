@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/views/home_page.dart';
-import 'package:frontend/views/personal_page.dart';
+import 'package:frontend/views/personal_page/personal_page.dart';
 import 'package:frontend/views/search_view.dart';
+import 'package:frontend/widgets/containers/persistent_player_container.dart';
 import 'package:frontend/widgets/navigation_menu.dart';
 
 class ContainerWithNavigation extends StatefulWidget {
@@ -27,9 +28,9 @@ class _ContainerWithNavigationState extends State<ContainerWithNavigation>  with
   void initState() {
     super.initState();
     _children = [
-      HomePage(changePage: changePage),
-      SearchPage(),
-      PersonalPage(),
+      PersistentPlayerContainer(child: HomePage(changePage: changePage)),
+      PersistentPlayerContainer(child: SearchPage()),
+      PersistentPlayerContainer(child: PersonalPage()),
       // Add more views here
     ];
   }

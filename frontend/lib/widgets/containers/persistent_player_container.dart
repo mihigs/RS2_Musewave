@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/persistent_player.dart';
 
-class BaseWidget extends StatelessWidget {
+class PersistentPlayerContainer extends StatelessWidget {
   final Widget child;
 
-  const BaseWidget({super.key, required this.child});
+  const PersistentPlayerContainer({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: [
           Expanded(child: child),
           Positioned(bottom: 0, child: PersistentPlayer()),

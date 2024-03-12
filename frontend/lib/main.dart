@@ -67,6 +67,7 @@ class MyApp extends StatelessWidget {
         hintColor: Colors.black,
         useMaterial3: true,
       ),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
