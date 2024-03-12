@@ -24,16 +24,20 @@ class ResultItemCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.bodySmall,
+                Expanded(
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ),
                 if (subtitle != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 4.0),
-                    child: Text(
-                      subtitle!,
-                      style: Theme.of(context).textTheme.labelSmall,
+                    child: Expanded(
+                      child: Text(
+                        subtitle!,
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
                     ),
                   ),
               ],
