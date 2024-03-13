@@ -16,8 +16,6 @@ class PersonalPage extends StatelessWidget {
 
   PersonalPage({super.key});
   
-  get http => null;
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -44,47 +42,8 @@ class PersonalPage extends StatelessWidget {
                                   .userName)), // Display the user's full name
                           IconButton(
                             icon: Icon(Icons.note),
-                            onPressed: () async {
-                              FilePickerResult? result =
-                                  await FilePicker.platform.pickFiles(
-                                type: FileType.custom,
-                                allowedExtensions: [
-                                  'mp3',
-                                  'wav',
-                                  'mid',
-                                  'midi'
-                                ],
-                              );
-
-                              if (result != null) {
-                                PlatformFile file = result.files.first;
-
-                                print(file.name);
-                                print(file.bytes);
-                                print(file.size);
-                                print(file.extension);
-
-                                // Now you can use this file to upload
-                                var request = http.MultipartRequest(
-                                    'POST', Uri.parse('Your API Endpoint'));
-                                request.files.add(http.MultipartFile.fromBytes(
-                                  'file', // consider 'file' as a key for the API endpoint
-                                  file.bytes!,
-                                  filename: file.name,
-                                  contentType:
-                                      MediaType('audio', file.extension!),
-                                ));
-
-                                var response = await request.send();
-                                if (response.statusCode == 200) {
-                                  print('Uploaded!');
-                                } else {
-                                  print(
-                                      'Failed to upload file: ${response.statusCode}');
-                                }
-                              } else {
-                                // User canceled the picker
-                              }
+                            onPressed: () {
+                              GoRouter.of(context).go(Routes.uploadMedia);
                             },
                           ),
                         ],

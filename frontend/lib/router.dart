@@ -6,6 +6,7 @@ import 'package:frontend/views/home_page.dart';
 import 'package:frontend/views/login_page.dart';
 import 'package:frontend/views/media_player_page.dart';
 import 'package:frontend/views/personal_page/personal_page.dart';
+import 'package:frontend/views/personal_page/upload_media_form.dart';
 import 'package:frontend/views/playlist_page.dart';
 import 'package:frontend/views/search_view.dart';
 import 'package:frontend/views/track_page.dart';
@@ -64,6 +65,10 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         path: Routes.playlist,
         builder: (_, __) => PersistentPlayerContainer(child: PlaylistPage()),
       ),
+      GoRoute(
+        path: Routes.uploadMedia,
+        builder: (_, __) => PersistentPlayerContainer(child: UploadMediaPage()),
+      ),
     ],
   );
 }
@@ -74,6 +79,7 @@ abstract class Routes {
   static const home = '/home';
   static const search = '/search';
   static const profile = '/profile';
+  static const uploadMedia = '/profile/upload';
   static const track = '/track';
   static const album = '/album';
   static const artist = '/artist';
