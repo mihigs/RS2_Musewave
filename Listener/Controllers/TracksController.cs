@@ -18,108 +18,52 @@ namespace Listener
         [HttpPost("UploadTrack")]
         public async Task<IActionResult> UploadTrack(TrackUploadDto model)
         {
-            // Check if file is not empty
-            if (model.mediaFile == null || model.mediaFile.Length == 0)
-            {
-                return BadRequest("File cannot be empty");
-            }
-            // Check if trackName is not empty
-            if (string.IsNullOrWhiteSpace(model.trackName))
-            {
-                return BadRequest("Track name cannot be empty");
-            }
-            // Check if userId is not empty
-            if (string.IsNullOrWhiteSpace(model.userId))
-            {
-                return BadRequest("User ID cannot be empty");
-            }
-            // Check if file size is less than 10MB
-            if (model.mediaFile.Length > 10 * 1024 * 1024) // 10MB in bytes
-            {
-                return BadRequest("File size cannot exceed 10MB");
-            }
-
-            // Check if file type is .mp3, .midi, .mid or .wav
-            var allowedExtensions = new[] { ".mp3", ".midi", ".mid", ".wav" };
-            var fileExtension = Path.GetExtension(model.mediaFile.FileName).ToLower();
-
-            if (!allowedExtensions.Contains(fileExtension))
-            {
-                return BadRequest("Invalid file type. Only .mp3, .midi, .mid and .wav files are allowed");
-            }
-
-            // If file is valid, send it to the TrackService to be processed
             _trackService.ProcessTrack(model);
 
-            // Return a 201 Created response
-            return CreatedAtAction(nameof(UploadTrack), new { fileName = model.mediaFile.FileName });
+            return Accepted();
         }
 
-
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<Track>>> GetTracks()
+        //[HttpGet("{userId}/{fileName}")]
+        //public async Task<IActionResult> GetTrack(string userId, string fileName)
         //{
-        //    return await _trackService.GetTracks();
-        //}
+        //    var userDirectoryPath = Path.Combine(_storagePath, userId);
+        //    var filePath = Path.Combine(userDirectoryPath, fileName);
 
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Track>> GetTrack(int id)
-        //{
-        //    var track = await _trackService.GetTrack(id);
-
-        //    if (track == null)
+        //    if (!System.IO.File.Exists(filePath))
         //    {
         //        return NotFound();
         //    }
 
-        //    return track;
-        //}
+        //    var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+        //    var contentType = GetContentType(filePath);
+        //    var fileLength = fileStream.Length;
+        //    var range = Request.Headers["Range"].ToString();
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutTrack(int id, Track track)
-        //{
-        //    if (id != track.Id)
+        //    if (!string.IsNullOrEmpty(range))
         //    {
-        //        return BadRequest();
-        //    }
+        //        var rangeStart = long.Parse(range.Replace("bytes=", "").Split('-')[0]);
+        //        var rangeEnd = rangeStart + _bufferSize;
 
-        //    try
-        //    {
-        //        await _trackService.UpdateTrack(track);
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!await _trackService.TrackExists(id))
+        //        if (rangeEnd > fileLength)
         //        {
-        //            return NotFound();
+        //            rangeEnd = fileLength;
         //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
+
+        //        var lengthToRead = rangeEnd - rangeStart;
+        //        var buffer = new byte[lengthToRead];
+        //        fileStream.Seek(rangeStart, SeekOrigin.Begin);
+        //        await fileStream.ReadAsync(buffer, 0, (int)lengthToRead);
+
+        //        Response.StatusCode = 206;
+        //        Response.Headers.Add("Content-Range", $"bytes {rangeStart}-{rangeEnd}/{fileLength}");
+
+        //        return File(buffer, contentType);
         //    }
-
-        //    return NoContent();
-        //}
-
-        //[HttpPost]
-        //public async Task<ActionResult<Track>> PostTrack(Track track)
-        //{
-        //    await _trackService.AddTrack(track);
-
-        //    return CreatedAtAction("GetTrack", new { id = track.Id }, track);
-        //}
-
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult<Track>> DeleteTrack(int id)
-        //{
-        //    var track = await _trackService.DeleteTrack(id);
-        //    if (track == null)
+        //    else
         //    {
-        //        return NotFound();
+        //        return File(fileStream, contentType);
         //    }
-
-        //    return track;
         //}
+
     }
 }

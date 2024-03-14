@@ -3,8 +3,7 @@
     public class TrackUploadDto
     {
         public IFormFile mediaFile { get; set; }
-        public string trackName { get; set; }
-        public string userId { get; set; }
-        public int? albumId { get; set; }
+        public string artistId { get; set; }
+        public string trackId { get; set; }
     }
 }

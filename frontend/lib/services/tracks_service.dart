@@ -53,10 +53,16 @@ class TracksService extends ApiService {
 
   Future<bool> uploadTrack(
       TrackUploadDto trackUploadDto, PlatformFile file) async {
+    
+    var token = await getTokenFromStorage();
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('https://localhost:7151/api/Tracks/UploadTrack'),
+      Uri.parse('$baseUrl/Tracks/UploadTrack'),
     );
+
+    request.headers.addAll({
+      'Authorization': 'Bearer $token',
+    });
 
     // Add file to the request
     request.files.add(
@@ -76,6 +82,7 @@ class TracksService extends ApiService {
     }
 
     var response = await request.send();
+
     if (response.statusCode == 200) {
       print('Uploaded!');
       return true;

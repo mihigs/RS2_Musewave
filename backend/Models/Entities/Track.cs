@@ -13,6 +13,7 @@ namespace Models.Entities
         public virtual Genre? Genre { get; set; }
         public virtual Artist Artist { get; set; }
         public int ArtistId { get; set; }
+        public string? FilePath { get; set; }
         public Track()
         {
             Likes = new List<Like>();

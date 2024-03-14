@@ -15,6 +15,9 @@ builder.Services.AddCors(options =>
         });
 });
 
+// Add rabbitmq service
+builder.Services.AddScoped<IRabbitMqService, RabbitMqService>();
+
 // Add services to the container.
 builder.Services.AddScoped<ITrackService, TrackService>();
 

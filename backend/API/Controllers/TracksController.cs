@@ -4,6 +4,8 @@ using Models.DTOs;
 using DataContext.Repositories;
 using System.Security.Claims;
 using Services.Interfaces;
+using Services.Implementations;
+using System.Linq;
 
 namespace API.Controllers
 {
@@ -13,9 +15,11 @@ namespace API.Controllers
     public class TracksController : ControllerBase
     {
         private readonly ITracksService _tracksService;
-        public TracksController(ITracksService tracksService)
+        private readonly IListenerService _listenerService;
+        public TracksController(ITracksService tracksService, IListenerService listenerService)
         {
             _tracksService = tracksService ?? throw new ArgumentNullException(nameof(tracksService));
+            _listenerService = listenerService ?? throw new ArgumentNullException(nameof(listenerService));
         }
 
         [HttpGet("GetLikedTracks")]
@@ -60,6 +64,46 @@ namespace API.Controllers
                 throw;
             }
             return apiResponse;
+        }
+
+        [HttpPost("UploadTrack")]
+        public async Task<IActionResult> UploadTrack(TrackUploadDetailsDto model)
+        {
+            // Check if file is not empty
+            if (model.mediaFile == null || model.mediaFile.Length == 0)
+            {
+                return BadRequest("File cannot be empty");
+            }
+            // Check if trackName is not empty
+            if (string.IsNullOrWhiteSpace(model.trackName))
+            {
+                return BadRequest("Track name cannot be empty");
+            }
+            // Check if userId is not empty
+            if (string.IsNullOrWhiteSpace(model.userId))
+            {
+                return BadRequest("User ID cannot be empty");
+            }
+            // Check if file size is less than 10MB
+            if (model.mediaFile.Length > 10 * 1024 * 1024) // 10MB in bytes
+            {
+                return BadRequest("File size cannot exceed 10MB");
+            }
+
+            // Check if file type is .mp3, .midi, .mid or .wav
+            var allowedExtensions = new[] { ".mp3", ".midi", ".mid", ".wav" };
+            var fileExtension = Path.GetExtension(model.mediaFile.FileName).ToLower();
+
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                return BadRequest("Invalid file type. Only .mp3, .midi, .mid and .wav files are allowed");
+            }
+
+            // If file is valid, send it to the Listener to be processed
+            await _listenerService.TrackUploadRequest(model);
+
+            // Return a 201 Created response
+            return CreatedAtAction(nameof(UploadTrack), new { fileName = model.mediaFile.FileName });
         }
     }
 }

@@ -5,6 +5,7 @@ using DataContext;
 using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Services.Implementations;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -13,20 +14,23 @@ configuration.AddEnvironmentVariables();
 var connectionString = configuration["ConnectionString"];
 var services = builder.Services;
 
-Console.WriteLine("Configuration: " + configuration);
-// Log the configuration entries
-foreach (var item in configuration.AsEnumerable())
-{
-    Console.Write(item.Key + ":");
-    Console.WriteLine(item.Value);
-}
+//Console.WriteLine("Configuration: " + configuration);
+//// Log the configuration entries
+//foreach (var item in configuration.AsEnumerable())
+//{
+//    Console.Write(item.Key + ":");
+//    Console.WriteLine(item.Value);
+//}
 
-Console.WriteLine("Connection string: " + connectionString);
-// Check if the connection string is set
-if (string.IsNullOrEmpty(connectionString))
-{
-    throw new ArgumentNullException("ConnectionString", "Connection string is required.");
-}
+//Console.WriteLine("Connection string: " + connectionString);
+//// Check if the connection string is set
+//if (string.IsNullOrEmpty(connectionString))
+//{
+//    throw new ArgumentNullException("ConnectionString", "Connection string is required.");
+//}
+
+// Add RabbitMQ services
+services.AddRabbitMqServices();
 
 // Enable CORS
 builder.Services.AddCors(options =>

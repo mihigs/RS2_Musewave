@@ -19,5 +19,12 @@ namespace DataContext.Repositories
                 .Include(a => a.User)
                 .ToListAsync();
         }
+
+        public Task<Artist> GetArtistByUserIdAsync(string userId)
+        {
+            return _dbContext.Set<Artist>()
+                .Include(a => a.User)
+                .FirstOrDefaultAsync(a => a.UserId == userId);
+        }
     }
 }

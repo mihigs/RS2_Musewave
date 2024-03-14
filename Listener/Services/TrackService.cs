@@ -1,14 +1,17 @@
 ﻿using Listener.Models.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Listener.Services
 {
     public class TrackService : ITrackService
     {
         private readonly string _storagePath;
+        private readonly IRabbitMqService _rabbitMqService;
 
-        public TrackService()
+        public TrackService(IRabbitMqService rabbitMqService)
         {
             _storagePath = Path.Combine(Path.GetTempPath(), "musewave_tracks");
+            _rabbitMqService = rabbitMqService;
         }
 
         public async Task ProcessTrack(TrackUploadDto model)
@@ -16,7 +19,7 @@ namespace Listener.Services
             try 
             {
                 // Ensure the storage directory exists
-                var userDirectoryPath = Path.Combine(_storagePath, model.userId);
+                var userDirectoryPath = Path.Combine(_storagePath, model.artistId);
                 if (!Directory.Exists(userDirectoryPath))
                 {
                     Directory.CreateDirectory(userDirectoryPath);
@@ -31,27 +34,26 @@ namespace Listener.Services
                 {
                     await model.mediaFile.CopyToAsync(stream);
                 }
-                //// Ensure the storage directory exists
-                //if (!Directory.Exists(_storagePath))
-                //{
-                //    Directory.CreateDirectory(_storagePath);
-                //}
 
-                //// Save the file to the storage directory
-                //var filePath = Path.Combine(_storagePath, model.mediaFile.FileName);
-                //using (var stream = new FileStream(filePath, FileMode.Create))
-                //{
-                //    await model.mediaFile.CopyToAsync(stream);
-                //}
-            } 
+                // Send the file name to the RabbitMQ service
+                _rabbitMqService.SendMessage(new RabbitMqMessage
+                {
+                    Payload = fileName,
+                    ArtistId = model.artistId,
+                    TrackId = model.trackId
+                });
+            }
             catch (Exception ex) 
             {
                 Console.WriteLine(ex.Message);
                 throw new Exception("An error occurred while processing the track", ex);
             }
-
-            // Send message to RabbitMQ here
-            //NotifyTrackUploaded(filePath);
         }
+
+        //public async Task<IActionResult> GetTrack(int artistId, string fileName)
+        //{
+
+        //}
+
     }
 }

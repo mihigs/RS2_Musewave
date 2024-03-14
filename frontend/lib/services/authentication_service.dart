@@ -17,7 +17,7 @@ class AuthenticationService extends ApiService {
 
     try {
       final response = await http.post(
-        Uri.parse('${ApiService.baseUrl}/User/login'),
+        Uri.parse('$baseUrl/User/login'),
         body: jsonEncode({'Email': email, 'Password': password}),
         headers: {'Content-Type': 'application/json'},
       );

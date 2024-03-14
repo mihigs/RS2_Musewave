@@ -1,0 +1,9 @@
+﻿namespace Listener.Models.DTOs
+{
+    public class RabbitMqMessage
+    {
+        public string ArtistId { get; set; }
+        public string TrackId { get; set; }
+        public string Payload { get; set; }
+    }
+}
