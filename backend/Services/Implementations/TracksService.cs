@@ -1,8 +1,11 @@
-﻿using DataContext.Repositories;
-using DataContext.Repositories.Interfaces;
+﻿using DataContext.Repositories.Interfaces;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using Models.DTOs;
 using Models.Entities;
 using Services.Interfaces;
+using System.Security.Claims;
+using System.Text;
 
 namespace Services.Implementations
 {
@@ -34,6 +37,45 @@ namespace Services.Implementations
             track.FilePath = messageObject.Payload;
 
             return await _trackRepository.Update(track);
+        }
+        public async Task<Tuple<Track, string>> GetTrackByIdAsync(int id)
+        {
+            var trackResult = await _trackRepository.GetById(id);
+            if (trackResult == null)
+            {
+                throw new Exception("Track not found");
+            }
+
+            var signedUrl = GenerateSignedTrackUrl(trackResult.FilePath, trackResult.ArtistId.ToString());
+            return new Tuple<Track, string>(trackResult, signedUrl);
+        }
+
+        private string GenerateToken(string trackId, string artistId)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim("trackId", trackId),
+                new Claim("artistId", artistId),
+                new Claim("exp", DateTimeOffset.UtcNow.AddMinutes(10).ToUnixTimeSeconds().ToString())
+            };
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your-secret-key-needs-to-be-at-least-128-bits"));
+            var creds = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256Signature);
+            var token = new JwtSecurityToken(
+                issuer: "Musewave",
+                audience: "Musewave",
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private string GenerateSignedTrackUrl(string listenerTrackId, string artistId)
+        {
+            // Generate the signed URL
+            var token = GenerateToken(listenerTrackId, artistId);
+            var url = $"https://localhost:7151/api/Tracks/Stream/{listenerTrackId}?token={token}";
+            return url;
         }
     }
 }

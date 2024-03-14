@@ -6,6 +6,9 @@ using System.Security.Claims;
 using Services.Interfaces;
 using Services.Implementations;
 using System.Linq;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace API.Controllers
 {
@@ -105,5 +108,25 @@ namespace API.Controllers
             // Return a 201 Created response
             return CreatedAtAction(nameof(UploadTrack), new { fileName = model.mediaFile.FileName });
         }
+
+        [HttpGet("getTrack/{trackId}")]
+        public async Task<IActionResult> GetTrack(string trackId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                apiResponse.Data = await _tracksService.GetTrackByIdAsync(int.Parse(trackId));
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
+
+
     }
 }

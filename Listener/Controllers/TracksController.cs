@@ -1,6 +1,9 @@
 ﻿using Listener.Models.DTOs;
 using Listener.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace Listener
 {
@@ -18,9 +21,62 @@ namespace Listener
         [HttpPost("UploadTrack")]
         public async Task<IActionResult> UploadTrack(TrackUploadDto model)
         {
-            _trackService.ProcessTrack(model);
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                await _trackService.StoreTrack(model);
+                apiResponse.Data = "Track started upload";
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Accepted(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
+        [HttpGet("Stream/{trackId}")]
+        public async Task<FileStreamResult> Stream(string trackId, string token)
+        {
+            var artistId = "";
+            try
+            {
+                // Verify the token and authorize the user...
+                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your-secret-key-needs-to-be-at-least-128-bits"));
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = secretKey,
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
 
-            return Accepted();
+                SecurityToken validatedToken;
+                try
+                {
+                    tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
+
+                    // Get the artistId from the token...
+                    var jwtToken = (JwtSecurityToken)validatedToken;
+                    artistId = jwtToken.Claims.First(x => x.Type == "artistId").Value;
+                }
+                catch
+                {
+                    throw new SecurityTokenValidationException("Invalid token");
+                }
+
+                // If the token is valid, stream the audio file...
+                // First get the buffer size from the request headers...
+                var range = Request.Headers["Range"].ToString();
+                return await _trackService.HandleTrackStreamRequest(trackId, artistId, range);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         //[HttpGet("{userId}/{fileName}")]

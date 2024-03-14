@@ -62,6 +62,8 @@ namespace DataContext
 
             #endregion
 
+            modelBuilder.Entity<Track>()
+                .Ignore(t => t.SignedUrl);
         }
     }
 }

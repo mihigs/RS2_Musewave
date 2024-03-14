@@ -14,6 +14,7 @@ namespace Models.Entities
         public virtual Artist Artist { get; set; }
         public int ArtistId { get; set; }
         public string? FilePath { get; set; }
+        public string? SignedUrl { get; set; }
         public Track()
         {
             Likes = new List<Like>();
