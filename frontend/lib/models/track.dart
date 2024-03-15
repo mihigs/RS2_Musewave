@@ -18,6 +18,8 @@ class Track extends BaseEntity {
   Genre? genre;
   int artistId;
   Artist artist;
+  String? filePath;
+  String? signedUrl;
 
   Track({
     required super.id,
@@ -32,6 +34,8 @@ class Track extends BaseEntity {
     this.genre,
     required this.artist,
     required this.artistId,
+    this.filePath,
+    this.signedUrl,
   });
 
     // A necessary factory constructor for creating a new Track instance

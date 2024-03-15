@@ -9,6 +9,6 @@ namespace Services.Interfaces
         Task<IEnumerable<Track>> GetTracksByNameAsync(string name);
         Task<Track> InitializeTrack(Track track);
         Task<Track> handleListenerDoneProcessing(RabbitMqMessage messageObject);
-        Task<Tuple<Track, string>> GetTrackByIdAsync(int id);
+        Task<Track> GetTrackByIdAsync(int id);
     }
 }

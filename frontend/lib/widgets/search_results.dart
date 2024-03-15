@@ -4,6 +4,7 @@ import 'package:frontend/models/artist.dart';
 import 'package:frontend/models/playlist.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/widgets/result_item_card.dart';
+import 'package:go_router/go_router.dart';
 
 class SearchResults extends StatefulWidget {
   final Future<List<Track>> tracksFuture;
@@ -69,10 +70,13 @@ class _SearchResultsState extends State<SearchResults> {
                     children: <Widget>[
                       ...tracks
                           .take(_tracksToShow)
-                          .map((track) => ResultItemCard(
-                                title: track.title,
-                                subtitle: track.artist.user.userName,
-                              )),
+                          .map((track) => GestureDetector(
+                            onTap:() => GoRouter.of(context).go('/track/${track.id}'),
+                            child: ResultItemCard(
+                                  title: track.title,
+                                  subtitle: track.artist.user.userName,
+                                ),
+                          )),
                     ],
                   ),
                   if (_tracksToShow < tracks.length)

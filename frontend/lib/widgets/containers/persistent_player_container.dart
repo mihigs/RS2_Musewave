@@ -12,7 +12,11 @@ class PersistentPlayerContainer extends StatelessWidget {
       body: Column(
         children: [
           Expanded(child: child),
-          Positioned(bottom: 0, child: PersistentPlayer()),
+          Container(
+            height: 300,
+            child: Stack(
+              children: [Positioned(bottom: 0, child: PersistentPlayer())]),
+          ),
         ],
       ),
     );

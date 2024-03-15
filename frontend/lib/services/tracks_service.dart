@@ -6,6 +6,7 @@ import 'package:frontend/models/DTOs/TrackUploadDto.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/services/base/api_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 
 class TracksService extends ApiService {
@@ -91,6 +92,31 @@ class TracksService extends ApiService {
       return false;
     }
   }
+
+  Future<Track> getTrack(String trackId) async {
+    try {
+      final response = await httpGet('Tracks/GetTrack/$trackId');
+      return _mapToTrack(response['data']);
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<StreamedResponse> streamTrack(String trackSource) async {
+    var token = await getTokenFromStorage();
+    var request = http.Request('GET', Uri.parse(trackSource));
+    request.headers.addAll({
+      'Authorization': 'Bearer $token',
+    });
+
+    var streamedResponse = await request.send();
+    if (streamedResponse.statusCode == 200) {
+      return streamedResponse;
+    } else {
+      throw Exception('Failed to stream track');
+    }
+  }
+
 
   Track _mapToTrack(dynamic item) {
     if (item is Map<String, dynamic>) {

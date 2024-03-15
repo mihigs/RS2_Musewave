@@ -38,7 +38,7 @@ namespace Services.Implementations
 
             return await _trackRepository.Update(track);
         }
-        public async Task<Tuple<Track, string>> GetTrackByIdAsync(int id)
+        public async Task<Track> GetTrackByIdAsync(int id)
         {
             var trackResult = await _trackRepository.GetById(id);
             if (trackResult == null)
@@ -47,7 +47,8 @@ namespace Services.Implementations
             }
 
             var signedUrl = GenerateSignedTrackUrl(trackResult.FilePath, trackResult.ArtistId.ToString());
-            return new Tuple<Track, string>(trackResult, signedUrl);
+            trackResult.SignedUrl = signedUrl;
+            return trackResult;
         }
 
         private string GenerateToken(string trackId, string artistId)
@@ -74,7 +75,8 @@ namespace Services.Implementations
         {
             // Generate the signed URL
             var token = GenerateToken(listenerTrackId, artistId);
-            var url = $"https://localhost:7151/api/Tracks/Stream/{listenerTrackId}?token={token}";
+            //var url = $"https://localhost:7151/api/Tracks/Stream/{listenerTrackId}?token={token}";
+            var url = $"{listenerTrackId}?token={token}";
             return url;
         }
     }

@@ -49,9 +49,19 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         path: Routes.profile,
         builder: (_, __) => ContainerWithNavigation(),
       ),
+      // GoRoute(
+      //   path: Routes.track,
+      //   builder: (_, __) => MediaPlayerPage(),
+      // ),
+      // Route for MediaPlayerPage, with a query parameter 'trackId'
       GoRoute(
-        path: Routes.track,
-        builder: (_, __) => MediaPlayerPage(),
+        path: '${Routes.track}/:trackId',
+        builder: (context, state) {
+          final trackId = state.pathParameters['trackId'];
+          return PersistentPlayerContainer(
+            child: MediaPlayerPage(trackId: trackId!),
+          );
+        },
       ),
       GoRoute(
         path: Routes.album,

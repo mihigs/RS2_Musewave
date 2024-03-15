@@ -36,5 +36,13 @@ namespace DataContext.Repositories
                 .ThenInclude(Artist => Artist.User)
                 .ToListAsync();
         }
+
+        public async Task<Track> GetById(int id)
+        {
+            return await _dbContext.Tracks
+                .Include(t => t.Artist)
+                .ThenInclude(Artist => Artist.User)
+                .FirstOrDefaultAsync(t => t.Id == id);
+        }
     }
 }

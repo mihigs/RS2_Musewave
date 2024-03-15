@@ -109,7 +109,7 @@ namespace API.Controllers
             return CreatedAtAction(nameof(UploadTrack), new { fileName = model.mediaFile.FileName });
         }
 
-        [HttpGet("getTrack/{trackId}")]
+        [HttpGet("GetTrack/{trackId}")]
         public async Task<IActionResult> GetTrack(string trackId)
         {
             ApiResponse apiResponse = new ApiResponse();

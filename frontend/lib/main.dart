@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:frontend/router.dart';
 import 'package:frontend/services/album_service.dart';
 import 'package:frontend/services/artist_service.dart';
@@ -11,6 +12,7 @@ import 'package:frontend/services/playlist_service.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -47,8 +49,11 @@ void main() async {
 
   final router = routerGenerator(authService.getLoggedInState());
 
-  runApp(MyApp(
-    router: router,
+  runApp(ChangeNotifierProvider(
+    create: (context) => MusicStreamer(),
+    child: MyApp(
+      router: router,
+    ),
   ));
 }
 

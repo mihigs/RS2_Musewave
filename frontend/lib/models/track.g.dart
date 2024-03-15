@@ -25,6 +25,8 @@ Track _$TrackFromJson(Map<String, dynamic> json) => Track(
           : Genre.fromJson(json['genre'] as Map<String, dynamic>),
       artist: Artist.fromJson(json['artist'] as Map<String, dynamic>),
       artistId: json['artistId'] as int,
+      filePath: json['filePath'] as String?,
+      signedUrl: json['signedUrl'] as String?,
     );
 
 Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
@@ -40,4 +42,6 @@ Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
       'genre': instance.genre,
       'artistId': instance.artistId,
       'artist': instance.artist,
+      'filePath': instance.filePath,
+      'signedUrl': instance.signedUrl,
     };

@@ -4,6 +4,7 @@ import 'package:frontend/models/DTOs/TrackUploadDto.dart';
 import 'package:frontend/services/authentication_service.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
@@ -63,24 +64,6 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
       _selectedFile,
     );
 
-    // var request = http.MultipartRequest(
-    //   'POST',
-    //   Uri.parse('https://localhost:7151/api/Tracks/UploadTrack'),
-    // );
-    // request.files.add(
-    //   http.MultipartFile.fromBytes(
-    //     'file',
-    //     _selectedFile.bytes!,
-    //     filename: _selectedFile.name,
-    //     contentType: MediaType('audio', _selectedFile.extension!),
-    //   ),
-    // );
-    // var response = await request.send();
-    // if (response.statusCode == 200) {
-    //   print('Uploaded!');
-    // } else {
-    //   print('Failed to upload');
-    // }
   }
 
   bool _validate() {
@@ -106,7 +89,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  GoRouter.of(context).go('/profile');
                 },
               ),
               title: Text('Upload Track'),
