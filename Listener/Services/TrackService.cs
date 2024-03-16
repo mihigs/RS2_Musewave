@@ -84,27 +84,6 @@ namespace Listener.Services
                 return (fileStream, contentType, 0, fileLength - 1, fileLength, filePath);
             }
 
-            //if (range != null || !string.IsNullOrEmpty(range))
-            //{
-            //    var rangeStart = long.Parse(range.Replace("bytes=", "").Split('-')[0]);
-            //    var rangeEnd = rangeStart + _bufferSize;
-
-            //    if (rangeEnd > fileLength)
-            //    {
-            //        rangeEnd = fileLength;
-            //    }
-
-            //    var lengthToRead = rangeEnd - rangeStart;
-            //    var buffer = new byte[lengthToRead];
-            //    fileStream.Seek(rangeStart, SeekOrigin.Begin);
-            //    await fileStream.ReadAsync(buffer, 0, (int)lengthToRead);
-
-            //    return (new MemoryStream(buffer), contentType, rangeStart, rangeEnd, fileLength, filePath);
-            //}
-            //else
-            //{
-            //    return (fileStream, contentType, 0, fileLength, fileLength, filePath);
-            //}
         }
 
         private string GetContentType(string path)

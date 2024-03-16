@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:frontend/router.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class PersistentPlayer extends StatefulWidget {
   @override
@@ -9,54 +11,101 @@ class PersistentPlayer extends StatefulWidget {
 
 class _PersistentPlayerState extends State<PersistentPlayer> {
   bool isPlaying = false;
+  int? currentTrackId;
+
+  void updateCurrentTrack() {
+    setState(() {
+      currentTrackId =
+          Provider.of<MusicStreamer>(context, listen: false).currentTrackId;
+    });
+  }
+
+  void updateIsPlaying() {
+    setState(() {
+      isPlaying = Provider.of<MusicStreamer>(context, listen: false).isPlaying;
+    });
+  }
+
+  @override
+    void initState() {
+    super.initState();
+
+    updateIsPlaying();
+    updateCurrentTrack();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Listen to the MusicStreamer and update isPlaying when it changes
+    Provider.of<MusicStreamer>(context, listen: false)
+        .addListener(updateIsPlaying);
+    Provider.of<MusicStreamer>(context, listen: false)
+        .addListener(updateCurrentTrack);
+  }
+
+  @override
+  void dispose() {
+    // Remove the listener when the widget is disposed to avoid memory leaks
+    Provider.of<MusicStreamer>(context, listen: false)
+        .removeListener(updateIsPlaying);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final model = Provider.of<MusicStreamer>(context);
+
     return GestureDetector(
       onTap: () {
-        GoRouter.of(context).go(Routes.track);
+        var trackId = model.currentTrackId;
+        var contextId = model.contextId;
+        var streamingContext = model.streamingContext;
+        GoRouter.of(context)
+            .go('/track/${trackId}/${contextId}/${streamingContext}/false');
       },
       child: Container(
         height: 65,
+        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
         width: MediaQuery.of(context).size.width,
         color: Colors.blueGrey,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+            Row(
+              children: [
+                Container(
+                  height: 50,
+                  width: 50,
+                  color: Colors.grey,
+                ),
+                SizedBox(width: 10),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      model.currentTrackTitle ?? 'No track playing',
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                    Text(
+                      model.currentTrackArtist ?? '',
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ],
+            ),
             IconButton(
               icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-              onPressed: () {
-                setState(() {
-                  isPlaying = !isPlaying;
-                });
-                // Implement your play/pause functionality here
+              onPressed: () async {
+                if (isPlaying) {
+                  await model.pause();
+                } else {
+                  await model.play();
+                }
               },
-            ),
-            SizedBox(width: 10),
-            // songInfo != null
-            //     ? Image.network(
-            //         songInfo.albumArtwork,
-            //         height: 50,
-            //         width: 50,
-            //       )
-            //     : Container(
-            //         height: 50,
-            //         width: 50,
-            //         color: Colors.grey,
-            //       ),
-            SizedBox(width: 10),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                // Text(
-                //   songInfo != null ? songInfo.title : 'Title',
-                //   style: TextStyle(color: Colors.white),
-                // ),
-                // Text(
-                //   songInfo != null ? songInfo.artist : 'Artist',
-                //   style: TextStyle(color: Colors.white),
-                // ),
-              ],
             ),
           ],
         ),

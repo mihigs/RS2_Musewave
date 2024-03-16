@@ -15,6 +15,7 @@ namespace Models.Entities
         public int ArtistId { get; set; }
         public string? FilePath { get; set; }
         public string? SignedUrl { get; set; }
+        public bool? IsLiked { get; set; }
         public Track()
         {
             Likes = new List<Like>();

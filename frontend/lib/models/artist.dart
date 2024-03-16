@@ -7,7 +7,7 @@ part 'artist.g.dart';
 @JsonSerializable()
 class Artist extends BaseEntity {
   String userId;
-  User user;
+  User? user;
 
   Artist({
     required super.id,

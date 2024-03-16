@@ -11,7 +11,9 @@ Artist _$ArtistFromJson(Map<String, dynamic> json) => Artist(
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       userId: json['userId'] as String,
-      user: User.fromJson(json['user'] as Map<String, dynamic>),
+      user: json['user'] == null
+          ? null
+          : User.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ArtistToJson(Artist instance) => <String, dynamic>{

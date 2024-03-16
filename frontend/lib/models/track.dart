@@ -17,9 +17,10 @@ class Track extends BaseEntity {
   int? genreId;
   Genre? genre;
   int artistId;
-  Artist artist;
+  Artist? artist;
   String? filePath;
   String? signedUrl;
+  bool? isLiked;
 
   Track({
     required super.id,
@@ -36,6 +37,7 @@ class Track extends BaseEntity {
     required this.artistId,
     this.filePath,
     this.signedUrl,
+    this.isLiked,
   });
 
     // A necessary factory constructor for creating a new Track instance
@@ -47,20 +49,6 @@ class Track extends BaseEntity {
   // Pass the map to the generated `_$TrackToJson()` method.
   // The method is named after the source class, in this case, Track.
   Map<String, dynamic> toJson() => _$TrackToJson(this);
-
-  // static fromJson(track) {
-  //   return Track(
-  //     title: track['title'] ?? '',
-  //     duration: track['duration'] ?? 0,
-  //     albumId: track['albumId'],
-  //     album: track['album'] != null ? Album.fromJson(track['album']) : null,
-  //     likes: track['likes'] != null ? Like.fromJson(track['likes']) : null,
-  //     genreId: track['genreId'] ?? '',
-  //     genre: track['genre'] != null ? Genre.fromJson(track['genre']) : null,
-  //     artistId: track['artistId'] ?? '',
-  //     artist: Artist.fromJson(track['artist'])!,
-  //   );
-  // }
 }
 
 class TrackGenre {

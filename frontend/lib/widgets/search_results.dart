@@ -71,10 +71,10 @@ class _SearchResultsState extends State<SearchResults> {
                       ...tracks
                           .take(_tracksToShow)
                           .map((track) => GestureDetector(
-                            onTap:() => GoRouter.of(context).go('/track/${track.id}/0/0'),
+                            onTap:() => GoRouter.of(context).go('/track/${track.id}/0/0/true'),
                             child: ResultItemCard(
                                   title: track.title,
-                                  subtitle: track.artist.user.userName,
+                                  subtitle: track.artist?.user?.userName,
                                 ),
                           )),
                     ],
@@ -106,7 +106,7 @@ class _SearchResultsState extends State<SearchResults> {
                           .take(_albumsToShow)
                           .map((album) => ResultItemCard(
                                 title: album.title,
-                                subtitle: album.artist.user.userName,
+                                subtitle: album.artist?.user?.userName,
                               )),
                     ],
                   ),
@@ -136,7 +136,7 @@ class _SearchResultsState extends State<SearchResults> {
                       ...artists
                           .take(_artistsToShow)
                           .map((artist) => ResultItemCard(
-                                title: artist.user.userName,
+                                title: artist.user!.userName,
                               )),
                     ],
                   ),

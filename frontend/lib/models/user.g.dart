@@ -24,11 +24,11 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
           : DateTime.parse(json['lockoutEnd'] as String),
       lockoutEnabled: json['lockoutEnabled'] as bool,
       accessFailedCount: json['accessFailedCount'] as int,
-      playlists: (json['playlists'] as List<dynamic>)
-          .map((e) => Playlist.fromJson(e as Map<String, dynamic>))
+      playlists: (json['playlists'] as List<dynamic>?)
+          ?.map((e) => Playlist.fromJson(e as Map<String, dynamic>))
           .toList(),
-      likes: (json['likes'] as List<dynamic>)
-          .map((e) => Like.fromJson(e as Map<String, dynamic>))
+      likes: (json['likes'] as List<dynamic>?)
+          ?.map((e) => Like.fromJson(e as Map<String, dynamic>))
           .toList(),
       artist: json['artist'] == null
           ? null

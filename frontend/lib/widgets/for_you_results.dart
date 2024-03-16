@@ -32,7 +32,7 @@ class _ForYouResultsState extends State<ForYouResults> {
                 ...likedTracks.map((track) {
                   return ResultItemCard(
                       title: track.title,
-                      subtitle: track.artist.user.userName,
+                      subtitle: track.artist?.user?.userName,
                   );
                 }),
               ],

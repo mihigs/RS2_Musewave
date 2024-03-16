@@ -26,23 +26,34 @@ class _SeekBarState extends State<SeekBar> {
             double totalDurationValue =
                 streamer.getDuration()?.inMilliseconds.toDouble() ?? 1.0;
 
-            return Slider(
-              min: 0.0,
-              max: totalDurationValue,
-              value: positionValue,
-              onChanged: (value) {
-                streamer.seek(Duration(milliseconds: value.toInt()));
-              },
-              onChangeEnd: (value) {
-                streamer.seek(Duration(milliseconds: value.toInt()));
-                streamer.play();
-              },
-              onChangeStart: (value) {
-                streamer.pause();
-              },
-              divisions: totalDurationValue.toInt(),
-              label:
-                  '${(positionValue / 1000).toStringAsFixed(2)} / ${(totalDurationValue / 1000).toStringAsFixed(2)} seconds',
+            String formatDuration(Duration duration) {
+              String minutes = (duration.inMinutes % 60).toString().padLeft(2, '0');
+              String seconds = (duration.inSeconds % 60).toString().padLeft(2, '0');
+              return '$minutes:$seconds';
+            }
+
+            return SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                trackHeight: 10.0, // Adjust the thickness here
+              ),
+              child: Slider(
+                min: 0.0,
+                max: totalDurationValue,
+                value: positionValue,
+                onChanged: (value) {
+                  streamer.seek(Duration(milliseconds: value.toInt()));
+                },
+                onChangeEnd: (value) {
+                  streamer.seek(Duration(milliseconds: value.toInt()));
+                  streamer.play();
+                },
+                onChangeStart: (value) {
+                  streamer.pause();
+                },
+                divisions: totalDurationValue.toInt(),
+                label:
+                    '${formatDuration(Duration(milliseconds: positionValue.toInt()))} / ${formatDuration(streamer.getDuration() ?? Duration(milliseconds: totalDurationValue.toInt()))}',
+              ),
             );
           },
         );

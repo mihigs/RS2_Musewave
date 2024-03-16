@@ -23,10 +23,13 @@ Track _$TrackFromJson(Map<String, dynamic> json) => Track(
       genre: json['genre'] == null
           ? null
           : Genre.fromJson(json['genre'] as Map<String, dynamic>),
-      artist: Artist.fromJson(json['artist'] as Map<String, dynamic>),
+      artist: json['artist'] == null
+          ? null
+          : Artist.fromJson(json['artist'] as Map<String, dynamic>),
       artistId: json['artistId'] as int,
       filePath: json['filePath'] as String?,
       signedUrl: json['signedUrl'] as String?,
+      isLiked: json['isLiked'] as bool?,
     );
 
 Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
@@ -44,4 +47,5 @@ Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
       'artist': instance.artist,
       'filePath': instance.filePath,
       'signedUrl': instance.signedUrl,
+      'isLiked': instance.isLiked,
     };

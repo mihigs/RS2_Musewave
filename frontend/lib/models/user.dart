@@ -22,8 +22,8 @@ class User {
   DateTime? lockoutEnd;
   bool lockoutEnabled;
   int accessFailedCount;
-  List<Playlist> playlists;
-  List<Like> likes;
+  List<Playlist>? playlists;
+  List<Like>? likes;
   Artist? artist;
   int? artistId;
 

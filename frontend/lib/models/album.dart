@@ -9,7 +9,7 @@ part 'album.g.dart';
 class Album extends BaseEntity{
   String title;
   int artistId;
-  Artist artist;
+  Artist? artist;
   List<Track> tracks;
 
   Album({

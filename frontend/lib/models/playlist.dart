@@ -11,7 +11,7 @@ class Playlist extends BaseEntity {
   String userId;
   User? user;
   bool isPublic;
-  List<Track> tracks;
+  List<Track>? tracks;
 
   Playlist({
     required super.id,

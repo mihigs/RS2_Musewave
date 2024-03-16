@@ -12,7 +12,9 @@ Album _$AlbumFromJson(Map<String, dynamic> json) => Album(
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       title: json['title'] as String,
       artistId: json['artistId'] as int,
-      artist: Artist.fromJson(json['artist'] as Map<String, dynamic>),
+      artist: json['artist'] == null
+          ? null
+          : Artist.fromJson(json['artist'] as Map<String, dynamic>),
       tracks: (json['tracks'] as List<dynamic>)
           .map((e) => Track.fromJson(e as Map<String, dynamic>))
           .toList(),

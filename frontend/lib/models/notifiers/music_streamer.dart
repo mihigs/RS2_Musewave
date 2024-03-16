@@ -10,39 +10,49 @@ class MusicStreamer extends ChangeNotifier {
   final AudioPlayer _player = AudioPlayer();
   final String listenerUrl = const String.fromEnvironment('LISTENER_URL');
 
-  bool _isPlaying = true;
-  String? _currentTrackUrl;
+  bool _isPlaying = false;
+  bool trackLoaded = false;
   Duration? fullDuration;
   Duration? lastPosition;
 
-  bool get isPlaying => _isPlaying;
-  
+  int? currentTrackId;
+  String? currentTrackUrl;
+  String? currentTrackTitle;
+  String? currentTrackArtist;
+  String streamingContext = "0";
+  String contextId = "0";
 
-  Future<void> initializeTrack(String trackSource) async {
-    _currentTrackUrl = trackSource;
-    String fullUrl = '$listenerUrl/Tracks/Stream/$_currentTrackUrl';
+  bool get isPlaying => _isPlaying;
+
+  // Future<void> initializeTrack(String trackSource, String trackTitle, String trackArtist, String streamingContext, String contextId) async {
+  Future<void> initializeTrack(Track trackToInitialize) async {
     await stop();
-    try{
+    trackLoaded = true;
+    currentTrackId = trackToInitialize.id;
+    currentTrackUrl = trackToInitialize.signedUrl;
+    currentTrackTitle = trackToInitialize.title;
+    currentTrackArtist = trackToInitialize.artist?.user?.userName;
+    notifyListeners();
+    String fullUrl = '$listenerUrl/Tracks/Stream/$currentTrackUrl';
+    try {
       fullDuration = await _player.setUrl(fullUrl);
-    }
-    catch(e){
+    } catch (e) {
       rethrow;
     }
   }
 
-  Future<void> initializeAndPlay(String trackSource) async {
+  Future<void> initializeAndPlay(Track trackToInitialize) async {
     try {
-      await initializeTrack(trackSource);
+      await initializeTrack(trackToInitialize);
       await play();
     } catch (e) {
-      rethrow;      
+      rethrow;
     }
   }
 
   Future<void> play() async {
     try {
-      if (_currentTrackUrl != null) {
-        
+      if (currentTrackUrl != null) {
         _isPlaying = true;
         notifyListeners();
         await _player.play();
@@ -56,8 +66,8 @@ class MusicStreamer extends ChangeNotifier {
   }
 
   Future<void> resume() async {
-    if (_currentTrackUrl != null) {
-      if(lastPosition != null){
+    if (currentTrackUrl != null) {
+      if (lastPosition != null) {
         await seek(lastPosition!);
         await play();
       }
@@ -74,6 +84,7 @@ class MusicStreamer extends ChangeNotifier {
   Future<void> stop() async {
     lastPosition = null;
     _isPlaying = false;
+    trackLoaded = false;
     notifyListeners();
     await _player.stop();
   }
@@ -91,7 +102,6 @@ class MusicStreamer extends ChangeNotifier {
     await _player.setVolume(volume);
   }
 
-
   Stream<Duration> getPositionStream() {
     return _player.positionStream;
   }
@@ -104,4 +114,14 @@ class MusicStreamer extends ChangeNotifier {
     return _player.duration;
   }
 
+  Stream<PlayerState> getPlayerStateStream() {
+    return _player.playerStateStream;
+  }
+
+  @override
+  void dispose() async {
+    await stop();
+    _player.dispose();
+    super.dispose();
+  }
 }

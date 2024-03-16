@@ -16,8 +16,8 @@ Playlist _$PlaylistFromJson(Map<String, dynamic> json) => Playlist(
           ? null
           : User.fromJson(json['user'] as Map<String, dynamic>),
       isPublic: json['isPublic'] as bool,
-      tracks: (json['tracks'] as List<dynamic>)
-          .map((e) => Track.fromJson(e as Map<String, dynamic>))
+      tracks: (json['tracks'] as List<dynamic>?)
+          ?.map((e) => Track.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

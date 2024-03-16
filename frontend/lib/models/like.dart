@@ -8,9 +8,9 @@ part 'like.g.dart';
 @JsonSerializable()
 class Like extends BaseEntity {
   String userId;
-  User user;
+  User? user;
   int trackId;
-  Track track;
+  Track? track;
 
   Like({
     required super.id,

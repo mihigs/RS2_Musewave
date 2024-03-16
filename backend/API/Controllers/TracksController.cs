@@ -116,7 +116,13 @@ namespace API.Controllers
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var trackResult = await _tracksService.GetTrackByIdAsync(trackId);
+                Track trackResult = null;
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim != null)
+                {
+                    string userId = userIdClaim.Value;
+                    trackResult = await _tracksService.GetTrackByIdAsync(trackId, userId);
+                }
                 if (trackResult == null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
@@ -196,6 +202,33 @@ namespace API.Controllers
                     apiResponse.Errors.Add("Track not found");
                 }
                 apiResponse.Data = nextTrack;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
+
+        // a controller endpoint that takes a trackId, gets the userId from the token, and calls the service to like the track
+        [HttpPost("ToggleLikeTrack/{trackId}")]
+        public async Task<IActionResult> ToggleLikeTrack(int trackId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return BadRequest(apiResponse);
+                }
+                string userId = userIdClaim.Value;
+                apiResponse.Data = await _tracksService.ToggleLikeTrack(trackId, userId);
                 apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
                 return Ok(apiResponse);
             }

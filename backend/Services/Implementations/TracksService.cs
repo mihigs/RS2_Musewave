@@ -15,12 +15,14 @@ namespace Services.Implementations
         private readonly ITrackRepository _trackRepository;
         private readonly IAlbumRepository _albumRepository;
         private readonly IPlaylistRepository _playlistRepository;
+        private readonly ILikeRepository _likeRepository;
 
-        public TracksService(ITrackRepository trackRespository, IAlbumRepository albumRepository, IPlaylistRepository playlistRepository)
+        public TracksService(ITrackRepository trackRespository, IAlbumRepository albumRepository, IPlaylistRepository playlistRepository, ILikeRepository likeRepository)
         {
             _trackRepository = trackRespository ?? throw new ArgumentNullException(nameof(trackRespository));
             _albumRepository = albumRepository;
             _playlistRepository = playlistRepository;
+            _likeRepository = likeRepository;
         }
 
         public async Task<IEnumerable<Track>> GetLikedTracksAsync(string userId)
@@ -43,9 +45,9 @@ namespace Services.Implementations
 
             return await _trackRepository.Update(track);
         }
-        public async Task<Track> GetTrackByIdAsync(int id)
+        public async Task<Track> GetTrackByIdAsync(int trackId, string userId)
         {
-            var trackResult = await _trackRepository.GetById(id);
+            var trackResult = await _trackRepository.GetById(trackId);
             if (trackResult == null)
             {
                 throw new Exception("Track not found");
@@ -53,6 +55,9 @@ namespace Services.Implementations
 
             var signedUrl = GenerateSignedTrackUrl(trackResult.FilePath, trackResult.ArtistId.ToString());
             trackResult.SignedUrl = signedUrl;
+
+            // Check if the track is liked by the user
+            trackResult.IsLiked = await CheckIfTrackIsLikedByUser(trackResult.Id, userId) != null;
             return trackResult;
         }
 
@@ -105,10 +110,6 @@ namespace Services.Implementations
                 {
                     nextTrack = tracksSameGenre.OrderBy(x => Guid.NewGuid()).FirstOrDefault(); // Random track with same genre
                 }
-                else
-                {
-                    nextTrack = await _trackRepository.GetRandomTrack();
-                }
             }
             // If the current track does not have a genre, return a random track
             else
@@ -116,12 +117,14 @@ namespace Services.Implementations
                 nextTrack = await _trackRepository.GetRandomTrack();
             }
 
-
-            nextTrack.SignedUrl = GenerateSignedTrackUrl(nextTrack.FilePath, nextTrack.ArtistId.ToString());
             if (nextTrack == null)
             {
                 throw new Exception("Next track not found");
             }
+
+            nextTrack.SignedUrl = GenerateSignedTrackUrl(nextTrack.FilePath, nextTrack.ArtistId.ToString());
+            // Check if the track is liked by the user
+            nextTrack.IsLiked = await CheckIfTrackIsLikedByUser(nextTrack.Id, nextTrack.Artist.User.Id) != null;
             return nextTrack;
         }
 
@@ -149,6 +152,8 @@ namespace Services.Implementations
             {
                 track = playlistTracks.ToList()[currentTrackIndex + 1];
             }
+            // Check if the track is liked by the user
+            track.IsLiked = await CheckIfTrackIsLikedByUser(track.Id, track.Artist.User.Id) != null;
             return track;
         }
 
@@ -176,8 +181,28 @@ namespace Services.Implementations
             {
                 track = albumTracks.ToList()[currentTrackIndex + 1];
             }
+
+            // Check if the track is liked by the user
+            track.IsLiked = await CheckIfTrackIsLikedByUser(track.Id, track.Artist.User.Id) != null;
             return track;
         }
 
+        public async Task<Like> ToggleLikeTrack(int trackId, string userId)
+        {
+            var likedTrack = await CheckIfTrackIsLikedByUser(trackId, userId);
+            if (likedTrack != null)
+            {
+                return await _likeRepository.Remove(likedTrack.Id);
+            }
+            else
+            {
+                return await _likeRepository.Add(new Like { TrackId = trackId, UserId = userId });
+            }
+        }
+        
+        private async Task<Like?> CheckIfTrackIsLikedByUser(int trackId, string userId)
+        {
+            return await _likeRepository.CheckIfTrackIsLikedByUser(trackId, userId);
+        }
     }
 }

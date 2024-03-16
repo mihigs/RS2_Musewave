@@ -7,6 +7,7 @@ import 'package:frontend/services/tracks_service.dart';
 import 'package:frontend/widgets/seek_bar.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
 class MediaPlayerPage extends StatefulWidget {
@@ -16,27 +17,51 @@ class MediaPlayerPage extends StatefulWidget {
   List<String> previousTrackIds = [];
   String contextId;
   String context;
+  String autoStart;
 
   MediaPlayerPage(
-      {required this.trackId, this.nextTrackId, required this.contextId, required this.context});
+      {required this.trackId,
+      this.nextTrackId,
+      required this.contextId,
+      required this.context,
+      required this.autoStart});
 
   @override
   _MediaPlayerPageState createState() => _MediaPlayerPageState();
 }
 
 class _MediaPlayerPageState extends State<MediaPlayerPage> {
+  late bool trackLoaded;
   late Track? previousTrackData;
   late Future<Track> trackDataFuture;
   late Future<Track> nextTrackDataFuture;
+  late bool isLiked = false;
 
-  bool isPlaying = true;
+  bool isPlaying = false;
 
   @override
-    void initState() {
+  void initState() {
     super.initState();
+
+    updateIsPlaying();
+    checkIfTrackAlreadyLoaded();
     initializeTrackData(widget.trackId, widget.contextId, widget.context);
+
+    Provider.of<MusicStreamer>(context, listen: false)
+        .getPlayerStateStream()
+        .listen((playerState) {
+      if (playerState.processingState == ProcessingState.completed) {
+        nextTrack();
+      }
+    });
   }
 
+  void checkIfTrackAlreadyLoaded() {
+    setState(() {
+      trackLoaded =
+          Provider.of<MusicStreamer>(context, listen: false).trackLoaded;
+    });
+  }
 
   void updateIsPlaying() {
     setState(() {
@@ -44,13 +69,31 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
     });
   }
 
-  Future<void> initializeTrackData(String currentTrackId, String contextId, String streamingContext) async {
+  Future<void> initializeTrackData(
+      String currentTrackId, String contextId, String streamingContext) async {
     trackDataFuture = widget.tracksService.getTrack(currentTrackId);
     trackDataFuture.then((response) => {
-        Provider.of<MusicStreamer>(context, listen: false).initializeAndPlay(response.signedUrl!)
-    });
+          if (response.isLiked == null)
+            {
+              isLiked = false,
+            }
+          else
+            {
+              isLiked = response.isLiked!,
+            },
+          if (!trackLoaded && (widget.autoStart == "false"))
+            {
+              Provider.of<MusicStreamer>(context, listen: false)
+                  .initializeTrack(response)
+            }
+          else if (!trackLoaded && (widget.autoStart == "true"))
+            {
+              Provider.of<MusicStreamer>(context, listen: false)
+                  .initializeAndPlay(response)
+            }
+        });
 
-    if (contextId == "0" || streamingContext == "0"){
+    if (contextId == "0" || streamingContext == "0") {
       nextTrackDataFuture = widget.tracksService.getNextTrack(currentTrackId);
       nextTrackDataFuture.then((response) {
         widget.nextTrackId = response.id.toString();
@@ -58,26 +101,31 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
     } else {
       switch (streamingContext) {
         case 'album':
-          nextTrackDataFuture = widget.tracksService.GetNextAlbumTrack(currentTrackId, contextId);
+          nextTrackDataFuture =
+              widget.tracksService.GetNextAlbumTrack(currentTrackId, contextId);
           break;
         case 'playlist':
-          nextTrackDataFuture = widget.tracksService.GetNextPlaylistTrack(currentTrackId, contextId);
+          nextTrackDataFuture = widget.tracksService
+              .GetNextPlaylistTrack(currentTrackId, contextId);
           break;
         default:
-          nextTrackDataFuture = widget.tracksService.getNextTrack(currentTrackId);
+          nextTrackDataFuture =
+              widget.tracksService.getNextTrack(currentTrackId);
       }
     }
   }
 
   Future<void> nextTrack() async {
-    Provider.of<MusicStreamer>(context, listen: false).stop();
+    await Provider.of<MusicStreamer>(context, listen: false).stop();
     widget.previousTrackIds.add(widget.trackId);
     widget.trackId = widget.nextTrackId!;
+    widget.autoStart = "true";
     await initializeTrackData(widget.trackId, widget.contextId, widget.context);
   }
 
   Future<void> previousTrack() async {
     widget.trackId = widget.previousTrackIds.removeLast();
+    widget.autoStart = "true";
     await initializeTrackData(widget.trackId, widget.contextId, widget.context);
   }
 
@@ -111,7 +159,44 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
             GoRouter.of(context).go('/home');
           },
         ),
-        title: Text('Media Player'),
+        actions: <Widget>[
+          Container(
+            // padding: EdgeInsets.all(0),
+            // width: 30,
+            // height: 30,
+            child: IconButton(
+              icon: Icon(isLiked ? Icons.star : Icons.star_border,
+                  size: 32),
+              onPressed: () async {
+                var snackBar;
+                if (isLiked) {
+                  var unlikedSuccessfuly = await widget.tracksService
+                      .toggleLikeTrack(int.parse(widget.trackId));
+                  if (unlikedSuccessfuly) {
+                    setState(() {
+                      isLiked = false;
+                    });
+                  }
+                } else {
+                  var likedSuccessfuly = await widget.tracksService
+                      .toggleLikeTrack(int.parse(widget.trackId));
+                  if (likedSuccessfuly) {
+                    setState(() {
+                      isLiked = true;
+                    });
+                    snackBar = const SnackBar(
+                      content: Text('Added to favorites!'),
+                      duration:
+                          Duration(seconds: 1),
+                    );
+                  }
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
+              },
+            ),
+          ),
+        ],
+        // title: Text('Media Player'),
       ),
       body: Center(
         child: FutureBuilder<Track>(
@@ -123,50 +208,93 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               Track track = snapshot.data!;
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 20),
-                  Text(
-                    track.title,
-                    style: TextStyle(fontSize: 24),
-                  ),
-                  Text(
-                    track.artist.user.userName,
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(Icons.skip_previous),
-                        onPressed: !(widget.previousTrackIds.length > 0) ? null : () async {
-                          await previousTrack();
-                        },
+              return Container(
+                height: MediaQuery.of(context).size.height,
+                padding: const EdgeInsets.all(10),
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Container(
+                      // Track cover art placeholder with purple gradient background
+                      height: 200,
+                      width: 200,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.purple, Colors.deepPurple],
+                        ),
                       ),
-                      IconButton(
-                        icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-                        onPressed: () async {
-                          if (isPlaying) {
-                            await model.pause();
-                          } else {
-                            await model.play();
-                          }
-                        },
+                    ),
+                    SizedBox(height: 50),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                      width: MediaQuery.of(context).size.width * 2 / 3,
+                      child: Text(
+                        track.title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 24),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.skip_next),
-                        onPressed: () async {
-                          await nextTrack();
-                        },
+                    ),
+                    Container(
+                      child: Text(
+                        track.artist!.user!.userName,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 18),
                       ),
-                    ],
-                  ),
-                  Container(
-                    child: SeekBar(),
-                  ),
-                ],
+                    ),
+                    SizedBox(height: 40),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: 100,
+                          height: 100,
+                          child: IconButton(
+                            icon: Icon(Icons.skip_previous, size: 58),
+                            onPressed: !(widget.previousTrackIds.length > 0)
+                                ? null
+                                : () async {
+                                    await previousTrack();
+                                  },
+                          ),
+                        ),
+                        Container(
+                          width: 100,
+                          height: 100,
+                          child: IconButton(
+                            icon: Icon(
+                                isPlaying ? Icons.pause : Icons.play_arrow,
+                                size: 58),
+                            onPressed: () async {
+                              if (isPlaying) {
+                                await model.pause();
+                              } else {
+                                await model.play();
+                              }
+                            },
+                          ),
+                        ),
+                        Container(
+                          width: 100,
+                          height: 100,
+                          child: IconButton(
+                            icon: Icon(Icons.skip_next, size: 58),
+                            onPressed: () async {
+                              await nextTrack();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: SeekBar(),
+                    ),
+                  ],
+                ),
               );
             }
             return Container();

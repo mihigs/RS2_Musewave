@@ -13,7 +13,7 @@ class PersistentPlayerContainer extends StatelessWidget {
         children: [
           Expanded(child: child),
           Container(
-            height: 300,
+            height: 75,
             child: Stack(
               children: [Positioned(bottom: 0, child: PersistentPlayer())]),
           ),

@@ -64,6 +64,9 @@ namespace DataContext
 
             modelBuilder.Entity<Track>()
                 .Ignore(t => t.SignedUrl);
+
+            modelBuilder.Entity<Track>()
+                .Ignore(t => t.IsLiked);
         }
     }
 }

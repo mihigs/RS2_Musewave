@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/models/DTOs/TrackUploadDto.dart';
+import 'package:frontend/models/like.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/services/base/api_service.dart';
 import 'package:http/http.dart' as http;
@@ -143,6 +145,17 @@ class TracksService extends ApiService {
       rethrow;
     }
   }
+
+  // a method to like a track
+  // should hit the Tracks/LikeTrack/{trackId} endpoint
+  Future<bool> toggleLikeTrack(int trackId) async {
+    try {
+      final response = await httpPost('Tracks/ToggleLikeTrack/$trackId', null);
+      return response != null;
+    } on Exception {
+      rethrow;
+    }
+  } 
 
 
   Track _mapToTrack(dynamic item) {

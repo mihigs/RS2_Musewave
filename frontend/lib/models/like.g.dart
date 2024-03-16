@@ -11,9 +11,13 @@ Like _$LikeFromJson(Map<String, dynamic> json) => Like(
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       userId: json['userId'] as String,
-      user: User.fromJson(json['user'] as Map<String, dynamic>),
+      user: json['user'] == null
+          ? null
+          : User.fromJson(json['user'] as Map<String, dynamic>),
       trackId: json['trackId'] as int,
-      track: Track.fromJson(json['track'] as Map<String, dynamic>),
+      track: json['track'] == null
+          ? null
+          : Track.fromJson(json['track'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$LikeToJson(Like instance) => <String, dynamic>{
