@@ -18,6 +18,24 @@ namespace API.Controllers
             _playlistService = playlistService ?? throw new ArgumentNullException(nameof(playlistService));
         }
 
+        [HttpGet("GetPlaylistDetailsAsync/{playlistId}")]
+        public async Task<ApiResponse> GetPlaylistDetailsAsync(int playlistId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                apiResponse.Data = await _playlistService.GetPlaylistDetailsAsync(playlistId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
+
         //[HttpGet]
         //public async Task<ApiResponse> GetAllPlaylists()
         //{

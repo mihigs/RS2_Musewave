@@ -133,5 +133,23 @@ namespace API.Controllers
             }
             return apiResponse;
         }
+
+        [HttpGet("GetAlbumDetails/{albumId}")]
+        public async Task<ApiResponse> GetAlbumDetails(int albumId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                apiResponse.Data = await _albumService.GetAlbumDetails(albumId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
     }
 }

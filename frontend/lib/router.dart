@@ -62,24 +62,40 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
           final context = state.pathParameters['context'];
           final autoStart = state.pathParameters['autoStart'];
           return MediaPlayerPage(
-              trackId: trackId!,
-              contextId: contextId!,
-              context: context!,
-              autoStart: autoStart!,
-            );
+            trackId: trackId!,
+            contextId: contextId!,
+            context: context!,
+            autoStart: autoStart!,
+          );
         },
       ),
       GoRoute(
-        path: Routes.album,
-        builder: (_, __) => PersistentPlayerContainer(child: AlbumPage()),
+        // path: Routes.album,
+        // builder: (_, __) => PersistentPlayerContainer(child: AlbumPage()),
+        path: '${Routes.album}/:albumId',
+        builder: (context, state) {
+          final albumId = state.pathParameters['albumId'];
+          return AlbumPage(
+            albumId: int.parse(albumId!),
+          );
+        },
       ),
       GoRoute(
         path: Routes.artist,
         builder: (_, __) => PersistentPlayerContainer(child: ArtistPage()),
       ),
       GoRoute(
-        path: Routes.playlist,
-        builder: (_, __) => PersistentPlayerContainer(child: PlaylistPage()),
+        // path: Routes.playlist,
+        // builder: (_, __) => PersistentPlayerContainer(child: PlaylistPage()),
+        path: '${Routes.playlist}/:playlistId',
+        builder: (context, state) {
+          final playlistId = state.pathParameters['playlistId'];
+          return PersistentPlayerContainer(
+            child: PlaylistPage(
+              playlistId: int.parse(playlistId!),
+            ),
+          );
+        },
       ),
       GoRoute(
         path: Routes.uploadMedia,

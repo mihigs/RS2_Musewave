@@ -27,4 +27,21 @@ class AlbumService extends ApiService {
       rethrow;
     }
   }
+
+  Future<Album> GetAlbumDetails(int id) async {
+    try {
+      final response = await httpGet('Album/GetAlbumDetails/$id');
+      
+      return _mapToAlbum(response['data']);
+    } on Exception {
+      rethrow;
+    }
+  }
+}
+
+Album _mapToAlbum(response) {
+  if (response == null) {
+    throw Exception('Album not found');
+  }
+  return Album.fromJson(response);
 }

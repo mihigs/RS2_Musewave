@@ -104,10 +104,13 @@ class _SearchResultsState extends State<SearchResults> {
                     children: <Widget>[
                       ...albums
                           .take(_albumsToShow)
-                          .map((album) => ResultItemCard(
-                                title: album.title,
-                                subtitle: album.artist?.user?.userName,
-                              )),
+                          .map((album) => GestureDetector(
+                            onTap:() => GoRouter.of(context).go('/album/${album.id}'),
+                            child: ResultItemCard(
+                                  title: album.title,
+                                  subtitle: album.artist?.user?.userName,
+                                ),
+                          )),
                     ],
                   ),
                   if (_albumsToShow < albums.length)
@@ -135,9 +138,12 @@ class _SearchResultsState extends State<SearchResults> {
                     children: <Widget>[
                       ...artists
                           .take(_artistsToShow)
-                          .map((artist) => ResultItemCard(
-                                title: artist.user!.userName,
-                              )),
+                          .map((artist) => GestureDetector(
+                            onTap:() => GoRouter.of(context).go('/artist/${artist.id}'),
+                            child: ResultItemCard(
+                                  title: artist.user!.userName,
+                                ),
+                          )),
                     ],
                   ),
                   if (_artistsToShow < artists.length)
@@ -165,9 +171,12 @@ class _SearchResultsState extends State<SearchResults> {
                     children: <Widget>[
                       ...playlists
                           .take(_playlistsToShow)
-                          .map((playlist) => ResultItemCard(
-                                title: playlist.name,
-                              )),
+                          .map((playlist) => GestureDetector(
+                            onTap:() => GoRouter.of(context).go('/playlist/${playlist.id}'),
+                            child: ResultItemCard(
+                                  title: playlist.name,
+                                ),
+                          )),
                     ],
                   ),
                   if (_playlistsToShow < playlists.length)

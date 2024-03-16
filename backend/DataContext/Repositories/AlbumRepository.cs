@@ -23,9 +23,21 @@ namespace DataContext.Repositories
 
         public async Task<IEnumerable<Track>> GetAlbumTracksAsync(int albumId)
         {
-            return await _dbContext.Set<Track>()
-                .Where(t => t.AlbumId == albumId)
+            return await _dbContext.Set<Album>()
+                .Where(t => t.Id == albumId)
+                .Include(t => t.Tracks)
+                .SelectMany(t => t.Tracks)
                 .ToListAsync();
-        }   
+        }
+
+        public async Task<Album> GetAlbumDetails(int albumId)
+        {
+            return await _dbContext.Set<Album>()
+                .Where(a => a.Id == albumId)
+                .Include(a => a.Artist)
+                .ThenInclude(Artist => Artist.User)
+                .Include(a => a.Tracks)
+                .FirstOrDefaultAsync(a => a.Id == albumId);
+        }
     }
 }

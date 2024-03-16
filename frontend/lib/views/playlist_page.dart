@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/widgets/collection/collection_list.dart';
 
 class PlaylistPage extends StatelessWidget {
-  const PlaylistPage({super.key});
+  int _playlistId;
+
+  PlaylistPage({super.key, required int playlistId}) : _playlistId = playlistId;
+
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container(
+      child: CollectionList(
+        contextId: _playlistId,
+        contextType: "playlist",
+      ),
+    );
   }
 }

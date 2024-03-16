@@ -26,4 +26,22 @@ class PlaylistService extends ApiService {
     }
   }
 
-}
+  Future<Playlist> GetPlaylistDetailsAsync(int id) async {
+    try {
+      final response = await httpGet('Playlist/GetPlaylistDetailsAsync/$id');
+
+      return _mapToPlaylist(response['data']);
+
+    } on Exception {
+      rethrow;
+    }
+    }
+  }
+  
+  Playlist _mapToPlaylist(response) {
+    if (response == null) {
+      throw Exception('Playlist not found');
+    }
+    return Playlist.fromJson(response);
+  }
+

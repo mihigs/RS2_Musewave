@@ -71,7 +71,7 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
 
   Future<void> initializeTrackData(
       String currentTrackId, String contextId, String streamingContext) async {
-    trackDataFuture = widget.tracksService.getTrack(currentTrackId);
+    trackDataFuture = widget.tracksService.getTrack(int.parse(currentTrackId));
     trackDataFuture.then((response) => {
           if (response.isLiked == null)
             {

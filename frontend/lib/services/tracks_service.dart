@@ -95,7 +95,7 @@ class TracksService extends ApiService {
     }
   }
 
-  Future<Track> getTrack(String trackId) async {
+  Future<Track> getTrack(int trackId) async {
     try {
       final response = await httpGet('Tracks/GetTrack/$trackId');
       return _mapToTrack(response['data']);

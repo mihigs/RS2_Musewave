@@ -51,5 +51,15 @@ namespace Services.Implementations
         {
             return await _albumRepository.GetAlbumsByTitleAsync(title).ConfigureAwait(false);
         }
+
+        public async Task<IEnumerable<Track>> GetAlbumTracksAsync(int albumId)
+        {
+            return await _albumRepository.GetAlbumTracksAsync(albumId).ConfigureAwait(false);
+        }
+
+        public async Task<Album> GetAlbumDetails(int albumId)
+        {
+            return await _albumRepository.GetAlbumDetails(albumId).ConfigureAwait(false);
+        }
     }
 }

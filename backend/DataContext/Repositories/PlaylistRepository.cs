@@ -28,5 +28,25 @@ namespace DataContext.Repositories
                 .Select(pt => pt.Track)
                 .ToListAsync();
         }
+
+        public async Task<Playlist> GetPlaylistDetails(int playlistId)
+        {
+            var playlistTracks = await _dbContext.Set<PlaylistTrack>()
+                .Where(pt => pt.PlaylistId == playlistId)
+                .Include(pt => pt.Track)
+                .ThenInclude(t => t.Artist)
+                .ThenInclude(a => a.User)
+                .ToListAsync();
+
+            // Get the playlist
+            var playlist = await _dbContext.Set<Playlist>()
+                .Where(p => p.Id == playlistId)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.Id == playlistId);
+
+            // Add the tracks to the playlist
+            playlist.Tracks = playlistTracks.Select(pt => pt.Track).ToList();
+            return playlist;
+        }
     }
 }

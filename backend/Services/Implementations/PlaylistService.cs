@@ -18,5 +18,16 @@ namespace Services.Implementations
         {
             return await _playlistRepository.GetPlaylistsByNameAsync(name, arePublic);
         }
+
+        //public async Task<Playlist> GetPlaylistDetailsAsync(int id)
+        //{
+        //    return await _playlistRepository.GetPlaylistDetailsAsync(id);
+        //}
+        public async Task<Playlist> GetPlaylistDetailsAsync(int id)
+        {
+            return await _playlistRepository.GetPlaylistDetails(id);
+        }
+
+
     }
 }
