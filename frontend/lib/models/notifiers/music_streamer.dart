@@ -12,26 +12,37 @@ class MusicStreamer extends ChangeNotifier {
 
   bool _isPlaying = true;
   String? _currentTrackUrl;
+  Duration? fullDuration;
+  Duration? lastPosition;
 
   bool get isPlaying => _isPlaying;
+  
 
-  Future<String> initializeTrack(String trackSource) async {
+  Future<void> initializeTrack(String trackSource) async {
     _currentTrackUrl = trackSource;
-    await _player.stop();
-    _isPlaying = false;
-    notifyListeners();
     String fullUrl = '$listenerUrl/Tracks/Stream/$_currentTrackUrl';
-    await _player.setUrl(fullUrl);
+    await stop();
+    try{
+      fullDuration = await _player.setUrl(fullUrl);
+    }
+    catch(e){
+      rethrow;
+    }
+  }
 
-    return _currentTrackUrl!;
+  Future<void> initializeAndPlay(String trackSource) async {
+    try {
+      await initializeTrack(trackSource);
+      await play();
+    } catch (e) {
+      rethrow;      
+    }
   }
 
   Future<void> play() async {
-    _isPlaying = false;
-    notifyListeners(); // Notify listeners to show loading spinner
-
     try {
       if (_currentTrackUrl != null) {
+        
         _isPlaying = true;
         notifyListeners();
         await _player.play();
@@ -44,21 +55,53 @@ class MusicStreamer extends ChangeNotifier {
     }
   }
 
+  Future<void> resume() async {
+    if (_currentTrackUrl != null) {
+      if(lastPosition != null){
+        await seek(lastPosition!);
+        await play();
+      }
+    }
+  }
+
   Future<void> pause() async {
-    await _player.pause();
+    lastPosition = _player.position;
     _isPlaying = false;
     notifyListeners();
+    await _player.pause();
   }
 
   Future<void> stop() async {
-    await _player.stop();
+    lastPosition = null;
     _isPlaying = false;
     notifyListeners();
+    await _player.stop();
   }
 
-  Future<void> initializeAndPlay(String trackSource) async {
-    await initializeTrack(trackSource);
-    await play();
+  Future<void> seek(Duration position) async {
+    try {
+      await _player.seek(position);
+      notifyListeners();
+    } catch (e) {
+      // Handle error
+    }
+  }
+
+  Future<void> setVolume(double volume) async {
+    await _player.setVolume(volume);
+  }
+
+
+  Stream<Duration> getPositionStream() {
+    return _player.positionStream;
+  }
+
+  Stream<Duration> getBufferedPositionStream() {
+    return _player.bufferedPositionStream;
+  }
+
+  Duration? getDuration() {
+    return _player.duration;
   }
 
 }

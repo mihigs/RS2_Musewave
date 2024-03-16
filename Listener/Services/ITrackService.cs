@@ -7,6 +7,6 @@ namespace Listener.Services
     public interface ITrackService
     {
         Task StoreTrack(TrackUploadDto model);
-        Task<FileStreamResult> HandleTrackStreamRequest(string trackId, string artistId, string range);
+        Task<(Stream, string, long, long, long, string)> HandleTrackStreamRequest(string trackId, string artistId, string range = null);
     }
 }

@@ -3,6 +3,7 @@ using Listener.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Text;
 
 namespace Listener
@@ -37,7 +38,7 @@ namespace Listener
             }
         }
         [HttpGet("Stream/{trackId}")]
-        public async Task<FileStreamResult> Stream(string trackId, string token)
+        public async Task<IActionResult> Stream(string trackId, string token)
         {
             var artistId = "";
             try
@@ -70,13 +71,43 @@ namespace Listener
                 // If the token is valid, stream the audio file...
                 // First get the buffer size from the request headers...
                 var range = Request.Headers["Range"].ToString();
-                return await _trackService.HandleTrackStreamRequest(trackId, artistId, range);
+
+                var (stream, contentType, rangeStart, rangeEnd, totalLength, filePath) = await _trackService.HandleTrackStreamRequest(trackId, artistId, range);
+
+                if (!string.IsNullOrEmpty(range))
+                {
+                    Response.StatusCode = (int)HttpStatusCode.PartialContent;
+                    Response.Headers.Append("Content-Range", $"bytes {rangeStart}-{rangeEnd}/{totalLength}");
+                }
+                else
+                {
+                    Response.StatusCode = (int)HttpStatusCode.OK;
+                }
+
+                Response.Headers.Append("Accept-Ranges", "bytes");
+                Response.Headers.Append("Content-Length", (totalLength).ToString());
+                Response.Headers.Append("ETag", $"\"{CalculateETag(filePath)}\"");
+                Response.Headers.Append("Content-Type", contentType);
+
+                return new FileStreamResult(stream, contentType);
+
+                //var (stream, contentType, rangeStart, rangeEnd, totalLength) = await _trackService.HandleTrackStreamRequest(trackId, artistId);
+
+                //return new FileStreamResult(stream, contentType);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 throw;
             }
+        }
+
+        private string CalculateETag(string filePath)
+        {
+            var fileInfo = new FileInfo(filePath);
+            var lastModifiedTime = fileInfo.LastWriteTimeUtc.Ticks;
+            var eTag = Convert.ToBase64String(BitConverter.GetBytes(lastModifiedTime));
+            return eTag;
         }
 
         //[HttpGet("{userId}/{fileName}")]

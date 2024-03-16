@@ -7,7 +7,8 @@ namespace Listener.Services
     {
         private readonly string _storagePath;
         private readonly IRabbitMqService _rabbitMqService;
-        private const int _bufferSize = 1024 * 1024;
+        private const int _bufferSize = 1 * 1024 * 1024; // 1MB
+        private long _fileStreamPosition = 0;
 
         public TrackService(IRabbitMqService rabbitMqService)
         {
@@ -51,7 +52,7 @@ namespace Listener.Services
             }
         }
 
-        public async Task<FileStreamResult> HandleTrackStreamRequest(string trackId, string artistId, string range)
+        public async Task<(Stream, string, long, long, long, string)> HandleTrackStreamRequest(string trackId, string artistId, string range = null)
         {
             var userDirectoryPath = Path.Combine(_storagePath, artistId);
             var filePath = Path.Combine(userDirectoryPath, trackId);
@@ -65,32 +66,45 @@ namespace Listener.Services
             var contentType = GetContentType(filePath);
             var fileLength = fileStream.Length;
 
-            if (!string.IsNullOrEmpty(range))
+            // If range is specified, adjust the file stream position accordingly
+            if (range != null && range.StartsWith("bytes="))
             {
-                var rangeStart = long.Parse(range.Replace("bytes=", "").Split('-')[0]);
-                var rangeEnd = rangeStart + _bufferSize;
+                var rangeStart = long.Parse(range.Substring(6).Split('-')[0]);
+                var rangeEnd = Math.Min(rangeStart + _bufferSize, fileLength - 1);
 
-                if (rangeEnd > fileLength)
-                {
-                    rangeEnd = fileLength;
-                }
+                _fileStreamPosition = rangeStart;
+                fileStream.Position = _fileStreamPosition;
 
-                var lengthToRead = rangeEnd - rangeStart;
-                var buffer = new byte[lengthToRead];
-                fileStream.Seek(rangeStart, SeekOrigin.Begin);
-                await fileStream.ReadAsync(buffer, 0, (int)lengthToRead);
-
-                return new FileStreamResult(new MemoryStream(buffer), contentType)
-                {
-                    EntityTag = new Microsoft.Net.Http.Headers.EntityTagHeaderValue("\"" + new FileInfo(filePath).LastWriteTimeUtc.Ticks.ToString("x") + "\""),
-                    LastModified = new FileInfo(filePath).LastWriteTimeUtc,
-                    FileDownloadName = Path.GetFileName(filePath)
-                };
+                var lengthToRead = rangeEnd - rangeStart + 1;
+                return (fileStream, contentType, rangeStart, rangeEnd, fileLength, filePath);
             }
             else
             {
-                return new FileStreamResult(fileStream, contentType);
+                // If no range is specified, return the entire file
+                return (fileStream, contentType, 0, fileLength - 1, fileLength, filePath);
             }
+
+            //if (range != null || !string.IsNullOrEmpty(range))
+            //{
+            //    var rangeStart = long.Parse(range.Replace("bytes=", "").Split('-')[0]);
+            //    var rangeEnd = rangeStart + _bufferSize;
+
+            //    if (rangeEnd > fileLength)
+            //    {
+            //        rangeEnd = fileLength;
+            //    }
+
+            //    var lengthToRead = rangeEnd - rangeStart;
+            //    var buffer = new byte[lengthToRead];
+            //    fileStream.Seek(rangeStart, SeekOrigin.Begin);
+            //    await fileStream.ReadAsync(buffer, 0, (int)lengthToRead);
+
+            //    return (new MemoryStream(buffer), contentType, rangeStart, rangeEnd, fileLength, filePath);
+            //}
+            //else
+            //{
+            //    return (fileStream, contentType, 0, fileLength, fileLength, filePath);
+            //}
         }
 
         private string GetContentType(string path)

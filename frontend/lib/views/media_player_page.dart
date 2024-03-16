@@ -4,6 +4,7 @@ import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/services/tracks_service.dart';
+import 'package:frontend/widgets/seek_bar.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -69,6 +70,7 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
   }
 
   Future<void> nextTrack() async {
+    Provider.of<MusicStreamer>(context, listen: false).stop();
     widget.previousTrackIds.add(widget.trackId);
     widget.trackId = widget.nextTrackId!;
     await initializeTrackData(widget.trackId, widget.contextId, widget.context);
@@ -160,6 +162,9 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
                         },
                       ),
                     ],
+                  ),
+                  Container(
+                    child: SeekBar(),
                   ),
                 ],
               );
