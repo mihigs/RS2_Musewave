@@ -9,6 +9,7 @@ using System.Linq;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Models.Entities;
 
 namespace API.Controllers
 {
@@ -110,12 +111,43 @@ namespace API.Controllers
         }
 
         [HttpGet("GetTrack/{trackId}")]
-        public async Task<IActionResult> GetTrack(string trackId)
+        public async Task<IActionResult> GetTrack(int trackId)
         {
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                apiResponse.Data = await _tracksService.GetTrackByIdAsync(int.Parse(trackId));
+                var trackResult = await _tracksService.GetTrackByIdAsync(trackId);
+                if (trackResult == null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("Track not found");
+                    return NotFound(apiResponse);
+                }
+
+                apiResponse.Data = trackResult;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
+        [HttpGet("GetNextTrack/{currentTrackId}")]
+        public async Task<IActionResult> GetNextTrack(int currentTrackId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var nextTrack = await _tracksService.GetNextTrackAsync(currentTrackId);
+                if (nextTrack == null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("Track not found");
+                }
+                apiResponse.Data = nextTrack;
                 apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
                 return Ok(apiResponse);
             }
@@ -127,6 +159,52 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("GetNextPlaylistTrack/{currentTrackId}/{playlistId}")]
+        public async Task<IActionResult> GetNextPlaylistTrack(int currentTrackId, int playlistId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var nextTrack = await _tracksService.GetNextPlaylistTrackAsync(currentTrackId, playlistId);
+                if (nextTrack == null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("Track not found");
+                }
+                apiResponse.Data = nextTrack;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
 
+        [HttpGet("GetNextAlbumTrack/{currentTrackId}/{albumId}")]
+        public async Task<IActionResult> GetNextAlbumTrack(int currentTrackId, int albumId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var nextTrack = await _tracksService.GetNextAlbumTrackAsync(currentTrackId, albumId);
+                if (nextTrack == null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("Track not found");
+                }
+                apiResponse.Data = nextTrack;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
     }
 }

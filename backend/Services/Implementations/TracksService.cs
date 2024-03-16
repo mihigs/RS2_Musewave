@@ -6,16 +6,21 @@ using Models.Entities;
 using Services.Interfaces;
 using System.Security.Claims;
 using System.Text;
+using DataContext.Repositories;
 
 namespace Services.Implementations
 {
     public class TracksService : ITracksService
     {
         private readonly ITrackRepository _trackRepository;
+        private readonly IAlbumRepository _albumRepository;
+        private readonly IPlaylistRepository _playlistRepository;
 
-        public TracksService(ITrackRepository trackRespository)
+        public TracksService(ITrackRepository trackRespository, IAlbumRepository albumRepository, IPlaylistRepository playlistRepository)
         {
             _trackRepository = trackRespository ?? throw new ArgumentNullException(nameof(trackRespository));
+            _albumRepository = albumRepository;
+            _playlistRepository = playlistRepository;
         }
 
         public async Task<IEnumerable<Track>> GetLikedTracksAsync(string userId)
@@ -79,5 +84,100 @@ namespace Services.Implementations
             var url = $"{listenerTrackId}?token={token}";
             return url;
         }
+
+        public async Task<Track> GetNextTrackAsync(int currentTrackId)
+        {
+            var currentTrack = await _trackRepository.GetById(currentTrackId);
+            if (currentTrack == null)
+            {
+                throw new Exception("Current track not found");
+            }
+
+            Track nextTrack = null;
+            IEnumerable<Track> tracksSameGenre = null;
+
+            // If the current track has a genre, get tracks of the same genre
+            if (currentTrack.GenreId.HasValue)
+            {
+                tracksSameGenre = await _trackRepository.GetTracksByGenreAsync(currentTrack.GenreId.Value);
+                tracksSameGenre = tracksSameGenre.Where(x => x.Id != currentTrackId);
+                if(tracksSameGenre.Count() > 0)
+                {
+                    nextTrack = tracksSameGenre.OrderBy(x => Guid.NewGuid()).FirstOrDefault(); // Random track with same genre
+                }
+                else
+                {
+                    nextTrack = await _trackRepository.GetRandomTrack();
+                }
+            }
+            // If the current track does not have a genre, return a random track
+            else
+            {
+                nextTrack = await _trackRepository.GetRandomTrack();
+            }
+
+
+            nextTrack.SignedUrl = GenerateSignedTrackUrl(nextTrack.FilePath, nextTrack.ArtistId.ToString());
+            if (nextTrack == null)
+            {
+                throw new Exception("Next track not found");
+            }
+            return nextTrack;
+        }
+
+        public async Task<Track> GetNextPlaylistTrackAsync(int currentTrackId, int playlistId)
+        {
+            var playlist = await _playlistRepository.GetById(playlistId);
+            if (playlist == null)
+            {
+                throw new Exception("Playlist not found");
+            }
+
+            Track track = null;
+            // Get the next track in the playlist
+            var playlistTracks = await _playlistRepository.GetPlaylistTracksAsync(playlistId);
+            var currentTrackIndex = playlistTracks.ToList().FindIndex(x => x.Id == currentTrackId);
+            if (currentTrackIndex == -1)
+            {
+                throw new Exception("Current track not found in playlist");
+            }
+            if (currentTrackIndex == playlistTracks.Count() - 1)
+            {
+                track = playlistTracks.FirstOrDefault();
+            }
+            else
+            {
+                track = playlistTracks.ToList()[currentTrackIndex + 1];
+            }
+            return track;
+        }
+
+        public async Task<Track> GetNextAlbumTrackAsync(int currentTrackId, int albumId)
+        {
+            var album = await _albumRepository.GetById(albumId);
+            if (album == null)
+            {
+                throw new Exception("Album not found");
+            }
+
+            Track track = null;
+            // Get the next track in the album
+            var albumTracks = await _albumRepository.GetAlbumTracksAsync(albumId);
+            var currentTrackIndex = albumTracks.ToList().FindIndex(x => x.Id == currentTrackId);
+            if (currentTrackIndex == -1)
+            {
+                throw new Exception("Current track not found in album");
+            }
+            if (currentTrackIndex == albumTracks.Count() - 1)
+            {
+                track = albumTracks.FirstOrDefault();
+            }
+            else
+            {
+                track = albumTracks.ToList()[currentTrackIndex + 1];
+            }
+            return track;
+        }
+
     }
 }

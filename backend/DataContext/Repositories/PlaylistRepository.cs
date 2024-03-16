@@ -20,5 +20,13 @@ namespace DataContext.Repositories
                 .Where(g => g.IsPublic == arePublic)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Track>> GetPlaylistTracksAsync(int playlistId)
+        {
+            return await _dbContext.Set<PlaylistTrack>()
+                .Where(pt => pt.PlaylistId == playlistId)
+                .Select(pt => pt.Track)
+                .ToListAsync();
+        }
     }
 }

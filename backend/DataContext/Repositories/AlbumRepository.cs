@@ -20,5 +20,12 @@ namespace DataContext.Repositories
                 .ThenInclude(Artist => Artist.User)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Track>> GetAlbumTracksAsync(int albumId)
+        {
+            return await _dbContext.Set<Track>()
+                .Where(t => t.AlbumId == albumId)
+                .ToListAsync();
+        }   
     }
 }

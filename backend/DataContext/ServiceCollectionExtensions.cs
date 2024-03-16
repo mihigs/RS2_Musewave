@@ -18,6 +18,7 @@ namespace DataContext
             services.AddScoped<IPlaylistRepository, PlaylistRepository>();
             services.AddScoped<ITrackRepository, TrackRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPlaylistTrackRepository, PlaylistTrackRepository>();
 
             return services;
         }

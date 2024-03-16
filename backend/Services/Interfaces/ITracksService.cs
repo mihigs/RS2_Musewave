@@ -10,5 +10,8 @@ namespace Services.Interfaces
         Task<Track> InitializeTrack(Track track);
         Task<Track> handleListenerDoneProcessing(RabbitMqMessage messageObject);
         Task<Track> GetTrackByIdAsync(int id);
+        Task<Track> GetNextTrackAsync(int currentTrackId);
+        Task<Track> GetNextPlaylistTrackAsync(int currentTrackId, int playlistId);
+        Task<Track> GetNextAlbumTrackAsync(int currentTrackId, int albumId);
     }
 }

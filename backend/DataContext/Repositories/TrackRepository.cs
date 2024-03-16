@@ -39,10 +39,18 @@ namespace DataContext.Repositories
 
         public async Task<Track> GetById(int id)
         {
-            return await _dbContext.Tracks
+            return await _dbContext.Set<Track>()
                 .Include(t => t.Artist)
                 .ThenInclude(Artist => Artist.User)
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
+
+        public async Task<Track> GetRandomTrack()
+        {
+            return await _dbContext.Set<Track>()
+                .OrderBy(t => Guid.NewGuid())
+                .FirstOrDefaultAsync();
+        }
+
     }
 }

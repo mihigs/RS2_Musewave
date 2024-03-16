@@ -7,5 +7,6 @@ namespace DataContext.Repositories.Interfaces
         Task<IEnumerable<Track>> GetTracksByGenreAsync(int genreId);
         Task<IEnumerable<Track>> GetLikedTracksAsync(string userId);
         Task<IEnumerable<Track>> GetTracksByNameAsync(string name);
+        Task<Track> GetRandomTrack();
     }
 }

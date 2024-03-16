@@ -71,7 +71,7 @@ class _SearchResultsState extends State<SearchResults> {
                       ...tracks
                           .take(_tracksToShow)
                           .map((track) => GestureDetector(
-                            onTap:() => GoRouter.of(context).go('/track/${track.id}'),
+                            onTap:() => GoRouter.of(context).go('/track/${track.id}/0/0'),
                             child: ResultItemCard(
                                   title: track.title,
                                   subtitle: track.artist.user.userName,

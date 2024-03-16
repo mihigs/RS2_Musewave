@@ -117,6 +117,33 @@ class TracksService extends ApiService {
     }
   }
 
+  Future<Track> getNextTrack(String currentTrackId) async {
+    try {
+      final response = await httpGet('Tracks/GetNextTrack/$currentTrackId');
+      return _mapToTrack(response['data']);
+    } on Exception {
+      rethrow;
+    }
+  }
+
+    Future<Track> GetNextPlaylistTrack(String currentTrackId, String playlistId) async {
+    try {
+      final response = await httpGet('Tracks/GetNextPlaylistTrack/$currentTrackId/$playlistId');
+      return _mapToTrack(response['data']);
+    } on Exception {
+      rethrow;
+    }
+  }
+
+    Future<Track> GetNextAlbumTrack(String currentTrackId, String albumId) async {
+    try {
+      final response = await httpGet('Tracks/GetNextAlbumTrack/$currentTrackId/$albumId');
+      return _mapToTrack(response['data']);
+    } on Exception {
+      rethrow;
+    }
+  }
+
 
   Track _mapToTrack(dynamic item) {
     if (item is Map<String, dynamic>) {

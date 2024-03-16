@@ -8,19 +8,18 @@ import 'package:just_audio/just_audio.dart';
 class MusicStreamer extends ChangeNotifier {
   final TracksService tracksService = GetIt.I<TracksService>();
   final AudioPlayer _player = AudioPlayer();
-  late Future<void> _initializeVideoPlayerFuture;
   final String listenerUrl = const String.fromEnvironment('LISTENER_URL');
 
-  bool _isPlaying = false;
+  bool _isPlaying = true;
   String? _currentTrackUrl;
-  Track? _currentTrack;
 
   bool get isPlaying => _isPlaying;
 
-  Future<String> initializeTrack(Track track) async {
-    _currentTrack = track;
-    _currentTrackUrl = track.signedUrl;
-
+  Future<String> initializeTrack(String trackSource) async {
+    _currentTrackUrl = trackSource;
+    await _player.stop();
+    _isPlaying = false;
+    notifyListeners();
     String fullUrl = '$listenerUrl/Tracks/Stream/$_currentTrackUrl';
     await _player.setUrl(fullUrl);
 
@@ -31,93 +30,35 @@ class MusicStreamer extends ChangeNotifier {
     _isPlaying = false;
     notifyListeners(); // Notify listeners to show loading spinner
 
-    if (_currentTrack == null) {
-      return;
-    }
-
     try {
       if (_currentTrackUrl != null) {
-        _player.play();
         _isPlaying = true;
+        notifyListeners();
+        await _player.play();
       } else {
         throw Exception('Track URL is null');
       }
     } catch (e) {
       // Handle error
+      rethrow;
     }
-
-    notifyListeners(); // Notify listeners to hide loading spinner and update play state
   }
 
-  void pause() {
-    _player.pause();
+  Future<void> pause() async {
+    await _player.pause();
     _isPlaying = false;
     notifyListeners();
   }
 
+  Future<void> stop() async {
+    await _player.stop();
+    _isPlaying = false;
+    notifyListeners();
+  }
+
+  Future<void> initializeAndPlay(String trackSource) async {
+    await initializeTrack(trackSource);
+    await play();
+  }
+
 }
-
-
-// class MusicStreamer extends ChangeNotifier {
-//   final TracksService tracksService = GetIt.I<TracksService>();
-//   final AudioPlayer _audioPlayer = AudioPlayer();
-
-//   bool _isPlaying = false;
-//   // String? _currentTrackId;
-//   String? _currentTrackUrl;
-//   Track? _currentTrack;
-
-//   bool get isPlaying => _isPlaying;
-//   // String? get currentTrackId => _currentTrackId;
-//   // String? get currentTrackUrl => _currentTrackUrl;
-
-//   Future<String> initializeTrack(Track track) async {
-//     _currentTrack = track;
-//     _currentTrackUrl = track.signedUrl;
-//     return _currentTrackUrl!;
-//   }
-
-//   Future<void> play() async {
-//     _isPlaying = false;
-//     notifyListeners(); // Notify listeners to show loading spinner
-//     if(_currentTrack == null) {
-//       return;
-//     }
-//     try {
-//       if(_currentTrackUrl != null){
-//         var streamedResponse = await tracksService.streamTrack(_currentTrackUrl!);
-//         // _audioPlayer.setUrl(_currentTrackUrl!);
-//         String url = streamedResponse.request?.url.toString() ?? '';
-
-//         // if on web, use just_audio for web
-//         if(kIsWeb){
-//           await _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(url)));
-//         }
-//         else{
-//           await _audioPlayer.setUrl(url);
-//         }
-//         await _audioPlayer.play();
-//         _isPlaying = true;
-//       }
-//       else{
-//         throw Exception('Track URL is null');
-//       }
-//     } catch (e) {
-//       // Handle error
-//     }
-
-//     notifyListeners(); // Notify listeners to hide loading spinner and update play state
-//   }
-
-//   void pause() {
-//     _audioPlayer.stop();
-//     _isPlaying = false;
-//     notifyListeners();
-//   }
-
-//   @override
-//   void dispose() {
-//     _audioPlayer.dispose();
-//     super.dispose();
-//   }
-// }
