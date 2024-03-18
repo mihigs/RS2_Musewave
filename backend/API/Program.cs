@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Services.Implementations;
+using Microsoft.Extensions.Options;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -46,7 +47,10 @@ builder.Services.AddCors(options =>
 
 // Add controllers with newtonsoft json
 services.AddControllers().AddNewtonsoftJson(options =>
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+    {
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+        options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+    }
 );
 
 // Swagger

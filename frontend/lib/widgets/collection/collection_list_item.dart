@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/helpers/helperFunctions.dart';
+import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/services/tracks_service.dart';
@@ -8,10 +9,13 @@ import 'package:provider/provider.dart';
 
 class CollectionListItem extends StatefulWidget {
   final TracksService tracksService = GetIt.I<TracksService>();
-  final Track track;
+  final StreamingContext _streamingContext;
 
-  CollectionListItem({required this.track});
+  CollectionListItem(this._streamingContext);
 
+  Track get track => _streamingContext.track;
+  StreamingContext get streamingContext => _streamingContext;
+  
   @override
   State<CollectionListItem> createState() => _CollectionListItemState();
 }
@@ -54,7 +58,7 @@ void dispose() {
     final isPlaying =
         Provider.of<MusicStreamer>(context, listen: false).isPlaying;
     final trackLoaded = Provider.of<MusicStreamer>(context, listen: false).trackLoaded;
-    final currentPlayingTrackId = Provider.of<MusicStreamer>(context, listen: false).currentTrackId;
+    final currentPlayingTrackId = Provider.of<MusicStreamer>(context, listen: false).currentTrack?.id;
     bool isLiked = widget.track.isLiked ?? false;
 
     return Container(
@@ -72,8 +76,8 @@ void dispose() {
                   return;
                 } 
               }
-              Track trackToPlay = await widget.tracksService.getTrack(widget.track.id);
-              await Provider.of<MusicStreamer>(context, listen: false).initializeAndPlay(trackToPlay);
+              // Track trackToPlay = await widget.tracksService.getTrack(widget.track.id);
+              await Provider.of<MusicStreamer>(context, listen: false).startTrack(widget.streamingContext);
               updateIsPlaying();
               
               // if (isPlaying) {

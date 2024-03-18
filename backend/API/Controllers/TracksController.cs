@@ -141,17 +141,19 @@ namespace API.Controllers
                 throw;
             }
         }
-        [HttpGet("GetNextTrack/{currentTrackId}")]
-        public async Task<IActionResult> GetNextTrack(int currentTrackId)
+
+        [HttpPost("GetNextTrack")]
+        public async Task<IActionResult> GetNextTrack([FromBody] GetNextTrackDto getNextTrackDto)
         {
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var nextTrack = await _tracksService.GetNextTrackAsync(currentTrackId);
+                var nextTrack = await _tracksService.GetNextTrackAsync(getNextTrackDto);
                 if (nextTrack == null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
                     apiResponse.Errors.Add("Track not found");
+                    return NotFound(apiResponse);
                 }
                 apiResponse.Data = nextTrack;
                 apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
@@ -161,57 +163,82 @@ namespace API.Controllers
             {
                 apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
                 apiResponse.Errors.Add(ex.Message);
-                throw;
+                return StatusCode((int)apiResponse.StatusCode, apiResponse);
             }
         }
 
-        [HttpGet("GetNextPlaylistTrack/{currentTrackId}/{playlistId}")]
-        public async Task<IActionResult> GetNextPlaylistTrack(int currentTrackId, int playlistId)
-        {
-            ApiResponse apiResponse = new ApiResponse();
-            try
-            {
-                var nextTrack = await _tracksService.GetNextPlaylistTrackAsync(currentTrackId, playlistId);
-                if (nextTrack == null)
-                {
-                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-                    apiResponse.Errors.Add("Track not found");
-                }
-                apiResponse.Data = nextTrack;
-                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
-                return Ok(apiResponse);
-            }
-            catch (Exception ex)
-            {
-                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
-                apiResponse.Errors.Add(ex.Message);
-                throw;
-            }
-        }
 
-        [HttpGet("GetNextAlbumTrack/{currentTrackId}/{albumId}")]
-        public async Task<IActionResult> GetNextAlbumTrack(int currentTrackId, int albumId)
-        {
-            ApiResponse apiResponse = new ApiResponse();
-            try
-            {
-                var nextTrack = await _tracksService.GetNextAlbumTrackAsync(currentTrackId, albumId);
-                if (nextTrack == null)
-                {
-                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-                    apiResponse.Errors.Add("Track not found");
-                }
-                apiResponse.Data = nextTrack;
-                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
-                return Ok(apiResponse);
-            }
-            catch (Exception ex)
-            {
-                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
-                apiResponse.Errors.Add(ex.Message);
-                throw;
-            }
-        }
+        //[HttpGet("GetNextTrack/{currentTrackId}")]
+        //public async Task<IActionResult> GetNextTrack(int currentTrackId)
+        //{
+        //    ApiResponse apiResponse = new ApiResponse();
+        //    try
+        //    {
+        //        var nextTrack = await _tracksService.GetNextTrackAsync(currentTrackId);
+        //        if (nextTrack == null)
+        //        {
+        //            apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+        //            apiResponse.Errors.Add("Track not found");
+        //        }
+        //        apiResponse.Data = nextTrack;
+        //        apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+        //        return Ok(apiResponse);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+        //        apiResponse.Errors.Add(ex.Message);
+        //        throw;
+        //    }
+        //}
+
+        //[HttpGet("GetNextPlaylistTrack/{currentTrackId}/{playlistId}")]
+        //public async Task<IActionResult> GetNextPlaylistTrack(int currentTrackId, int playlistId)
+        //{
+        //    ApiResponse apiResponse = new ApiResponse();
+        //    try
+        //    {
+        //        var nextTrack = await _tracksService.GetNextPlaylistTrackAsync(currentTrackId, playlistId);
+        //        if (nextTrack == null)
+        //        {
+        //            apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+        //            apiResponse.Errors.Add("Track not found");
+        //        }
+        //        apiResponse.Data = nextTrack;
+        //        apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+        //        return Ok(apiResponse);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+        //        apiResponse.Errors.Add(ex.Message);
+        //        throw;
+        //    }
+        //}
+
+        //[HttpGet("GetNextAlbumTrack/{currentTrackId}/{albumId}")]
+        //public async Task<IActionResult> GetNextAlbumTrack(int currentTrackId, int albumId)
+        //{
+        //    ApiResponse apiResponse = new ApiResponse();
+        //    try
+        //    {
+        //        var nextTrack = await _tracksService.GetNextAlbumTrackAsync(currentTrackId, albumId);
+        //        if (nextTrack == null)
+        //        {
+        //            apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+        //            apiResponse.Errors.Add("Track not found");
+        //        }
+        //        apiResponse.Data = nextTrack;
+        //        apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+        //        return Ok(apiResponse);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+        //        apiResponse.Errors.Add(ex.Message);
+        //        throw;
+        //    }
+        //}
 
         // a controller endpoint that takes a trackId, gets the userId from the token, and calls the service to like the track
         [HttpPost("ToggleLikeTrack/{trackId}")]

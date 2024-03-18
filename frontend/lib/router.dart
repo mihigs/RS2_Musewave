@@ -55,16 +55,16 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
       // ),
       // Route for MediaPlayerPage, with a query parameter 'trackId'
       GoRoute(
-        path: '${Routes.track}/:trackId/:contextId/:context/:autoStart',
+        path: '${Routes.track}/:trackId/:contextId/:contextType/:autoStart',
         builder: (context, state) {
           final trackId = state.pathParameters['trackId'];
           final contextId = state.pathParameters['contextId'];
-          final context = state.pathParameters['context'];
+          final contextType = state.pathParameters['contextType'];
           final autoStart = state.pathParameters['autoStart'];
           return MediaPlayerPage(
             trackId: trackId!,
             contextId: contextId!,
-            context: context!,
+            contextType: contextType!,
             autoStart: autoStart!,
           );
         },

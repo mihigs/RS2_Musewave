@@ -3,7 +3,9 @@ import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/helpers/helperFunctions.dart';
 import 'package:frontend/models/DTOs/TrackUploadDto.dart';
+import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/models/like.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/services/base/api_service.dart';
@@ -119,9 +121,14 @@ class TracksService extends ApiService {
     }
   }
 
-  Future<Track> getNextTrack(String currentTrackId) async {
+  Future<Track> getNextTrack(StreamingContext streamingContext) async {
     try {
-      final response = await httpGet('Tracks/GetNextTrack/$currentTrackId');
+      var data = {
+        'CurrentTrackId': streamingContext.track.id.toString(),
+        'ContextId': streamingContext.contextId.toString(),
+        'StreamingContextType': getStringFromStreamingContextType(streamingContext.type),
+      };
+      final response = await httpPost('Tracks/GetNextTrack', data);
       return _mapToTrack(response['data']);
     } on Exception {
       rethrow;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/widgets/collection/collection_list.dart';
 
 class AlbumPage extends StatelessWidget {
@@ -12,7 +13,7 @@ class AlbumPage extends StatelessWidget {
     return Container(
       child: CollectionList(
         contextId: _albumId,
-        contextType: "album",
+        streamingContextType: StreamingContextType.ALBUM,
       ),
     );
   }

@@ -1,18 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Models.Enums;
 
 namespace Models.DTOs
 {
-    public class TrackUploadDetailsDto : TrackUploadDto
+    public class GetNextTrackDto
     {
-        public string trackName { get; set; }
-        public int? albumId { get; set; }
-        public string userId { get; set; }
+        public int CurrentTrackId { get; set; }
+        public int? ContextId { get; set; }
+        public StreamingContextType StreamingContextType { get; set; }
     }
-    public class TrackUploadDto
-    {
-        public IFormFile mediaFile { get; set; }
-        public int? artistId { get; set; }
-        public int trackId { get; set; }
-    }
-
 }

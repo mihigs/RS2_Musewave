@@ -7,6 +7,7 @@ using Services.Interfaces;
 using System.Security.Claims;
 using System.Text;
 using DataContext.Repositories;
+using Models.Enums;
 
 namespace Services.Implementations
 {
@@ -186,6 +187,22 @@ namespace Services.Implementations
             track.IsLiked = await CheckIfTrackIsLikedByUser(track.Id, track.Artist.User.Id) != null;
             return track;
         }
+
+        public async Task<Track> GetNextTrackAsync(GetNextTrackDto getNextTrackDto)
+        {
+            switch (getNextTrackDto.StreamingContextType)
+            {
+                case StreamingContextType.RADIO:
+                    return await GetNextTrackAsync(getNextTrackDto.CurrentTrackId);
+                case StreamingContextType.ALBUM:
+                    return await GetNextAlbumTrackAsync(getNextTrackDto.CurrentTrackId, getNextTrackDto.ContextId.Value);
+                case StreamingContextType.PLAYLIST:
+                    return await GetNextPlaylistTrackAsync(getNextTrackDto.CurrentTrackId, getNextTrackDto.ContextId.Value);
+                default:
+                    throw new ArgumentException("Invalid streaming context type");
+            }
+        }
+
 
         public async Task<Like> ToggleLikeTrack(int trackId, string userId)
         {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/helpers/helperFunctions.dart';
 import 'package:frontend/models/album.dart';
+import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:frontend/models/playlist.dart';
 import 'package:frontend/models/track.dart';
@@ -13,14 +14,14 @@ import 'package:provider/provider.dart'; // Make sure you have provider package 
 
 class CollectionList extends StatefulWidget {
   int contextId;
-  String contextType;
+  StreamingContextType streamingContextType;
 
   CollectionList({
     // required this.title,
     // required this.artistName,
     // required this.tracks,
     required this.contextId,
-    required this.contextType,
+    required this.streamingContextType,
   });
 
   @override
@@ -37,9 +38,9 @@ class _CollectionListState extends State<CollectionList> {
   @override
   void initState() {
     super.initState();
-    if (widget.contextType == 'album') {
+    if (widget.streamingContextType == StreamingContextType.ALBUM) {
       albumFuture = albumService.GetAlbumDetails(widget.contextId);
-    } else if (widget.contextType == 'playlist') {
+    } else if (widget.streamingContextType == StreamingContextType.PLAYLIST) {
       playlistFuture =
           playlistService.GetPlaylistDetailsAsync(widget.contextId);
     }
@@ -49,7 +50,6 @@ class _CollectionListState extends State<CollectionList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${capitalizeFirstLetter(widget.contextType)} list'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -60,7 +60,7 @@ class _CollectionListState extends State<CollectionList> {
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
-          future: widget.contextType == 'album' ? albumFuture : playlistFuture,
+          future: widget.streamingContextType == StreamingContextType.ALBUM ? albumFuture : playlistFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -76,7 +76,7 @@ class _CollectionListState extends State<CollectionList> {
               String title;
               String artistName;
 
-              if (widget.contextType == 'album') {
+              if (widget.streamingContextType == StreamingContextType.ALBUM) {
                 Album album = snapshot.data as Album;
                 tracks = album.tracks;
                 title = album
@@ -132,7 +132,12 @@ class _CollectionListState extends State<CollectionList> {
                         itemBuilder: (context, index) {
                           if (index < tracks.length) {
                             return CollectionListItem(
-                              track: tracks[index],
+                              // track: tracks[index],
+                              StreamingContext(
+                                tracks[index],
+                                widget.contextId,
+                                widget.streamingContextType,
+                              ),
                             );
                           } else {
                             // Handle null or out-of-bounds index

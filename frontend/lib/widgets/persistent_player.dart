@@ -16,7 +16,7 @@ class _PersistentPlayerState extends State<PersistentPlayer> {
   void updateCurrentTrack() {
     setState(() {
       currentTrackId =
-          Provider.of<MusicStreamer>(context, listen: false).currentTrackId;
+          Provider.of<MusicStreamer>(context, listen: false).currentTrack?.id;
     });
   }
 
@@ -59,11 +59,13 @@ class _PersistentPlayerState extends State<PersistentPlayer> {
 
     return GestureDetector(
       onTap: () {
-        var trackId = model.currentTrackId;
-        var contextId = model.contextId;
-        var streamingContext = model.streamingContext;
-        GoRouter.of(context)
-            .go('/track/${trackId}/${contextId}/${streamingContext}/false');
+        if(model.currentTrack != null && model.currentStreamingContext != null){
+          var trackId = model.currentTrack!.id;
+          var contextId = model.currentStreamingContext!.contextId;
+          var streamingContextType = model.currentStreamingContext!.type;
+          GoRouter.of(context)
+              .go('/track/${trackId}/${contextId}/${streamingContextType}/false');
+        }
       },
       child: Container(
         height: 65,
