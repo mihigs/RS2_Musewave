@@ -91,7 +91,7 @@ namespace Services.Implementations
             return url;
         }
 
-        public async Task<Track> GetNextTrackAsync(int currentTrackId)
+        public async Task<Track> GetNextTrackAsync(int currentTrackId, string userId)
         {
             var currentTrack = await _trackRepository.GetById(currentTrackId);
             if (currentTrack == null)
@@ -125,7 +125,7 @@ namespace Services.Implementations
 
             nextTrack.SignedUrl = GenerateSignedTrackUrl(nextTrack.FilePath, nextTrack.ArtistId.ToString());
             // Check if the track is liked by the user
-            nextTrack.IsLiked = await CheckIfTrackIsLikedByUser(nextTrack.Id, nextTrack.Artist.User.Id) != null;
+            nextTrack.IsLiked = await CheckIfTrackIsLikedByUser(nextTrack.Id, userId) != null;
             return nextTrack;
         }
 
@@ -188,12 +188,12 @@ namespace Services.Implementations
             return track;
         }
 
-        public async Task<Track> GetNextTrackAsync(GetNextTrackDto getNextTrackDto)
+        public async Task<Track> GetNextTrackAsync(GetNextTrackDto getNextTrackDto, string userId)
         {
             switch (getNextTrackDto.StreamingContextType)
             {
                 case StreamingContextType.RADIO:
-                    return await GetNextTrackAsync(getNextTrackDto.CurrentTrackId);
+                    return await GetNextTrackAsync(getNextTrackDto.CurrentTrackId, userId);
                 case StreamingContextType.ALBUM:
                     return await GetNextAlbumTrackAsync(getNextTrackDto.CurrentTrackId, getNextTrackDto.ContextId.Value);
                 case StreamingContextType.PLAYLIST:

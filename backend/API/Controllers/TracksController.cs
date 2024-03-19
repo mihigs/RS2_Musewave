@@ -148,7 +148,17 @@ namespace API.Controllers
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var nextTrack = await _tracksService.GetNextTrackAsync(getNextTrackDto);
+                // gets the user id from the token
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return BadRequest(apiResponse);
+                }
+                string userId = userIdClaim.Value;
+                // gets the next track based on the streaming context type
+                var nextTrack = await _tracksService.GetNextTrackAsync(getNextTrackDto, userId);
                 if (nextTrack == null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;

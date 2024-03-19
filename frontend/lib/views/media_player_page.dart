@@ -23,7 +23,6 @@ class MediaPlayerPage extends StatefulWidget {
 
   MediaPlayerPage(
       {required this.trackId,
-      // this.nextTrackId,
       required this.contextId,
       required this.contextType,
       required this.autoStart});
@@ -35,7 +34,7 @@ class MediaPlayerPage extends StatefulWidget {
 class _MediaPlayerPageState extends State<MediaPlayerPage> {
   late bool trackLoaded;
   // late Track? previousTrackData;
-  late Future<Track> trackDataFuture;
+  late Track currentTrack;
   // late Future<Track> nextTrackDataFuture;
   late bool isLiked = false;
 
@@ -48,8 +47,8 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
     updateIsPlaying();
     checkIfTrackAlreadyLoaded();
 
-
-    initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
+    initializeTrackData(
+        widget.trackId, widget.contextId, widget.contextType, widget.autoStart);
     // Provider.of<MusicStreamer>(context, listen: false)
     //     .getPlayerStateStream()
     //     .listen((playerState) {
@@ -72,39 +71,37 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
     });
   }
 
-  Future<void> initializeTrackData(
-      String currentTrackId, String contextId, String streamingContextType) async {
-      trackDataFuture = widget.tracksService.getTrack(int.parse(currentTrackId));
-      trackDataFuture.then((response) => {
-          if (response.isLiked == null)
-            {
-              isLiked = false,
-            }
-          else
-            {
-              isLiked = response.isLiked!,
-            },
-          if (!trackLoaded && (widget.autoStart == "true"))
-            {
-              Provider.of<MusicStreamer>(context, listen: false)
-                  .startTrack(StreamingContext(
-                      response,
-                      int.parse(contextId),
-                      getStreamingContextTypeFromString(streamingContextType)))            }
-          else if (!trackLoaded && (widget.autoStart == "false"))
-            {
-              Provider.of<MusicStreamer>(context, listen: false)
-                  .initializeTrack(StreamingContext(
-                      response,
-                      int.parse(contextId),
-                      getStreamingContextTypeFromString(streamingContextType)))
-            }
-        });
+  void updateCurrentTrack() {
+    setState(() {
+      currentTrack =
+          Provider.of<MusicStreamer>(context, listen: false).currentTrack!;
+    });
+  }
+
+  Future<void> initializeTrackData(String currentTrackId, String contextId,
+      String streamingContextType, String autoStart) async {
+    currentTrack =
+        await widget.tracksService.getTrack(int.parse(currentTrackId));
+    if (currentTrack.isLiked == null) {
+      isLiked = false;
+    } else {
+      isLiked = currentTrack.isLiked!;
+    }
+    ;
+    if (autoStart == "true") {
+      Provider.of<MusicStreamer>(context, listen: false).startTrack(
+          StreamingContext(currentTrack, int.parse(contextId),
+              getStreamingContextTypeFromString(streamingContextType)));
+    } else {
+      Provider.of<MusicStreamer>(context, listen: false).startTrack(
+          StreamingContext(currentTrack, int.parse(contextId),
+              getStreamingContextTypeFromString(streamingContextType)));
+    }
 
     // if (contextId == "0" || streamingContext == "0") {
     //   nextTrackDataFuture = widget.tracksService.getNextTrack(currentTrackId);
-    //   nextTrackDataFuture.then((response) {
-    //     widget.nextTrackId = response.id.toString();
+    //   nextTrackDataFuture.then((currentTrack) {
+    //     widget.nextTrackId = currentTrack.id.toString();
     //   });
     // } else {
     //   switch (streamingContext) {
@@ -144,6 +141,9 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
     // Listen to the MusicStreamer and update isPlaying when it changes
     Provider.of<MusicStreamer>(context, listen: false)
         .addListener(updateIsPlaying);
+
+    Provider.of<MusicStreamer>(context, listen: false)
+        .addListener(updateCurrentTrack);
   }
 
   @override
@@ -151,162 +151,104 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
     // Remove the listener when the widget is disposed to avoid memory leaks
     Provider.of<MusicStreamer>(context, listen: false)
         .removeListener(updateIsPlaying);
+    Provider.of<MusicStreamer>(context, listen: false)
+        .removeListener(updateCurrentTrack);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final model = Provider.of<MusicStreamer>(context);
+    final MusicStreamer model = Provider.of<MusicStreamer>(context);
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // close this modal
+            // Navigate back
             GoRouter.of(context).go('/home');
           },
         ),
         actions: <Widget>[
-          Container(
-            // padding: EdgeInsets.all(0),
-            // width: 30,
-            // height: 30,
-            child: IconButton(
-              icon: Icon(isLiked ? Icons.star : Icons.star_border, size: 32),
-              onPressed: () async {
-                var snackBar;
-                if (isLiked) {
-                  var unlikedSuccessfuly = await widget.tracksService
-                      .toggleLikeTrack(int.parse(widget.trackId));
-                  if (unlikedSuccessfuly) {
-                    setState(() {
-                      isLiked = false;
-                    });
-                  }
-                } else {
-                  var likedSuccessfuly = await widget.tracksService
-                      .toggleLikeTrack(int.parse(widget.trackId));
-                  if (likedSuccessfuly) {
-                    setState(() {
-                      isLiked = true;
-                    });
-                    snackBar = const SnackBar(
-                      content: Text('Added to favorites!'),
-                      duration: Duration(seconds: 1),
-                    );
-                  }
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                }
-              },
-            ),
+          IconButton(
+            icon: Icon(isLiked ? Icons.star : Icons.star_border, size: 32),
+            onPressed: () async {
+              // Toggle like status of the current track, this logic may need to be adjusted
+              // based on your application's functionality
+              isLiked = !isLiked;
+              setState(() {});
+            },
           ),
         ],
-        // title: Text('Media Player'),
       ),
-      body: Center(
-        child: FutureBuilder<Track>(
-          future: trackDataFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else if (snapshot.hasData) {
-              Track track = snapshot.data!;
-              return Container(
-                height: MediaQuery.of(context).size.height,
-                padding: const EdgeInsets.all(10),
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Container(
-                      // Track cover art placeholder with purple gradient background
-                      height: 200,
-                      width: 200,
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.purple, Colors.deepPurple],
-                        ),
+      body: currentTrack == null
+          ? Center(child: CircularProgressIndicator())
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  // Placeholder for track cover art
+                  Container(
+                    height: 200,
+                    width: 200,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Colors.deepPurple, Colors.purpleAccent],
                       ),
                     ),
-                    SizedBox(height: 50),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                      width: MediaQuery.of(context).size.width * 2 / 3,
-                      child: Text(
-                        track.title,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 24),
+                  ),
+                  SizedBox(height: 20),
+                  // Displaying current track title
+                  Text(
+                    model.currentTrackTitle!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  // Displaying current track artist name
+                  Text(
+                    currentTrack!.artist!.user!.userName,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.skip_previous, size: 58),
+                        onPressed: () async {
+                          await model.playPreviousTrack();
+                        },
                       ),
-                    ),
-                    Container(
-                      child: Text(
-                        track.artist!.user!.userName,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 18),
+                      IconButton(
+                        icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow,
+                            size: 58),
+                        onPressed: () {
+                          if (isPlaying) {
+                            model.pause();
+                          } else {
+                            model.play();
+                          }
+                        },
                       ),
-                    ),
-                    SizedBox(height: 40),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: 100,
-                          height: 100,
-                          child: IconButton(
-                            icon: Icon(Icons.skip_previous, size: 58),
-                            onPressed: !(model.journeyHistoryIds.length > 0)
-                                ? null
-                                : () async {
-                                    await model.playPreviousTrack();
-                                  },
-                          ),
-                        ),
-                        Container(
-                          width: 100,
-                          height: 100,
-                          child: IconButton(
-                            icon: Icon(
-                                isPlaying ? Icons.pause : Icons.play_arrow,
-                                size: 58),
-                            onPressed: () async {
-                              if (isPlaying) {
-                                await model.pause();
-                              } else {
-                                await model.play();
-                              }
-                            },
-                          ),
-                        ),
-                        Container(
-                          width: 100,
-                          height: 100,
-                          child: IconButton(
-                            icon: Icon(Icons.skip_next, size: 58),
-                            onPressed: () async {
-                              await model.playNextTrack();
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: SeekBar(),
-                    ),
-                  ],
-                ),
-              );
-            }
-            return Container();
-          },
-        ),
-      ),
+                      IconButton(
+                        icon: Icon(Icons.skip_next, size: 58),
+                        onPressed: () async {
+                          await model.playNextTrack();
+                        },
+                      ),
+                    ],
+                  ),
+                  // Your SeekBar widget
+                  Expanded(
+                    child: SeekBar(),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }
