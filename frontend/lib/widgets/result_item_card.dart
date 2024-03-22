@@ -31,9 +31,9 @@ class ResultItemCard extends StatelessWidget {
                   ),
                 ),
                 if (subtitle != null)
-                  Padding(
+                Expanded(
+                  child: Padding(
                     padding: const EdgeInsets.only(top: 4.0),
-                    child: Expanded(
                       child: Text(
                         subtitle!,
                         style: Theme.of(context).textTheme.labelSmall,

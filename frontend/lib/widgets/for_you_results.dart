@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/widgets/result_item_card.dart';
+import 'package:go_router/go_router.dart';
 
 class ForYouResults extends StatefulWidget {
   const ForYouResults({
@@ -31,6 +32,7 @@ class _ForYouResultsState extends State<ForYouResults> {
               children: <Widget>[
                 ...likedTracks.map((track) {
                   return ResultItemCard(
+                      onTap:() => GoRouter.of(context).go('/track/${track.id}/0/0/true'),
                       title: track.title,
                       subtitle: track.artist?.user?.userName,
                   );

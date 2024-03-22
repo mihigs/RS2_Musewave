@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/helpers/helperFunctions.dart';
 import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:frontend/router.dart';
 import 'package:go_router/go_router.dart';
@@ -62,9 +63,8 @@ class _PersistentPlayerState extends State<PersistentPlayer> {
         if(model.currentTrack != null && model.currentStreamingContext != null){
           var trackId = model.currentTrack!.id;
           var contextId = model.currentStreamingContext!.contextId;
-          var streamingContextType = model.currentStreamingContext!.type;
-          GoRouter.of(context)
-              .go('/track/${trackId}/${contextId}/${streamingContextType}/false');
+          var streamingContextType = getStringFromStreamingContextType(model.currentStreamingContext!.type);
+          GoRouter.of(context).go('/track/$trackId/$contextId/$streamingContextType/false');
         }
       },
       child: Container(

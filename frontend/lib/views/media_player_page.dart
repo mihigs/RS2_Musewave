@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/helpers/helperFunctions.dart';
-import 'package:frontend/models/artist.dart';
 import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:frontend/models/track.dart';
-import 'package:frontend/models/user.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:frontend/widgets/seek_bar.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
 class MediaPlayerPage extends StatefulWidget {
   final TracksService tracksService = GetIt.I<TracksService>();
-  String trackId;
-  // String? nextTrackId;
-  // List<String> previousTrackIds = [];
-  String contextId;
-  String contextType;
-  String autoStart;
+  final String trackId;
+  final String contextId;
+  final String contextType;
+  final String autoStart;
 
   MediaPlayerPage(
       {required this.trackId,
@@ -33,9 +28,7 @@ class MediaPlayerPage extends StatefulWidget {
 
 class _MediaPlayerPageState extends State<MediaPlayerPage> {
   late bool trackLoaded;
-  // late Track? previousTrackData;
-  late Track currentTrack;
-  // late Future<Track> nextTrackDataFuture;
+  Track? currentTrack;
   late bool isLiked = false;
 
   bool isPlaying = false;
@@ -49,13 +42,6 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
 
     initializeTrackData(
         widget.trackId, widget.contextId, widget.contextType, widget.autoStart);
-    // Provider.of<MusicStreamer>(context, listen: false)
-    //     .getPlayerStateStream()
-    //     .listen((playerState) {
-    //   if (playerState.processingState == ProcessingState.completed) {
-    //     nextTrack();
-    //   }
-    // });
   }
 
   void checkIfTrackAlreadyLoaded() {
@@ -79,60 +65,28 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
   }
 
   Future<void> initializeTrackData(String currentTrackId, String contextId,
-      String streamingContextType, String autoStart) async {
-    currentTrack =
-        await widget.tracksService.getTrack(int.parse(currentTrackId));
-    if (currentTrack.isLiked == null) {
-      isLiked = false;
-    } else {
-      isLiked = currentTrack.isLiked!;
+    String streamingContextType, String autoStart) async {
+    Track currentTrackResult = await widget.tracksService.getTrack(int.parse(currentTrackId));
+    setState(() {
+      currentTrack = currentTrackResult;
+    });
+    if(currentTrack != null){
+      if (currentTrack!.isLiked == null) {
+        isLiked = false;
+      } else {
+        isLiked = currentTrack!.isLiked!;
+      }
+      if (autoStart == "true") {
+        mounted ? Provider.of<MusicStreamer>(context, listen: false).startTrack(
+            StreamingContext(currentTrack!, int.parse(contextId),
+                getStreamingContextTypeFromString(streamingContextType))) : null;
+      } else {
+        mounted ? Provider.of<MusicStreamer>(context, listen: false).startTrack(
+            StreamingContext(currentTrack!, int.parse(contextId),
+                getStreamingContextTypeFromString(streamingContextType))) : null;
+      }
     }
-    ;
-    if (autoStart == "true") {
-      Provider.of<MusicStreamer>(context, listen: false).startTrack(
-          StreamingContext(currentTrack, int.parse(contextId),
-              getStreamingContextTypeFromString(streamingContextType)));
-    } else {
-      Provider.of<MusicStreamer>(context, listen: false).startTrack(
-          StreamingContext(currentTrack, int.parse(contextId),
-              getStreamingContextTypeFromString(streamingContextType)));
-    }
-
-    // if (contextId == "0" || streamingContext == "0") {
-    //   nextTrackDataFuture = widget.tracksService.getNextTrack(currentTrackId);
-    //   nextTrackDataFuture.then((currentTrack) {
-    //     widget.nextTrackId = currentTrack.id.toString();
-    //   });
-    // } else {
-    //   switch (streamingContext) {
-    //     case 'album':
-    //       nextTrackDataFuture =
-    //           widget.tracksService.GetNextAlbumTrack(currentTrackId, contextId);
-    //       break;
-    //     case 'playlist':
-    //       nextTrackDataFuture = widget.tracksService
-    //           .GetNextPlaylistTrack(currentTrackId, contextId);
-    //       break;
-    //     default:
-    //       nextTrackDataFuture =
-    //           widget.tracksService.getNextTrack(currentTrackId);
-    //   }
-    // }
   }
-
-  // Future<void> nextTrack() async {
-  //   await Provider.of<MusicStreamer>(context, listen: false).stop();
-  //   widget.previousTrackIds.add(widget.trackId);
-  //   widget.trackId = widget.nextTrackId!;
-  //   widget.autoStart = "true";
-  //   await initializeTrackData(widget.trackId, widget.contextId, widget.context);
-  // }
-
-  // Future<void> previousTrack() async {
-  //   widget.trackId = widget.previousTrackIds.removeLast();
-  //   widget.autoStart = "true";
-  //   await initializeTrackData(widget.trackId, widget.contextId, widget.context);
-  // }
 
   @override
   void didChangeDependencies() {

@@ -21,10 +21,11 @@ class _SeekBarState extends State<SeekBar> {
         return StreamBuilder<Duration>(
           stream: streamer.getBufferedPositionStream(),
           builder: (context, bufferedPositionSnapshot) {
-            double positionValue =
-                positionSnapshot.data?.inMilliseconds.toDouble() ?? 0.0;
             double totalDurationValue =
                 streamer.getDuration()?.inMilliseconds.toDouble() ?? 1.0;
+            double positionValueInitial =
+                positionSnapshot.data?.inMilliseconds.toDouble() ?? 0.0;
+            double positionValue = positionValueInitial > totalDurationValue ? 0 : positionValueInitial;
 
             String formatDuration(Duration duration) {
               String minutes = (duration.inMinutes % 60).toString().padLeft(2, '0');

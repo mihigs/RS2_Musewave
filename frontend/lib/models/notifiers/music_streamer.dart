@@ -9,7 +9,7 @@ import 'package:just_audio/just_audio.dart';
 class MusicStreamer extends ChangeNotifier {
   final TracksService _tracksService = GetIt.I<TracksService>();
   final AudioPlayer _player = AudioPlayer();
-  ConcatenatingAudioSource _playlist = ConcatenatingAudioSource(children: []);
+  ConcatenatingAudioSource? _playlist;
   final String _listenerUrl = const String.fromEnvironment('LISTENER_URL');
 
   StreamingContext? currentStreamingContext;
@@ -21,62 +21,65 @@ class MusicStreamer extends ChangeNotifier {
 
   Track? _currentTrack;
   Track? _nextTrack;
-  // List<Track> _journeyHistoryIds = [];
+  List<Track> _trackHistory = [];
 
   bool get isPlaying => _isPlaying;
   bool get trackLoaded => _trackLoaded;
   Track? get currentTrack => _currentTrack;
   Track? get nextTrack => _nextTrack;
-  // List<Track> get journeyHistoryIds => _journeyHistoryIds;
+  List<Track> get trackHistory => _trackHistory;
   String? get currentTrackTitle => _currentTrack?.title;
   String? get currentTrackArtist => _currentTrack?.artist?.user?.userName;
   Duration? get fullDuration => _fullDuration;
 
   MusicStreamer() {
-    // setupPlayerStateListener();
     _player.setVolume(0.5);
-    // initializePlaylist();
+    setupCurrentIndexListener();
   }
 
   Future<void> initializePlaylist(String initialTrackUrl) async {
-    // Example initialization, adjust as needed for your application
     String fullUrl = getFullUrl(initialTrackUrl);
     _playlist = ConcatenatingAudioSource(
       useLazyPreparation: true,
-      children: [AudioSource.uri(Uri.parse(fullUrl))], // Initially empty, tracks will be added dynamically
+      children: [AudioSource.uri(Uri.parse(fullUrl))],
     );
-    await _player.setAudioSource(_playlist);
+    await _player.stop();
+    await _player.setAudioSource(_playlist!,
+        preload: false, initialIndex: 0, initialPosition: Duration.zero);
   }
 
-  void setupPlayerStateListener() {
-    _player.playerStateStream.listen((playerState) {
-      if (playerState.processingState == ProcessingState.completed) {
-        playNextTrack().catchError((error) {
-          // handle error
-          throw Exception('Error playing next track: $error');
-        });
+  void setupCurrentIndexListener() {
+    _player.currentIndexStream.listen((currentIndex) async {
+      if(_nextTrack != null && currentStreamingContext != null){
+        await setCurrentTrackState(_nextTrack!);
+        _trackHistory.add(_nextTrack!);
+        await _prepareNextTrack(currentStreamingContext!);
+        notifyListeners();
       }
-      // handle other states if needed
     });
   }
 
   Future<void> startTrack(StreamingContext streamingContext) async {
-    if(streamingContext.track.signedUrl != null || streamingContext.track.signedUrl != "") {
+    if (streamingContext.track.signedUrl != null ||
+        streamingContext.track.signedUrl != "") {
       await stop();
       await clearTrackState();
       await initializePlaylist(streamingContext.track.signedUrl!);
       await setCurrentTrackState(streamingContext.track);
       currentStreamingContext = streamingContext;
+      _trackHistory.add(streamingContext.track);
       play();
       _prepareNextTrack(streamingContext);
-    }else{
+    } else {
       throw Exception('Invalid track URL');
     }
   }
 
-  void addToPlaylist(String url){
+  void addToPlaylist(String url) {
     String fullUrl = getFullUrl(url);
-    _playlist.add(AudioSource.uri(Uri.parse(fullUrl)));
+    if (_playlist != null) {
+      _playlist!.add(AudioSource.uri(Uri.parse(fullUrl)));
+    }
   }
 
   Future<void> setCurrentTrackState(Track currentTrack) async {
@@ -104,16 +107,17 @@ class MusicStreamer extends ChangeNotifier {
     _lastPosition = null;
     _isPlaying = false;
     // currentStreamingContext = null;
-    await _playlist.clear();
+    await _playlist?.clear();
     notifyListeners();
   }
 
-  Future<void> playNextTrack() async {
+  Future<void> playNextTrack({bool automatic = false}) async {
     try {
-      await _player.seekToNext(); // Just Audio handles the track navigation
-      await setCurrentTrackState(_nextTrack!);
-      await _prepareNextTrack(currentStreamingContext!);
-      notifyListeners();
+      if (!automatic) {
+        await _player.seekToNext(); // Just Audio handles the track navigation
+      } else {
+        // await seek(Duration.zero);
+      }
     } catch (e) {
       // Handle any errors that might occur during seeking
       print("Error seeking to next track: $e");
@@ -123,7 +127,15 @@ class MusicStreamer extends ChangeNotifier {
 
   Future<void> playPreviousTrack() async {
     try {
-      await _player.seekToPrevious(); // Just Audio handles the track navigation
+      if (_player.hasPrevious) {
+        Track nextTrack = _trackHistory.removeLast();
+        await setNextTrackState(nextTrack);
+        await setCurrentTrackState(_trackHistory.last);
+        await _player
+            .seekToPrevious(); // Just Audio handles the track navigation
+      } else {
+        await _player.seek(Duration.zero);
+      }
       // Optionally, update any relevant state or UI after seeking to the previous track
       notifyListeners();
     } catch (e) {
