@@ -31,6 +31,7 @@ class MusicStreamer extends ChangeNotifier {
   String? get currentTrackTitle => _currentTrack?.title;
   String? get currentTrackArtist => _currentTrack?.artist?.user?.userName;
   Duration? get fullDuration => _fullDuration;
+  List<int> get trackHistoryIds => _trackHistory.map((track) => track.id).toList();
 
   MusicStreamer() {
     _player.setVolume(0.5);
@@ -89,6 +90,7 @@ class MusicStreamer extends ChangeNotifier {
 
   Future<void> _prepareNextTrack(StreamingContext streamingContext) async {
     // Fetch the next track based on the current streaming context
+    streamingContext.trackHistoryIds = trackHistoryIds;
     final nextTrack = await _tracksService.getNextTrack(streamingContext);
     await setNextTrackState(nextTrack);
     // Add the next track to the playlist
@@ -222,84 +224,3 @@ class MusicStreamer extends ChangeNotifier {
     super.dispose();
   }
 }
-
-
-  // void setupPlayerStateListener() {
-  //   _player.playerStateStream.listen((playerState) {
-  //     if (playerState.processingState == ProcessingState.completed) {
-  //       // Automatically fetch and play the next track
-  //       playNextTrack().catchError((error) {
-  //         // handle error
-  //         throw Exception('Error playing next track: $error');
-  //       });
-  //     }
-  //     // handle other states if needed
-  //   });
-  // }
-
-  // Future<void> initializeTrack(StreamingContext streamingContext) async {
-  //   await stop();
-  //   currentStreamingContext = streamingContext;
-  //   await setCurrentTrackState(streamingContext.track);
-  //   final nextTrack = await _tracksService.getNextTrack(streamingContext);
-  //   setNextTrackState(nextTrack);
-  // }
-
-  
-  // Future<void> startTrack(StreamingContext streamingContext) async {
-  //   try {
-  //     await initializeTrack(streamingContext);
-  //     await play();
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
-
-  
-  // Future<void> playPreviousTrack() async {
-  //   if (_journeyHistoryIds.length >= 2) {
-  //     await stop();
-  //     Track currentTrack = _journeyHistoryIds.removeLast();
-  //     setNextTrackState(currentTrack);
-  //     Track previousTrack = _journeyHistoryIds.last;
-  //     await setCurrentTrackState(previousTrack);
-  //     await play();
-  //   } else {
-  //     // seek to the beginning of the track and continue
-  //     await seek(Duration.zero);
-  //     await play();
-  //   }
-  // }
-  //
-    // Future<void> setCurrentTrackState(Track newTrack) async {
-  //   try {
-  //     await stop();
-  //     _currentTrack = newTrack;
-  //     // _journeyHistoryIds.add(newTrack);
-  //     _trackLoaded = true;
-  //     _lastPosition = null;
-  //     notifyListeners();
-  //     String fullUrl = '$_listenerUrl/Tracks/Stream/${newTrack.signedUrl}';
-  //     _fullDuration = await _player.setUrl(fullUrl);
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
-
-    // Future<void> playNextTrack() async {
-  //   try {
-  //     if (_nextTrack != null && currentStreamingContext != null) {
-  //       await setCurrentTrackState(_nextTrack!);
-  //       await stop();
-  //       await play();
-  //       final nextTrack =
-  //           await _tracksService.getNextTrack(currentStreamingContext!);
-  //       setNextTrackState(nextTrack);
-  //     } else {
-  //       await stop();
-  //       throw Exception('No next track to play or invalid streaming context');
-  //     }
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }

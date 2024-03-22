@@ -123,10 +123,12 @@ class TracksService extends ApiService {
 
   Future<Track> getNextTrack(StreamingContext streamingContext) async {
     try {
+      //streamingContext.trackHistoryIds is a List<String>
       var data = {
         'CurrentTrackId': streamingContext.track.id.toString(),
         'ContextId': streamingContext.contextId.toString(),
         'StreamingContextType': getStringFromStreamingContextType(streamingContext.type),
+        'TrackHistoryIds': streamingContext.trackHistoryIds,
       };
       final response = await httpPost('Tracks/GetNextTrack', data);
       return _mapToTrack(response['data']);

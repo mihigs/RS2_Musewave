@@ -91,7 +91,7 @@ namespace Services.Implementations
             return url;
         }
 
-        public async Task<Track> GetNextTrackAsync(int currentTrackId, string userId)
+        public async Task<Track> GetNextTrackAsync(int currentTrackId, string userId, List<int> trackHistoryIds)
         {
             var currentTrack = await _trackRepository.GetById(currentTrackId);
             if (currentTrack == null)
@@ -106,21 +106,18 @@ namespace Services.Implementations
             if (currentTrack.GenreId.HasValue)
             {
                 tracksSameGenre = await _trackRepository.GetTracksByGenreAsync(currentTrack.GenreId.Value);
+                // remove tracks that are in the track history
+                tracksSameGenre = tracksSameGenre.Where(x => !trackHistoryIds.Contains(x.Id));
                 tracksSameGenre = tracksSameGenre.Where(x => x.Id != currentTrackId);
                 if(tracksSameGenre.Count() > 0)
                 {
                     nextTrack = tracksSameGenre.OrderBy(x => Guid.NewGuid()).FirstOrDefault(); // Random track with same genre
                 }
             }
-            // If the current track does not have a genre, return a random track
-            else
-            {
-                nextTrack = await _trackRepository.GetRandomTrack();
-            }
 
             if (nextTrack == null)
             {
-                throw new Exception("Next track not found");
+                nextTrack = await _trackRepository.GetRandomTrack(excluding: trackHistoryIds);
             }
 
             nextTrack.SignedUrl = GenerateSignedTrackUrl(nextTrack.FilePath, nextTrack.ArtistId.ToString());
@@ -193,7 +190,7 @@ namespace Services.Implementations
             switch (getNextTrackDto.StreamingContextType)
             {
                 case StreamingContextType.RADIO:
-                    return await GetNextTrackAsync(getNextTrackDto.CurrentTrackId, userId);
+                    return await GetNextTrackAsync(getNextTrackDto.CurrentTrackId, userId, getNextTrackDto.TrackHistoryIds);
                 case StreamingContextType.ALBUM:
                     return await GetNextAlbumTrackAsync(getNextTrackDto.CurrentTrackId, getNextTrackDto.ContextId.Value);
                 case StreamingContextType.PLAYLIST:

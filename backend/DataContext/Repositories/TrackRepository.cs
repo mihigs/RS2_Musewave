@@ -45,9 +45,10 @@ namespace DataContext.Repositories
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public async Task<Track> GetRandomTrack()
+        public async Task<Track> GetRandomTrack(List<int> excluding)
         {
             return await _dbContext.Set<Track>()
+                .Where(t => !excluding.Contains(t.Id))
                 .OrderBy(t => Guid.NewGuid())
                 .FirstOrDefaultAsync();
         }

@@ -11,9 +11,6 @@ namespace Services.Interfaces
         Task<Track> handleListenerDoneProcessing(RabbitMqMessage messageObject);
         Task<Track> GetTrackByIdAsync(int trackId, string userId);
         Task<Track> GetNextTrackAsync(GetNextTrackDto getNextTrackDto, string userId);
-        //Task<Track> GetNextTrackAsync(int currentTrackId);
-        //Task<Track> GetNextPlaylistTrackAsync(int currentTrackId, int playlistId);
-        //Task<Track> GetNextAlbumTrackAsync(int currentTrackId, int albumId);
         Task<Like?> ToggleLikeTrack(int trackId, string userId);
     }
 }
