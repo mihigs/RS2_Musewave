@@ -37,41 +37,36 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         path: Routes.login,
         builder: (_, __) => LoginPage(),
       ),
-      GoRoute(
-        path: Routes.home,
-        builder: (_, __) => ContainerWithNavigation(),
-      ),
-      GoRoute(
-        path: Routes.search,
-        builder: (_, __) => ContainerWithNavigation(),
-      ),
-      GoRoute(
-        path: Routes.profile,
-        builder: (_, __) => ContainerWithNavigation(),
-      ),
       // GoRoute(
-      //   path: Routes.track,
-      //   builder: (_, __) => MediaPlayerPage(),
+      //   path: Routes.home,
+      //   builder: (_, __) => ContainerWithNavigation(),
       // ),
-      // Route for MediaPlayerPage, with a query parameter 'trackId'
+      // GoRoute(
+      //   path: Routes.search,
+      //   builder: (_, __) => ContainerWithNavigation(),
+      // ),
+      // GoRoute(
+      //   path: Routes.profile,
+      //   builder: (_, __) => ContainerWithNavigation(),
+      // ),
       GoRoute(
-        path: '${Routes.track}/:trackId/:contextId/:contextType/:autoStart',
+        path: '/',
+        builder: (_, __) => ContainerWithNavigation(),
+      ),
+      GoRoute(
+        path: '${Routes.track}/:trackId/:contextId/:contextType',
         builder: (context, state) {
           final trackId = state.pathParameters['trackId'];
           final contextId = state.pathParameters['contextId'];
           final contextType = state.pathParameters['contextType'];
-          final autoStart = state.pathParameters['autoStart'];
           return MediaPlayerPage(
             trackId: trackId!,
             contextId: contextId!,
             contextType: contextType!,
-            autoStart: autoStart!,
           );
         },
       ),
       GoRoute(
-        // path: Routes.album,
-        // builder: (_, __) => PersistentPlayerContainer(child: AlbumPage()),
         path: '${Routes.album}/:albumId',
         builder: (context, state) {
           final albumId = state.pathParameters['albumId'];
@@ -85,8 +80,6 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         builder: (_, __) => PersistentPlayerContainer(child: ArtistPage()),
       ),
       GoRoute(
-        // path: Routes.playlist,
-        // builder: (_, __) => PersistentPlayerContainer(child: PlaylistPage()),
         path: '${Routes.playlist}/:playlistId',
         builder: (context, state) {
           final playlistId = state.pathParameters['playlistId'];
@@ -108,7 +101,7 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
 abstract class Routes {
   static const signup = '/signup';
   static const login = '/login';
-  static const home = '/home';
+  static const home = '/';
   static const search = '/search';
   static const profile = '/profile';
   static const uploadMedia = '/profile/upload';

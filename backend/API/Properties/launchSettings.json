@@ -18,7 +18,9 @@
         "Jwt__Issuer": "http://localhost:7074",
         "Jwt__Audience": "http://localhost:5234",
         "Jwt__AccessExpirationSeconds": "999999",
-        "AllowedHosts": "*"
+        "AllowedHosts": "*",
+        "ListenerApiUrl": "https://localhost:7151/api",
+        "RabbitMqHost": "localhost"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7074;http://localhost:5234"
@@ -43,7 +45,9 @@
         "Jwt__Issuer": "http://localhost:8080",
         "Jwt__Audience": "http://localhost:8080",
         "Jwt__AccessExpirationSeconds": "999999",
-        "AllowedHosts": "*"
+        "AllowedHosts": "*",
+        "ListenerApiUrl": "http://listener:8082/api",
+        "RabbitMqHost": "rabbitmq"
       },
       "publishAllPorts": true,
       "useSSL": true

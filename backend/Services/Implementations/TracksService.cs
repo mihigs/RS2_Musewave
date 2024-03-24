@@ -43,6 +43,7 @@ namespace Services.Implementations
         {
             var track = await _trackRepository.GetById(int.Parse(messageObject.TrackId));
             track.FilePath = messageObject.Payload;
+            track.Duration = messageObject.Duration;
 
             return await _trackRepository.Update(track);
         }
@@ -82,11 +83,10 @@ namespace Services.Implementations
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private string GenerateSignedTrackUrl(string listenerTrackId, string artistId)
+        public string GenerateSignedTrackUrl(string listenerTrackId, string artistId)
         {
             // Generate the signed URL
             var token = GenerateToken(listenerTrackId, artistId);
-            //var url = $"https://localhost:7151/api/Tracks/Stream/{listenerTrackId}?token={token}";
             var url = $"{listenerTrackId}?token={token}";
             return url;
         }
@@ -120,9 +120,6 @@ namespace Services.Implementations
                 nextTrack = await _trackRepository.GetRandomTrack(excluding: trackHistoryIds);
             }
 
-            nextTrack.SignedUrl = GenerateSignedTrackUrl(nextTrack.FilePath, nextTrack.ArtistId.ToString());
-            // Check if the track is liked by the user
-            nextTrack.IsLiked = await CheckIfTrackIsLikedByUser(nextTrack.Id, userId) != null;
             return nextTrack;
         }
 
@@ -137,7 +134,8 @@ namespace Services.Implementations
             Track track = null;
             // Get the next track in the playlist
             var playlistTracks = await _playlistRepository.GetPlaylistTracksAsync(playlistId);
-            var currentTrackIndex = playlistTracks.ToList().FindIndex(x => x.Id == currentTrackId);
+            List<Track> playlistTracksList = playlistTracks.ToList();
+            var currentTrackIndex = playlistTracksList.FindIndex(x => x.Id == currentTrackId);
             if (currentTrackIndex == -1)
             {
                 throw new Exception("Current track not found in playlist");
@@ -148,10 +146,8 @@ namespace Services.Implementations
             }
             else
             {
-                track = playlistTracks.ToList()[currentTrackIndex + 1];
+                track = playlistTracksList[currentTrackIndex + 1];
             }
-            // Check if the track is liked by the user
-            track.IsLiked = await CheckIfTrackIsLikedByUser(track.Id, track.Artist.User.Id) != null;
             return track;
         }
 
@@ -180,24 +176,30 @@ namespace Services.Implementations
                 track = albumTracks.ToList()[currentTrackIndex + 1];
             }
 
-            // Check if the track is liked by the user
-            track.IsLiked = await CheckIfTrackIsLikedByUser(track.Id, track.Artist.User.Id) != null;
             return track;
         }
 
         public async Task<Track> GetNextTrackAsync(GetNextTrackDto getNextTrackDto, string userId)
         {
+            var nextTrack = new Track();
             switch (getNextTrackDto.StreamingContextType)
             {
                 case StreamingContextType.RADIO:
-                    return await GetNextTrackAsync(getNextTrackDto.CurrentTrackId, userId, getNextTrackDto.TrackHistoryIds);
+                    nextTrack = await GetNextTrackAsync(getNextTrackDto.CurrentTrackId, userId, getNextTrackDto.TrackHistoryIds);
+                    break;
                 case StreamingContextType.ALBUM:
-                    return await GetNextAlbumTrackAsync(getNextTrackDto.CurrentTrackId, getNextTrackDto.ContextId.Value);
+                    nextTrack = await GetNextAlbumTrackAsync(getNextTrackDto.CurrentTrackId, getNextTrackDto.ContextId.Value);
+                    break;
                 case StreamingContextType.PLAYLIST:
-                    return await GetNextPlaylistTrackAsync(getNextTrackDto.CurrentTrackId, getNextTrackDto.ContextId.Value);
+                    nextTrack = await GetNextPlaylistTrackAsync(getNextTrackDto.CurrentTrackId, getNextTrackDto.ContextId.Value);
+                    break;
                 default:
                     throw new ArgumentException("Invalid streaming context type");
             }
+            nextTrack.SignedUrl = GenerateSignedTrackUrl(nextTrack.FilePath, nextTrack.ArtistId.ToString());
+            // Check if the track is liked by the user
+            nextTrack.IsLiked = await CheckIfTrackIsLikedByUser(nextTrack.Id, userId) != null;
+            return nextTrack;
         }
 
 
@@ -214,7 +216,7 @@ namespace Services.Implementations
             }
         }
         
-        private async Task<Like?> CheckIfTrackIsLikedByUser(int trackId, string userId)
+        public async Task<Like?> CheckIfTrackIsLikedByUser(int trackId, string userId)
         {
             return await _likeRepository.CheckIfTrackIsLikedByUser(trackId, userId);
         }

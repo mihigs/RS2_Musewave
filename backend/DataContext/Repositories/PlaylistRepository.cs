@@ -24,6 +24,9 @@ namespace DataContext.Repositories
         public async Task<IEnumerable<Track>> GetPlaylistTracksAsync(int playlistId)
         {
             return await _dbContext.Set<PlaylistTrack>()
+                .Include(pt => pt.Track)
+                    .ThenInclude(t => t.Artist)
+                        .ThenInclude(a => a.User)
                 .Where(pt => pt.PlaylistId == playlistId)
                 .Select(pt => pt.Track)
                 .ToListAsync();

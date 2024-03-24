@@ -37,12 +37,15 @@ namespace Listener.Services
                     await model.mediaFile.CopyToAsync(stream);
                 }
 
+                int mediaDurationInSeconds = GetAudioDuration(filePath).Seconds;
+
                 // Send the file name to the RabbitMQ service
                 _rabbitMqService.SendMessage(new RabbitMqMessage
                 {
                     Payload = fileName,
                     ArtistId = model.artistId,
-                    TrackId = model.trackId
+                    TrackId = model.trackId,
+                    Duration = mediaDurationInSeconds
                 });
             }
             catch (Exception ex)
@@ -91,6 +94,12 @@ namespace Listener.Services
             var types = GetMimeTypes();
             var ext = Path.GetExtension(path).ToLowerInvariant();
             return types[ext];
+        }
+
+        public static TimeSpan GetAudioDuration(string filePath)
+        {
+            var file = TagLib.File.Create(filePath);
+            return file.Properties.Duration;
         }
 
         private Dictionary<string, string> GetMimeTypes()

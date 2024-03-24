@@ -19,7 +19,7 @@ class ProfileTab extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () async {
                 await authService.logout();
-                GoRouter.of(context).go(Routes.home);
+                GoRouter.of(context).go(Routes.login);
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(

@@ -10,5 +10,6 @@
         abstract Task<IEnumerable<T>> AddRange(IEnumerable<T> entities);
         abstract Task<IEnumerable<T>> UpdateRange(IEnumerable<T> entities);
         abstract Task<IEnumerable<T>> RemoveRange(IEnumerable<T> entities);
+        abstract Task<IEnumerable<T>> GetAllIncluding(string[] includes);
     }
 }

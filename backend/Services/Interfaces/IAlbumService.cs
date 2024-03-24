@@ -11,6 +11,6 @@ namespace Services.Interfaces
         Task<Album> RemoveAlbumAsync(int id);
         Task<IEnumerable<Album>> GetAlbumsByTitleAsync(string title);
         Task<IEnumerable<Track>> GetAlbumTracksAsync(int albumId);
-        Task<Album> GetAlbumDetails(int albumId);
+        Task<Album> GetAlbumDetails(int albumId, string userId);
     }
 }

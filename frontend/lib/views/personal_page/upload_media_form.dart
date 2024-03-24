@@ -89,7 +89,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
                 onPressed: () {
-                  GoRouter.of(context).go('/profile');
+                  GoRouter.of(context).pop();
                 },
               ),
               title: Text('Upload Track'),

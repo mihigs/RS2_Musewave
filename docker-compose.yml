@@ -1,4 +1,4 @@
-version: '3.8'
+version: '2.4'
 services:
   mssql:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -7,8 +7,49 @@ services:
       SA_PASSWORD: 'Test_123'
     ports:
       - '1433:1433'
+    volumes:
+      - mssql-data:/var/opt/mssql
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-U", "sa", "-P", "Test_123", "-Q", "SELECT 1"]
+      interval: 11s
+      timeout: 5s
+      retries: 7
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - '5672:5672' # Default RabbitMQ port
+      - '15672:15672' # Management plugin UI
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 6s
+      retries: 6
+  listener:
+    build:
+      context: ./Listener
+      dockerfile: Dockerfile.Listener
+    ports:
+      - '8082:8082'
+      - '8083:8083'
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    # volumes:
+    #   - listener-data:/path/to/listener/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8082/api/HealthCheck || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   api:
     build:
       context: ./backend
@@ -17,17 +58,30 @@ services:
       - '8080:8080'
       - '8081:8081'
     depends_on:
-      - mssql
+      listener:
+        condition: service_healthy
+      mssql:
+        condition: service_healthy
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/api/HealthCheck || exit 1"]
+      interval: 14s
+      timeout: 5s
+      retries: 6
   seeder:
     build:
       context: ./backend
       dockerfile: Dockerfile.DataContext
     depends_on:
-      - api
+      api:
+        condition: service_healthy
     networks:
       - app-network
 
 networks:
   app-network:
+
+volumes:
+  mssql-data:
+  listener-data:

@@ -56,9 +56,9 @@ namespace DataContext.Seeder
                 {
                     new User
                     {
-                        Email = "artist1@musewave.com",
-                        NormalizedEmail = "ARTIST1@MUSEWAVE.COM",
-                        UserName = "artist1",
+                        Email = "artist@musewave.com",
+                        NormalizedEmail = "artist@MUSEWAVE.COM",
+                        UserName = "Musewave",
                         PasswordHash = hasher.HashPassword(null, "Test_123"),
                         EmailConfirmed = true,
                         PhoneNumberConfirmed = true,
@@ -90,6 +90,7 @@ namespace DataContext.Seeder
             catch (Exception ex)
             {
                 // Log error
+                Console.WriteLine($"UserSeeder failed: {ex.Message}");
                 throw ex;
             }
         }

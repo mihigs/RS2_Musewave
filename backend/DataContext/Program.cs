@@ -54,13 +54,19 @@ public class Program
     private static IHostBuilder CreateDefaultApp(string[] args)
     {
         var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
+        var listenerApiUrl = Environment.GetEnvironmentVariable("ListenerApiUrl");
 
         if (string.IsNullOrEmpty(connectionString))
         {
             throw new ArgumentNullException("ConnectionString", "Connection string is required.");
         }
+        if (string.IsNullOrEmpty(listenerApiUrl))
+        {
+            throw new ArgumentNullException("ListenerApiUrl", "Listener API URL is required.");
+        }
 
         var builder = Host.CreateDefaultBuilder(args);
+
         builder.ConfigureServices((hostContext, services) =>
         {
             services.RegisterDbContext(connectionString)

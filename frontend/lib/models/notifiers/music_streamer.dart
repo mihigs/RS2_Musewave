@@ -22,6 +22,7 @@ class MusicStreamer extends ChangeNotifier {
   Track? _currentTrack;
   Track? _nextTrack;
   List<Track> _trackHistory = [];
+  int previousIndex = -1;
 
   bool get isPlaying => _isPlaying;
   bool get trackLoaded => _trackLoaded;
@@ -34,7 +35,7 @@ class MusicStreamer extends ChangeNotifier {
   List<int> get trackHistoryIds => _trackHistory.map((track) => track.id).toList();
 
   MusicStreamer() {
-    _player.setVolume(0.5);
+    _player.setVolume(0.3);
     setupCurrentIndexListener();
   }
 
@@ -51,10 +52,19 @@ class MusicStreamer extends ChangeNotifier {
 
   void setupCurrentIndexListener() {
     _player.currentIndexStream.listen((currentIndex) async {
-      if(_nextTrack != null && currentStreamingContext != null){
-        await setCurrentTrackState(_nextTrack!);
-        _trackHistory.add(_nextTrack!);
-        await _prepareNextTrack(currentStreamingContext!);
+      if(_nextTrack != null && currentStreamingContext != null && currentIndex != null){
+        // Play next track
+        if(currentIndex > previousIndex){
+          await setCurrentTrackState(_nextTrack!);
+          _trackHistory.add(_nextTrack!);
+          await _prepareNextTrack(currentStreamingContext!);
+        // Play previous track
+        }else{
+          Track nextTrack = _trackHistory.removeLast();
+          await setNextTrackState(nextTrack);
+          await setCurrentTrackState(_trackHistory.last);
+        }
+        previousIndex = currentIndex;
         notifyListeners();
       }
     });
@@ -85,12 +95,16 @@ class MusicStreamer extends ChangeNotifier {
 
   Future<void> setCurrentTrackState(Track currentTrack) async {
     _currentTrack = currentTrack;
+    _trackLoaded = true;
     notifyListeners();
   }
 
   Future<void> _prepareNextTrack(StreamingContext streamingContext) async {
     // Fetch the next track based on the current streaming context
     streamingContext.trackHistoryIds = trackHistoryIds;
+    if(_nextTrack != null){
+      streamingContext.track = _nextTrack!;
+    }
     final nextTrack = await _tracksService.getNextTrack(streamingContext);
     await setNextTrackState(nextTrack);
     // Add the next track to the playlist
@@ -130,16 +144,10 @@ class MusicStreamer extends ChangeNotifier {
   Future<void> playPreviousTrack() async {
     try {
       if (_player.hasPrevious) {
-        Track nextTrack = _trackHistory.removeLast();
-        await setNextTrackState(nextTrack);
-        await setCurrentTrackState(_trackHistory.last);
-        await _player
-            .seekToPrevious(); // Just Audio handles the track navigation
+        await _player.seekToPrevious(); // Just Audio handles the track navigation
       } else {
         await _player.seek(Duration.zero);
       }
-      // Optionally, update any relevant state or UI after seeking to the previous track
-      notifyListeners();
     } catch (e) {
       // Handle any errors that might occur during seeking
       print("Error seeking to previous track: $e");

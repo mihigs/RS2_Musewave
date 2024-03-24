@@ -48,9 +48,8 @@ class _PersistentPlayerState extends State<PersistentPlayer> {
 
   @override
   void dispose() {
-    // Remove the listener when the widget is disposed to avoid memory leaks
-    Provider.of<MusicStreamer>(context, listen: false)
-        .removeListener(updateIsPlaying);
+    Provider.of<MusicStreamer>(context, listen: false).removeListener(updateIsPlaying);
+    Provider.of<MusicStreamer>(context, listen: false).removeListener(updateCurrentTrack);
     super.dispose();
   }
 
@@ -64,7 +63,7 @@ class _PersistentPlayerState extends State<PersistentPlayer> {
           var trackId = model.currentTrack!.id;
           var contextId = model.currentStreamingContext!.contextId;
           var streamingContextType = getStringFromStreamingContextType(model.currentStreamingContext!.type);
-          GoRouter.of(context).go('/track/$trackId/$contextId/$streamingContextType/false');
+          GoRouter.of(context).push('/track/$trackId/$contextId/$streamingContextType');
         }
       },
       child: Container(

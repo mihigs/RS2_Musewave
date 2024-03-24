@@ -7,9 +7,12 @@ namespace Services.Implementations
     public class AlbumService : IAlbumService
     {
         private readonly IAlbumRepository _albumRepository;
-        public AlbumService(IAlbumRepository albumRepository)
+        private readonly ITracksService _tracksService;
+
+        public AlbumService(IAlbumRepository albumRepository, ITracksService tracksService)
         {
             _albumRepository = albumRepository ?? throw new ArgumentNullException(nameof(albumRepository));
+            _tracksService = tracksService ?? throw new ArgumentNullException(nameof(tracksService));
         }
         public async Task<IEnumerable<Album>> GetAllAlbumsAsync()
         {
@@ -57,9 +60,16 @@ namespace Services.Implementations
             return await _albumRepository.GetAlbumTracksAsync(albumId).ConfigureAwait(false);
         }
 
-        public async Task<Album> GetAlbumDetails(int albumId)
+        public async Task<Album> GetAlbumDetails(int albumId, string userId)
         {
-            return await _albumRepository.GetAlbumDetails(albumId).ConfigureAwait(false);
+            var albumDetails = await _albumRepository.GetAlbumDetails(albumId).ConfigureAwait(false);
+            // add the SignedUrl to each track in the album
+            foreach (var track in albumDetails.Tracks)
+            {
+                track.SignedUrl = _tracksService.GenerateSignedTrackUrl(track.FilePath, track.ArtistId.ToString());
+                track.IsLiked = await _tracksService.CheckIfTrackIsLikedByUser(track.Id, userId) != null;
+            }
+            return albumDetails;
         }
     }
 }

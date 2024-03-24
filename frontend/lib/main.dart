@@ -25,6 +25,7 @@ class MyHttpOverrides extends HttpOverrides {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized before using SecureStorage
+  GoRouter.optionURLReflectsImperativeAPIs = true;
 
   // const baseUrl = String.fromEnvironment('BASE_URL'); // 'https://10.0.2.2:7074/api'
 

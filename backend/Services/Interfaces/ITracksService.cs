@@ -10,7 +10,9 @@ namespace Services.Interfaces
         Task<Track> InitializeTrack(Track track);
         Task<Track> handleListenerDoneProcessing(RabbitMqMessage messageObject);
         Task<Track> GetTrackByIdAsync(int trackId, string userId);
+        string GenerateSignedTrackUrl(string listenerTrackId, string artistId);
         Task<Track> GetNextTrackAsync(GetNextTrackDto getNextTrackDto, string userId);
         Task<Like?> ToggleLikeTrack(int trackId, string userId);
+        Task<Like?> CheckIfTrackIsLikedByUser(int trackId, string userId);
     }
 }

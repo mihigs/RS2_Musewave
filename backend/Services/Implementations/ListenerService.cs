@@ -1,4 +1,5 @@
 ﻿using DataContext.Repositories.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Models.DTOs;
 using Models.Entities;
 using Services.Interfaces;
@@ -9,11 +10,13 @@ namespace Services.Implementations
     {
         private readonly ITrackRepository _trackRepository;
         private readonly IArtistRepository _artistRepository;
+        private readonly IConfiguration _configuration;
 
-        public ListenerService(ITrackRepository trackRepository, IArtistRepository artistRepository)
+        public ListenerService(ITrackRepository trackRepository, IArtistRepository artistRepository, IConfiguration configuration)
         {
             _trackRepository = trackRepository ?? throw new ArgumentNullException(nameof(trackRepository));
             _artistRepository = artistRepository ?? throw new ArgumentNullException(nameof(artistRepository));
+            _configuration = configuration;
         }
 
         public async Task<Track> TrackUploadRequest(TrackUploadDetailsDto trackUploadDetailsDto)
@@ -78,7 +81,7 @@ namespace Services.Implementations
             content.Add(new StringContent(trackUploadDto.trackId.ToString()), "trackId");
 
             // Send a POST request to the specified Uri
-            var response = await client.PostAsync("https://localhost:7151/api/Tracks/UploadTrack", content);
+            var response = await client.PostAsync($"{_configuration["ListenerApiUrl"]}/Tracks/UploadTrack", content);
 
             // Ensure the request was successful
             if (response.IsSuccessStatusCode)

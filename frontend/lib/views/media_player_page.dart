@@ -3,6 +3,7 @@ import 'package:frontend/helpers/helperFunctions.dart';
 import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:frontend/models/track.dart';
+import 'package:frontend/router.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:frontend/widgets/seek_bar.dart';
 import 'package:get_it/get_it.dart';
@@ -14,13 +15,14 @@ class MediaPlayerPage extends StatefulWidget {
   final String trackId;
   final String contextId;
   final String contextType;
-  final String autoStart;
 
   MediaPlayerPage(
-      {required this.trackId,
+    {
+      required this.trackId,
       required this.contextId,
       required this.contextType,
-      required this.autoStart});
+    }
+  );
 
   @override
   _MediaPlayerPageState createState() => _MediaPlayerPageState();
@@ -40,8 +42,17 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
     updateIsPlaying();
     checkIfTrackAlreadyLoaded();
 
-    initializeTrackData(
-        widget.trackId, widget.contextId, widget.contextType, widget.autoStart);
+    if (!trackLoaded) {
+      initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
+    } else {
+      updateCurrentTrack();
+      if (currentTrack?.id.toString() != widget.trackId) {
+        initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
+      } else {
+        updateTrackData();
+      }
+    }
+
   }
 
   void checkIfTrackAlreadyLoaded() {
@@ -59,32 +70,42 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
 
   void updateCurrentTrack() {
     setState(() {
-      currentTrack =
-          Provider.of<MusicStreamer>(context, listen: false).currentTrack!;
+      var currentTrackFromProvider = Provider.of<MusicStreamer>(context, listen: false).currentTrack!;
+      if(currentTrackFromProvider.id != currentTrack?.id){
+        currentTrack = currentTrackFromProvider;
+        isLiked = currentTrack!.isLiked ?? false;
+      }
+    });
+  }
+
+  void updateTrackData(){
+    setState(() {
+      currentTrack = Provider.of<MusicStreamer>(context, listen: false).currentTrack!;
+      if(currentTrack != null){
+        isLiked = currentTrack!.isLiked ?? false;
+      }
     });
   }
 
   Future<void> initializeTrackData(String currentTrackId, String contextId,
-    String streamingContextType, String autoStart) async {
-    Track currentTrackResult = await widget.tracksService.getTrack(int.parse(currentTrackId));
+      String streamingContextType) async {
+    Track currentTrackResult =
+        await widget.tracksService.getTrack(int.parse(currentTrackId));
     setState(() {
       currentTrack = currentTrackResult;
     });
-    if(currentTrack != null){
+    if (currentTrack != null) {
       if (currentTrack!.isLiked == null) {
         isLiked = false;
       } else {
         isLiked = currentTrack!.isLiked!;
       }
-      if (autoStart == "true") {
-        mounted ? Provider.of<MusicStreamer>(context, listen: false).startTrack(
-            StreamingContext(currentTrack!, int.parse(contextId),
-                getStreamingContextTypeFromString(streamingContextType))) : null;
-      } else {
-        mounted ? Provider.of<MusicStreamer>(context, listen: false).startTrack(
-            StreamingContext(currentTrack!, int.parse(contextId),
-                getStreamingContextTypeFromString(streamingContextType))) : null;
-      }
+
+      mounted
+          ? Provider.of<MusicStreamer>(context, listen: false).startTrack(
+              StreamingContext(currentTrack!, int.parse(contextId),
+                  getStreamingContextTypeFromString(streamingContextType)))
+          : null;
     }
   }
 
@@ -120,17 +141,18 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             // Navigate back
-            GoRouter.of(context).go('/home');
+            GoRouter.of(context).pop();
           },
         ),
         actions: <Widget>[
           IconButton(
             icon: Icon(isLiked ? Icons.star : Icons.star_border, size: 32),
             onPressed: () async {
-              // Toggle like status of the current track, this logic may need to be adjusted
-              // based on your application's functionality
-              isLiked = !isLiked;
-              setState(() {});
+              setState(() {
+                isLiked = !isLiked;
+                model.currentTrack?.isLiked = isLiked;
+              });
+              await widget.tracksService.toggleLikeTrack(currentTrack!.id);
             },
           ),
         ],
@@ -140,11 +162,13 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
           : Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                // space-around
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   // Placeholder for track cover art
                   Container(
-                    height: 200,
-                    width: 200,
+                    height: 275,
+                    width: 275,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
@@ -153,21 +177,21 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 30),
                   // Displaying current track title
                   Text(
                     model.currentTrackTitle!,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 30),
                   // Displaying current track artist name
                   Text(
                     currentTrack!.artist!.user!.userName,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 40),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -196,7 +220,7 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
                       ),
                     ],
                   ),
-                  // Your SeekBar widget
+                  SizedBox(height: 20),
                   Expanded(
                     child: SeekBar(),
                   ),

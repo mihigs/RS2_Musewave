@@ -52,144 +52,147 @@ class _SearchResultsState extends State<SearchResults> {
           var playlists = results[3] as List<Playlist>;
 
           return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                if (tracks.isNotEmpty) ...[
-                  Container(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text('Tracks',
-                          style: Theme.of(context).textTheme.headline4)),
-                  GridView.count(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 5,
-                    mainAxisSpacing: 5,
-                    padding: const EdgeInsets.all(8.0),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: <Widget>[
-                      ...tracks
-                          .take(_tracksToShow)
-                          .map((track) => GestureDetector(
-                            onTap:() => GoRouter.of(context).go('/track/${track.id}/0/0/true'),
-                            child: ResultItemCard(
-                                  title: track.title,
-                                  subtitle: track.artist?.user?.userName,
-                                ),
-                          )),
-                    ],
-                  ),
-                  if (_tracksToShow < tracks.length)
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _tracksToShow += 8;
-                        });
-                      },
-                      child: Text('Show more'),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(3, 0, 3, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  if (tracks.isNotEmpty) ...[
+                    Container(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text('Tracks',
+                            style: Theme.of(context).textTheme.headline4)),
+                    GridView.count(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 5,
+                      padding: const EdgeInsets.all(8.0),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: <Widget>[
+                        ...tracks
+                            .take(_tracksToShow)
+                            .map((track) => GestureDetector(
+                              onTap:() => GoRouter.of(context).push('/track/${track.id}/0/0'),
+                              child: ResultItemCard(
+                                    title: track.title,
+                                    subtitle: track.artist?.user?.userName,
+                                  ),
+                            )),
+                      ],
                     ),
-                ],
-                if (albums.isNotEmpty) ...[
-                  Container(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text('Albums',
-                          style: Theme.of(context).textTheme.headline4)),
-                  GridView.count(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 5,
-                    mainAxisSpacing: 5,
-                    padding: const EdgeInsets.all(8.0),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: <Widget>[
-                      ...albums
-                          .take(_albumsToShow)
-                          .map((album) => GestureDetector(
-                            onTap:() => GoRouter.of(context).go('/album/${album.id}'),
-                            child: ResultItemCard(
-                                  title: album.title,
-                                  subtitle: album.artist?.user?.userName,
-                                ),
-                          )),
-                    ],
-                  ),
-                  if (_albumsToShow < albums.length)
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _albumsToShow += 8;
-                        });
-                      },
-                      child: const Text('Show more'),
+                    if (_tracksToShow < tracks.length)
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _tracksToShow += 8;
+                          });
+                        },
+                        child: Text('Show more'),
+                      ),
+                  ],
+                  if (albums.isNotEmpty) ...[
+                    Container(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text('Albums',
+                            style: Theme.of(context).textTheme.headline4)),
+                    GridView.count(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 5,
+                      padding: const EdgeInsets.all(8.0),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: <Widget>[
+                        ...albums
+                            .take(_albumsToShow)
+                            .map((album) => GestureDetector(
+                              onTap:() => GoRouter.of(context).push('/album/${album.id}'),
+                              child: ResultItemCard(
+                                    title: album.title,
+                                    subtitle: album.artist?.user?.userName,
+                                  ),
+                            )),
+                      ],
                     ),
-                ],
-                if (artists.isNotEmpty) ...[
-                  Container(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text('Artists',
-                          style: Theme.of(context).textTheme.headline4)),
-                  GridView.count(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 5,
-                    mainAxisSpacing: 5,
-                    padding: const EdgeInsets.all(8.0),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: <Widget>[
-                      ...artists
-                          .take(_artistsToShow)
-                          .map((artist) => GestureDetector(
-                            onTap:() => GoRouter.of(context).go('/artist/${artist.id}'),
-                            child: ResultItemCard(
-                                  title: artist.user!.userName,
-                                ),
-                          )),
-                    ],
-                  ),
-                  if (_artistsToShow < artists.length)
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _artistsToShow += 8;
-                        });
-                      },
-                      child: const Text('Show more'),
+                    if (_albumsToShow < albums.length)
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _albumsToShow += 8;
+                          });
+                        },
+                        child: const Text('Show more'),
+                      ),
+                  ],
+                  if (artists.isNotEmpty) ...[
+                    Container(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text('Artists',
+                            style: Theme.of(context).textTheme.headline4)),
+                    GridView.count(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 5,
+                      padding: const EdgeInsets.all(8.0),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: <Widget>[
+                        ...artists
+                            .take(_artistsToShow)
+                            .map((artist) => GestureDetector(
+                              onTap:() => GoRouter.of(context).push('/artist/${artist.id}'),
+                              child: ResultItemCard(
+                                    title: artist.user!.userName,
+                                  ),
+                            )),
+                      ],
                     ),
-                ],
-                if (playlists.isNotEmpty) ...[
-                  Container(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text('Playlists',
-                          style: Theme.of(context).textTheme.headline4)),
-                  GridView.count(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 5,
-                    mainAxisSpacing: 5,
-                    padding: const EdgeInsets.all(8.0),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: <Widget>[
-                      ...playlists
-                          .take(_playlistsToShow)
-                          .map((playlist) => GestureDetector(
-                            onTap:() => GoRouter.of(context).go('/playlist/${playlist.id}'),
-                            child: ResultItemCard(
-                                  title: playlist.name,
-                                ),
-                          )),
-                    ],
-                  ),
-                  if (_playlistsToShow < playlists.length)
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _playlistsToShow += 8;
-                        });
-                      },
-                      child: const Text('Show more'),
+                    if (_artistsToShow < artists.length)
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _artistsToShow += 8;
+                          });
+                        },
+                        child: const Text('Show more'),
+                      ),
+                  ],
+                  if (playlists.isNotEmpty) ...[
+                    Container(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text('Playlists',
+                            style: Theme.of(context).textTheme.headline4)),
+                    GridView.count(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 5,
+                      padding: const EdgeInsets.all(8.0),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: <Widget>[
+                        ...playlists
+                            .take(_playlistsToShow)
+                            .map((playlist) => GestureDetector(
+                              onTap:() => GoRouter.of(context).push('/playlist/${playlist.id}'),
+                              child: ResultItemCard(
+                                    title: playlist.name,
+                                  ),
+                            )),
+                      ],
                     ),
+                    if (_playlistsToShow < playlists.length)
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _playlistsToShow += 8;
+                          });
+                        },
+                        child: const Text('Show more'),
+                      ),
+                  ],
                 ],
-              ],
+              ),
             ),
           );
         }

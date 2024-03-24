@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
       if (loginResponse.token != null) {
         // Authentication successful, navigate to home page
         setState(() => _isLoading = false);
-        GoRouter.of(context).go(Routes.home);
+        GoRouter.of(context).push(Routes.home);
       } else if (loginResponse.error != null) {
         // Show error message
         final errorMessage = loginResponse.error!;

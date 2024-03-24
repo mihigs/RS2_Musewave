@@ -91,9 +91,6 @@ namespace Listener
 
                 return new FileStreamResult(stream, contentType);
 
-                //var (stream, contentType, rangeStart, rangeEnd, totalLength) = await _trackService.HandleTrackStreamRequest(trackId, artistId);
-
-                //return new FileStreamResult(stream, contentType);
             }
             catch (Exception ex)
             {
@@ -109,48 +106,6 @@ namespace Listener
             var eTag = Convert.ToBase64String(BitConverter.GetBytes(lastModifiedTime));
             return eTag;
         }
-
-        //[HttpGet("{userId}/{fileName}")]
-        //public async Task<IActionResult> GetTrack(string userId, string fileName)
-        //{
-        //    var userDirectoryPath = Path.Combine(_storagePath, userId);
-        //    var filePath = Path.Combine(userDirectoryPath, fileName);
-
-        //    if (!System.IO.File.Exists(filePath))
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-        //    var contentType = GetContentType(filePath);
-        //    var fileLength = fileStream.Length;
-        //    var range = Request.Headers["Range"].ToString();
-
-        //    if (!string.IsNullOrEmpty(range))
-        //    {
-        //        var rangeStart = long.Parse(range.Replace("bytes=", "").Split('-')[0]);
-        //        var rangeEnd = rangeStart + _bufferSize;
-
-        //        if (rangeEnd > fileLength)
-        //        {
-        //            rangeEnd = fileLength;
-        //        }
-
-        //        var lengthToRead = rangeEnd - rangeStart;
-        //        var buffer = new byte[lengthToRead];
-        //        fileStream.Seek(rangeStart, SeekOrigin.Begin);
-        //        await fileStream.ReadAsync(buffer, 0, (int)lengthToRead);
-
-        //        Response.StatusCode = 206;
-        //        Response.Headers.Add("Content-Range", $"bytes {rangeStart}-{rangeEnd}/{fileLength}");
-
-        //        return File(buffer, contentType);
-        //    }
-        //    else
-        //    {
-        //        return File(fileStream, contentType);
-        //    }
-        //}
 
     }
 }

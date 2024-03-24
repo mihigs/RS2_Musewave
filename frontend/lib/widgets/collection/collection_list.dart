@@ -54,7 +54,7 @@ class _CollectionListState extends State<CollectionList> {
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             // close this modal
-            GoRouter.of(context).go('/home');
+            GoRouter.of(context).pop();
           },
         ),
       ),

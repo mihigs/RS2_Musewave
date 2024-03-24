@@ -75,6 +75,7 @@ namespace DataContext.Seeder
             catch (Exception ex)
             {
                 // Log error
+                Console.WriteLine($"LikeSeeder failed: {ex.Message}");
                 throw ex;
             }
         }

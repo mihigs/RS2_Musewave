@@ -10,6 +10,7 @@ using Models.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using DataContext;
+using Microsoft.Extensions.Configuration;
 
 namespace Services.Implementations
 {
@@ -17,10 +18,12 @@ namespace Services.Implementations
     {
         private readonly IModel _channel;
         private readonly IServiceScopeFactory _serviceProvider;
+        private readonly IConfiguration _configuration;
 
-        public RabbitMqService(IServiceScopeFactory serviceProvider)
+        public RabbitMqService(IServiceScopeFactory serviceProvider, IConfiguration configuration)
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            _configuration = configuration;
+            var factory = new ConnectionFactory() { HostName = _configuration["RabbitMqHost"] };
             var connection = factory.CreateConnection();
             _channel = connection.CreateModel();
             _channel.QueueDeclare(queue: "Listener",
@@ -90,6 +93,7 @@ namespace Services.Implementations
                 var trackId = int.Parse(messageObject.TrackId);
                 var track = await dbContext.Tracks.FindAsync(trackId);
                 track.FilePath = messageObject.Payload;
+                track.Duration = messageObject.Duration;
                 
                 var result = dbContext.Update(track);
                 await dbContext.SaveChangesAsync();

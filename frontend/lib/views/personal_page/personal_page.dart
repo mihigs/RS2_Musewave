@@ -43,7 +43,7 @@ class PersonalPage extends StatelessWidget {
                           IconButton(
                             icon: Icon(Icons.note),
                             onPressed: () {
-                              GoRouter.of(context).go(Routes.uploadMedia);
+                              GoRouter.of(context).push(Routes.uploadMedia);
                             },
                           ),
                         ],

@@ -27,12 +27,12 @@ class _ContainerWithNavigationState extends State<ContainerWithNavigation>  with
   @override
   void initState() {
     super.initState();
-    _children = [
-      PersistentPlayerContainer(child: HomePage(changePage: changePage)),
-      PersistentPlayerContainer(child: SearchPage()),
-      PersistentPlayerContainer(child: PersonalPage()),
-      // Add more views here
-    ];
+    _children ??= [
+        PersistentPlayerContainer(child: HomePage(changePage: changePage)),
+        PersistentPlayerContainer(child: SearchPage()),
+        PersistentPlayerContainer(child: PersonalPage()),
+        // Add more views here
+      ];
   }
   bool get wantKeepAlive => true;
 

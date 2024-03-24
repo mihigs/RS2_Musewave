@@ -2,6 +2,13 @@ using Listener.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add configuration
+var configuration = builder.Configuration;
+configuration.AddEnvironmentVariables();
+
+// Log rabbitmq host
+Console.WriteLine($"RabbitMqHost: {configuration["RabbitMqHost"]}");
+
 // Add CORS
 builder.Services.AddCors(options =>
 {

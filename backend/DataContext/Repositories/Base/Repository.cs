@@ -69,7 +69,7 @@ namespace DataContext.Repositories
             return entities;
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllInculding(T entity, string[] includes)
+        public virtual async Task<IEnumerable<T>> GetAllIncluding(string[] includes)
         {
             var query = _context.Set<T>().AsQueryable();
             foreach (var include in includes)

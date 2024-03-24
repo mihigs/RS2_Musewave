@@ -3,7 +3,8 @@
     "DataContext": {
       "commandName": "Project",
       "environmentVariables": {
-        "ConnectionString": "Server=localhost;Database=MusewaveDbDev;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+        "ConnectionString": "Server=localhost;Database=MusewaveDbDev;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True",
+        "ListenerApiUrl": "https://localhost:7151/api"
       }
     }
   }

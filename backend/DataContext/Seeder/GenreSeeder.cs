@@ -39,6 +39,7 @@ namespace DataContext.Seeder
             catch (Exception ex)
             {
                 // Log error
+                Console.WriteLine($"GenreSeeder failed: {ex.Message}");
                 throw ex;
             }
         }

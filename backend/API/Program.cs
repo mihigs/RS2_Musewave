@@ -10,9 +10,12 @@ using Microsoft.Extensions.Options;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
+
+// Add configuration
 var configuration = builder.Configuration;
 configuration.AddEnvironmentVariables();
 var connectionString = configuration["ConnectionString"];
+
 var services = builder.Services;
 
 //Console.WriteLine("Configuration: " + configuration);

@@ -1,5 +1,6 @@
 ﻿using DataContext.Repositories;
 using DataContext.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Models.Entities;
 
 namespace DataContext.Seeder
@@ -19,8 +20,14 @@ namespace DataContext.Seeder
         {
             try
             {
-                // Fetch all artists from the database
-                var artists = await _artistRepository.GetAll();
+                // Fetch all artists including users from the database
+                var artists = await _artistRepository.GetAllIncluding(["User"]);
+
+                if (artists == null || artists.Count() == 0)
+                {
+                    Console.WriteLine("No artists found in the database. Skipping album seeding.");
+                    return false;
+                }
 
                 // Create a list to hold the albums
                 List<Album> albums = new List<Album>();
@@ -59,6 +66,7 @@ namespace DataContext.Seeder
             catch (Exception ex)
             {
                 // Log error
+                Console.WriteLine($"AlbumSeeder failed: {ex.Message}");
                 throw ex;
             }
         }

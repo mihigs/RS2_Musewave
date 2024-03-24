@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/helpers/helperFunctions.dart';
 import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
@@ -25,35 +26,53 @@ class _SeekBarState extends State<SeekBar> {
                 streamer.getDuration()?.inMilliseconds.toDouble() ?? 1.0;
             double positionValueInitial =
                 positionSnapshot.data?.inMilliseconds.toDouble() ?? 0.0;
-            double positionValue = positionValueInitial > totalDurationValue ? 0 : positionValueInitial;
+            double positionValue = positionValueInitial > totalDurationValue
+                ? 0
+                : positionValueInitial;
 
-            String formatDuration(Duration duration) {
-              String minutes = (duration.inMinutes % 60).toString().padLeft(2, '0');
-              String seconds = (duration.inSeconds % 60).toString().padLeft(2, '0');
-              return '$minutes:$seconds';
-            }
-
-            return SliderTheme(
-              data: SliderTheme.of(context).copyWith(
-                trackHeight: 10.0, // Adjust the thickness here
-              ),
-              child: Slider(
-                min: 0.0,
-                max: totalDurationValue,
-                value: positionValue,
-                onChanged: (value) {
-                  streamer.seek(Duration(milliseconds: value.toInt()));
-                },
-                onChangeEnd: (value) {
-                  streamer.seek(Duration(milliseconds: value.toInt()));
-                  streamer.play();
-                },
-                onChangeStart: (value) {
-                  streamer.pause();
-                },
-                divisions: totalDurationValue.toInt(),
-                label:
-                    '${formatDuration(Duration(milliseconds: positionValue.toInt()))} / ${formatDuration(streamer.getDuration() ?? Duration(milliseconds: totalDurationValue.toInt()))}',
+            return Container(
+              margin: EdgeInsets.only(left: 10, right: 10),
+              child: Column(
+                children: [
+                  Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(formatDuration((positionValue ~/ 1000).toInt()), style: TextStyle(fontSize: 10)),
+                      Expanded(
+                        child: SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            trackHeight: 10.0, // Adjust the thickness here
+                          ),
+                          child: Slider(
+                            min: 0.0,
+                            max: totalDurationValue,
+                            value: positionValue,
+                            onChanged: (value) {
+                              setState(() {
+                                streamer
+                                    .seek(Duration(milliseconds: value.toInt()));
+                              });
+                            },
+                            onChangeEnd: (value) {
+                              setState(() {
+                                streamer
+                                    .seek(Duration(milliseconds: value.toInt()));
+                                streamer.play();
+                              });
+                            },
+                            onChangeStart: (value) {
+                              streamer.pause();
+                            },
+                            divisions: totalDurationValue.toInt(),
+                            label:
+                                '${formatDuration((positionValue ~/ 1000).toInt())} / ${formatDuration((totalDurationValue ~/ 1000).toInt())}',
+                          ),
+                        ),
+                      ),
+                      Text(formatDuration((totalDurationValue ~/ 1000).toInt()), style: TextStyle(fontSize: 10)),
+                    ],
+                  ),
+                ],
               ),
             );
           },

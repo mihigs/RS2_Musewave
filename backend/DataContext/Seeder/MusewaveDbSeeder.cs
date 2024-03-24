@@ -1,5 +1,6 @@
 ﻿using DataContext.Repositories;
 using DataContext.Repositories.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace DataContext.Seeder
 {
@@ -12,7 +13,8 @@ namespace DataContext.Seeder
             ITrackRepository trackRepository,
             IGenreRepository genreRepository,
             ILikeRepository likeRepository,
-            IPlaylistTrackRepository playlistTrackRepository
+            IPlaylistTrackRepository playlistTrackRepository,
+            IConfiguration configuration
             )
     {
         public readonly MusewaveDbContext _musewaveDbContext = musewaveDbContext;
@@ -25,6 +27,7 @@ namespace DataContext.Seeder
         public readonly IGenreRepository _genreRepository = genreRepository;
         public readonly ILikeRepository _likeRepository = likeRepository;
         public readonly IPlaylistTrackRepository _playlistTrackRepository = playlistTrackRepository;
+        public readonly IConfiguration _configuration = configuration;
 
         public async Task Seed()
         {
@@ -33,7 +36,7 @@ namespace DataContext.Seeder
                 await new UserSeeder(_unitOfWork, _userRepository, _artistRepository).Seed();
                 await new AlbumSeeder(_unitOfWork, _artistRepository, _albumRepository).Seed();
                 await new GenreSeeder(_unitOfWork, _genreRepository).Seed();
-                await new TrackSeeder(_unitOfWork, _albumRepository, _genreRepository, _trackRepository, _artistRepository).Seed();
+                await new TrackSeeder(_unitOfWork, _albumRepository, _genreRepository, _trackRepository, _artistRepository, _configuration).Seed();
                 await new PlaylistSeeder(_unitOfWork, _genreRepository, _trackRepository, _playlistRepository, _userRepository, _playlistTrackRepository).Seed();
                 await new LikeSeeder(_unitOfWork, _userRepository, _trackRepository, _likeRepository).Seed();
 
@@ -41,6 +44,7 @@ namespace DataContext.Seeder
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 throw new Exception(ex.Message);
             }
         }

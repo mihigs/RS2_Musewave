@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.DTOs;
 using Models.Entities;
 using Services.Interfaces;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -140,7 +141,16 @@ namespace API.Controllers
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                apiResponse.Data = await _albumService.GetAlbumDetails(albumId);
+                // gets the user id from the token
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                apiResponse.Data = await _albumService.GetAlbumDetails(albumId, userId);
                 apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
             }
             catch (Exception ex)

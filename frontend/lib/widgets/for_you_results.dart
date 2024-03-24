@@ -27,17 +27,20 @@ class _ForYouResultsState extends State<ForYouResults> {
           return Text('Error: ${snapshot.error}');
         } else {
           List<Track> likedTracks = snapshot.data!;
-          return GridView.count(
-              crossAxisCount: 3,
-              children: <Widget>[
-                ...likedTracks.map((track) {
-                  return ResultItemCard(
-                      onTap:() => GoRouter.of(context).go('/track/${track.id}/0/0/true'),
-                      title: track.title,
-                      subtitle: track.artist?.user?.userName,
-                  );
-                }),
-              ],
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+            child: GridView.count(
+                crossAxisCount: 3,
+                children: <Widget>[
+                  ...likedTracks.map((track) {
+                    return ResultItemCard(
+                        onTap:() => GoRouter.of(context).push('/track/${track.id}/0/0'),
+                        title: track.title,
+                        subtitle: track.artist?.user?.userName,
+                    );
+                  }),
+                ],
+            ),
           );
         }
       },

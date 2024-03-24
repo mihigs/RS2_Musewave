@@ -8,10 +8,12 @@ using System.Text.Json;
 public class RabbitMqService : IRabbitMqService
 {
     private readonly IModel _channel;
+    private readonly IConfiguration _configuration;
 
-    public RabbitMqService()
+    public RabbitMqService(IConfiguration configuration)
     {
-        var factory = new ConnectionFactory() { HostName = "localhost" };
+        _configuration = configuration;
+        var factory = new ConnectionFactory() { HostName = _configuration["RabbitMqHost"] };
         var connection = factory.CreateConnection();
         _channel = connection.CreateModel();
         _channel.QueueDeclare(queue: "Listener",

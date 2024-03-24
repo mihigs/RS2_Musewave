@@ -5,5 +5,6 @@
         public string ArtistId { get; set; }
         public string TrackId { get; set; }
         public string Payload { get; set; }
+        public int Duration { get; set; }
     }
 }
