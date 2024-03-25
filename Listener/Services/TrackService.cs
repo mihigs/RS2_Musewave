@@ -37,7 +37,7 @@ namespace Listener.Services
                     await model.mediaFile.CopyToAsync(stream);
                 }
 
-                int mediaDurationInSeconds = GetAudioDuration(filePath).Seconds;
+                int mediaDurationInSeconds = Convert.ToInt32(Math.Ceiling(GetAudioDuration(filePath).TotalSeconds));
 
                 // Send the file name to the RabbitMQ service
                 _rabbitMqService.SendMessage(new RabbitMqMessage

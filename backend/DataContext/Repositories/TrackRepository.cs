@@ -49,6 +49,8 @@ namespace DataContext.Repositories
         {
             return await _dbContext.Set<Track>()
                 .Where(t => !excluding.Contains(t.Id))
+                .Include(t => t.Artist)
+                .ThenInclude(Artist => Artist.User)
                 .OrderBy(t => Guid.NewGuid())
                 .FirstOrDefaultAsync();
         }

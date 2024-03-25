@@ -117,7 +117,9 @@ namespace Services.Implementations
 
             if (nextTrack == null)
             {
-                nextTrack = await _trackRepository.GetRandomTrack(excluding: trackHistoryIds);
+                // If there are no tracks of the same genre, get a random track
+                // If all tracks have been played, start over
+                nextTrack = await _trackRepository.GetRandomTrack(excluding: trackHistoryIds) ?? await _trackRepository.GetRandomTrack(excluding: []);
             }
 
             return nextTrack;
@@ -196,6 +198,12 @@ namespace Services.Implementations
                 default:
                     throw new ArgumentException("Invalid streaming context type");
             }
+
+            if(nextTrack == null)
+            {
+                throw new Exception("Next track not found");
+            }
+
             nextTrack.SignedUrl = GenerateSignedTrackUrl(nextTrack.FilePath, nextTrack.ArtistId.ToString());
             // Check if the track is liked by the user
             nextTrack.IsLiked = await CheckIfTrackIsLikedByUser(nextTrack.Id, userId) != null;

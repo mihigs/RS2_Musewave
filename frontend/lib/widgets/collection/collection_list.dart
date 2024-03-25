@@ -53,8 +53,11 @@ class _CollectionListState extends State<CollectionList> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // close this modal
-            GoRouter.of(context).pop();
+            if (GoRouter.of(context).canPop()) {
+              GoRouter.of(context).pop();
+            } else {
+              GoRouter.of(context).go('/');
+            }
           },
         ),
       ),

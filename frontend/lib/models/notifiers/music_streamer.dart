@@ -25,6 +25,7 @@ class MusicStreamer extends ChangeNotifier {
   int previousIndex = -1;
 
   bool get isPlaying => _isPlaying;
+  bool get isLiked => _currentTrack?.isLiked ?? false;
   bool get trackLoaded => _trackLoaded;
   Track? get currentTrack => _currentTrack;
   Track? get nextTrack => _nextTrack;
@@ -130,7 +131,9 @@ class MusicStreamer extends ChangeNotifier {
   Future<void> playNextTrack({bool automatic = false}) async {
     try {
       if (!automatic) {
+        await stop();
         await _player.seekToNext(); // Just Audio handles the track navigation
+        await play();
       } else {
         // await seek(Duration.zero);
       }
@@ -144,7 +147,9 @@ class MusicStreamer extends ChangeNotifier {
   Future<void> playPreviousTrack() async {
     try {
       if (_player.hasPrevious) {
+        await stop();
         await _player.seekToPrevious(); // Just Audio handles the track navigation
+        await play();
       } else {
         await _player.seek(Duration.zero);
       }
@@ -190,6 +195,13 @@ class MusicStreamer extends ChangeNotifier {
     _lastPosition = null;
     _isPlaying = false;
     notifyListeners();
+  }
+
+  void toggleIsLiked() {
+    if (_currentTrack != null) {
+      _currentTrack!.isLiked = !_currentTrack!.isLiked!;
+      notifyListeners();
+    }
   }
 
   Future<void> seek(Duration position) async {

@@ -55,7 +55,8 @@ namespace Services.Implementations
             var track = new Track
             {
                 Title = trackDetails.trackName,
-                ArtistId = artist.Id
+                ArtistId = artist.Id,
+                Artist = artist
             };
             var result = await _trackRepository.Add(track);
             return result;

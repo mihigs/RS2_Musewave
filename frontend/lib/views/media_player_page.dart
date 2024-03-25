@@ -32,7 +32,6 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
   late bool trackLoaded;
   Track? currentTrack;
   late bool isLiked = false;
-
   bool isPlaying = false;
 
   @override
@@ -65,6 +64,12 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
   void updateIsPlaying() {
     setState(() {
       isPlaying = Provider.of<MusicStreamer>(context, listen: false).isPlaying;
+    });
+  }
+
+  void updateIsLiked() {
+    setState(() {
+      isLiked = Provider.of<MusicStreamer>(context, listen: false).isLiked;
     });
   }
 
@@ -116,7 +121,8 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
     // Listen to the MusicStreamer and update isPlaying when it changes
     Provider.of<MusicStreamer>(context, listen: false)
         .addListener(updateIsPlaying);
-
+    Provider.of<MusicStreamer>(context, listen: false)
+        .addListener(updateIsLiked);
     Provider.of<MusicStreamer>(context, listen: false)
         .addListener(updateCurrentTrack);
   }
@@ -128,6 +134,8 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
         .removeListener(updateIsPlaying);
     Provider.of<MusicStreamer>(context, listen: false)
         .removeListener(updateCurrentTrack);
+    Provider.of<MusicStreamer>(context, listen: false)
+        .addListener(updateIsLiked);
     super.dispose();
   }
 
@@ -140,20 +148,25 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // Navigate back
-            GoRouter.of(context).pop();
+            if (GoRouter.of(context).canPop()) {
+              GoRouter.of(context).pop();
+            } else {
+              GoRouter.of(context).go('/');
+            }
           },
         ),
         actions: <Widget>[
           IconButton(
             icon: Icon(isLiked ? Icons.star : Icons.star_border, size: 32),
-            onPressed: () async {
-              setState(() {
-                isLiked = !isLiked;
-                model.currentTrack?.isLiked = isLiked;
-              });
-              await widget.tracksService.toggleLikeTrack(currentTrack!.id);
-            },
+              onPressed: () async {
+                if(currentTrack != null){
+                  widget.tracksService.toggleLikeTrack(currentTrack!.id).then((response) => {
+                    if (response) {
+                      model.toggleIsLiked()
+                    }
+                  });
+                }
+              },
           ),
         ],
       ),

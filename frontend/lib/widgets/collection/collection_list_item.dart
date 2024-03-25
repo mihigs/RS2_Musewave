@@ -22,6 +22,7 @@ class CollectionListItem extends StatefulWidget {
 
 class _CollectionListItemState extends State<CollectionListItem> {
   bool isPlaying = false;
+  late bool isLiked = widget.track.isLiked ?? false;
 
   @override
   void initState() {
@@ -35,6 +36,15 @@ class _CollectionListItemState extends State<CollectionListItem> {
     });
   }
 
+  void updateIsLiked() {
+    setState(() {
+      int currentTrackId = Provider.of<MusicStreamer>(context, listen: false).currentTrack?.id ?? 0;
+      if (widget.track.id == currentTrackId){
+        isLiked = Provider.of<MusicStreamer>(context, listen: false).isLiked;
+      }
+    });
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -42,6 +52,8 @@ class _CollectionListItemState extends State<CollectionListItem> {
     // Listen to the MusicStreamer and update isPlaying when it changes
     Provider.of<MusicStreamer>(context, listen: false)
         .addListener(updateIsPlaying);
+    Provider.of<MusicStreamer>(context, listen: false)
+        .addListener(updateIsLiked);
   }
 
   @override
@@ -49,6 +61,8 @@ class _CollectionListItemState extends State<CollectionListItem> {
     // Remove the listener from the provider before disposing the widget
     Provider.of<MusicStreamer>(context, listen: false)
         .removeListener(updateIsPlaying);
+    Provider.of<MusicStreamer>(context, listen: false)
+        .addListener(updateIsLiked);
     super.dispose();
   }
 
@@ -56,11 +70,8 @@ class _CollectionListItemState extends State<CollectionListItem> {
   Widget build(BuildContext context) {
     final isPlaying =
         Provider.of<MusicStreamer>(context, listen: false).isPlaying;
-    // final trackLoaded =
-    //     Provider.of<MusicStreamer>(context, listen: false).trackLoaded;
     final currentPlayingTrackId =
         Provider.of<MusicStreamer>(context, listen: false).currentTrack?.id;
-    bool isLiked = widget.track.isLiked ?? false;
     final model = Provider.of<MusicStreamer>(context, listen: false);
 
     return Container(
@@ -104,11 +115,16 @@ class _CollectionListItemState extends State<CollectionListItem> {
               IconButton(
                 icon: Icon(isLiked ? Icons.star : Icons.star_border, size: 32),
                 onPressed: () async {
-                  setState(() {
-                    isLiked = !isLiked;
-                    model.currentTrack?.isLiked = isLiked;
+                  widget.tracksService.toggleLikeTrack(widget.track.id).then((response) => {
+                    if (response) {
+                      setState(() {
+                        isLiked = !isLiked;
+                      }),
+                      if(widget.track.id == model.currentTrack?.id){
+                        model.toggleIsLiked()
+                      },
+                    }
                   });
-                  await widget.tracksService.toggleLikeTrack(widget.track.id);
                 },
               ),
             ],
