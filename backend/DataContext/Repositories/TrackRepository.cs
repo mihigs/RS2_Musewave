@@ -55,5 +55,13 @@ namespace DataContext.Repositories
                 .FirstOrDefaultAsync();
         }
 
+        public Task<List<Track>> GetTracksByArtistId(int artistId)
+        {
+            return _dbContext.Set<Track>()
+                .Where(t => t.ArtistId == artistId)
+                .Include(t => t.Artist)
+                .ThenInclude(Artist => Artist.User)
+                .ToListAsync();
+        }
     }
 }

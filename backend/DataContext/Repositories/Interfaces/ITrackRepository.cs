@@ -8,5 +8,6 @@ namespace DataContext.Repositories.Interfaces
         Task<IEnumerable<Track>> GetLikedTracksAsync(string userId);
         Task<IEnumerable<Track>> GetTracksByNameAsync(string name);
         Task<Track> GetRandomTrack(List<int> excluding);
+        Task<List<Track>> GetTracksByArtistId(int artistId);
     }
 }

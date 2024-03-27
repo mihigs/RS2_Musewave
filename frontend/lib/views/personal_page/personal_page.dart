@@ -41,7 +41,7 @@ class PersonalPage extends StatelessWidget {
                               child: Text(user
                                   .userName)), // Display the user's full name
                           IconButton(
-                            icon: Icon(Icons.note),
+                            icon: Icon(Icons.queue),
                             onPressed: () {
                               GoRouter.of(context).push(Routes.uploadMedia);
                             },

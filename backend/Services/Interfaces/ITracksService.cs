@@ -14,5 +14,7 @@ namespace Services.Interfaces
         Task<Track> GetNextTrackAsync(GetNextTrackDto getNextTrackDto, string userId);
         Task<Like?> ToggleLikeTrack(int trackId, string userId);
         Task<Like?> CheckIfTrackIsLikedByUser(int trackId, string userId);
+        Task<List<Track>> GetTracksByArtistId(int artistId);
+        Task<List<Track>> GetTracksByUserId(string userId);
     }
 }

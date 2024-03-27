@@ -1,5 +1,16 @@
 {
   "profiles": {
+    "http": {
+      "commandName": "Project",
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AllowedHosts": "*",
+        "RabbitMqHost": "localhost"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:7151"
+    },
     "https": {
       "commandName": "Project",
       "launchUrl": "swagger",

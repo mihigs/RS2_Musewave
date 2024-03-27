@@ -33,6 +33,9 @@ namespace Services.Implementations
             return await _playlistRepository.GetPlaylistDetails(id);
         }
 
-
+        public async Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(string userId)
+        {
+            return await _playlistRepository.GetPlaylistsByUserIdAsync(userId);
+        }
     }
 }

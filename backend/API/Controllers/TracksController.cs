@@ -276,5 +276,50 @@ namespace API.Controllers
                 throw;
             }
         }
+
+        [HttpGet("GetTracksByArtist/{artistId}")]
+        public async Task<IActionResult> GetTracksByArtistId(int artistId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                apiResponse.Data = await _tracksService.GetTracksByArtistId(artistId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return Ok(apiResponse);
+        }
+
+        [HttpGet("GetTracksByUser")]
+        public async Task<IActionResult> GetTracksByUser()
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return BadRequest(apiResponse);
+                }
+                string userId = userIdClaim.Value;
+                apiResponse.Data = await _tracksService.GetTracksByUserId(userId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return Ok(apiResponse);
+        }
+
     }
 }

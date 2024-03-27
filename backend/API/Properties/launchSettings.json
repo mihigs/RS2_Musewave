@@ -19,7 +19,7 @@
         "Jwt__Audience": "http://localhost:5234",
         "Jwt__AccessExpirationSeconds": "999999",
         "AllowedHosts": "*",
-        "ListenerApiUrl": "https://localhost:7151/api",
+        "ListenerApiUrl": "http://localhost:7151/api",
         "RabbitMqHost": "localhost"
       },
       "dotnetRunMessages": true,

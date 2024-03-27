@@ -51,5 +51,12 @@ namespace DataContext.Repositories
             playlist.Tracks = playlistTracks.Select(pt => pt.Track).ToList();
             return playlist;
         }
+
+        public async Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(string userId)
+        {
+            return await _dbContext.Set<Playlist>()
+                .Where(p => p.UserId == userId)
+                .ToListAsync();
+        }
     }
 }

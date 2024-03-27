@@ -4,7 +4,7 @@
       "commandName": "Project",
       "environmentVariables": {
         "ConnectionString": "Server=localhost;Database=MusewaveDbDev;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True",
-        "ListenerApiUrl": "https://localhost:7151/api"
+        "ListenerApiUrl": "http://localhost:7151/api"
       }
     }
   }

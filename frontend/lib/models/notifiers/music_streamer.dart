@@ -55,12 +55,12 @@ class MusicStreamer extends ChangeNotifier {
     _player.currentIndexStream.listen((currentIndex) async {
       if(_nextTrack != null && currentStreamingContext != null && currentIndex != null){
         // Play next track
-        if(currentIndex > previousIndex){
+        if(currentIndex >= previousIndex){
           await setCurrentTrackState(_nextTrack!);
           _trackHistory.add(_nextTrack!);
           await _prepareNextTrack(currentStreamingContext!);
         // Play previous track
-        }else{
+        }else if(currentIndex < previousIndex){
           Track nextTrack = _trackHistory.removeLast();
           await setNextTrackState(nextTrack);
           await setCurrentTrackState(_trackHistory.last);
@@ -91,6 +91,10 @@ class MusicStreamer extends ChangeNotifier {
     String fullUrl = getFullUrl(url);
     if (_playlist != null) {
       _playlist!.add(AudioSource.uri(Uri.parse(fullUrl)));
+    }
+    // for each entry in playlist, log the url
+    for (var audioSource in _playlist!.children) {
+      debugPrint('Playlist URL: ${audioSource}');
     }
   }
 
@@ -123,8 +127,11 @@ class MusicStreamer extends ChangeNotifier {
     _trackLoaded = false;
     _lastPosition = null;
     _isPlaying = false;
-    // currentStreamingContext = null;
-    await _playlist?.clear();
+    previousIndex = 0;
+    // Remove the next track from just_audio playlist
+    if(_playlist != null){
+      _playlist!.removeAt(_playlist!.length - 1);
+    }
     notifyListeners();
   }
 

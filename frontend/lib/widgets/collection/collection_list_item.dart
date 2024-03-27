@@ -21,26 +21,32 @@ class CollectionListItem extends StatefulWidget {
 }
 
 class _CollectionListItemState extends State<CollectionListItem> {
+  MusicStreamer? musicStreamer;
   bool isPlaying = false;
   late bool isLiked = widget.track.isLiked ?? false;
 
   @override
   void initState() {
     super.initState();
+    musicStreamer = Provider.of<MusicStreamer>(context, listen: false);
     updateIsPlaying();
   }
 
   void updateIsPlaying() {
     setState(() {
-      isPlaying = Provider.of<MusicStreamer>(context, listen: false).isPlaying;
+      if(musicStreamer != null){
+        isPlaying = musicStreamer!.isPlaying;
+      }
     });
   }
 
   void updateIsLiked() {
     setState(() {
-      int currentTrackId = Provider.of<MusicStreamer>(context, listen: false).currentTrack?.id ?? 0;
-      if (widget.track.id == currentTrackId){
-        isLiked = Provider.of<MusicStreamer>(context, listen: false).isLiked;
+      if(musicStreamer != null){
+        int currentTrackId = musicStreamer!.currentTrack?.id ?? 0;
+        if (widget.track.id == currentTrackId){
+          isLiked = musicStreamer!.isLiked;
+        }
       }
     });
   }
@@ -49,30 +55,24 @@ class _CollectionListItemState extends State<CollectionListItem> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Listen to the MusicStreamer and update isPlaying when it changes
-    Provider.of<MusicStreamer>(context, listen: false)
-        .addListener(updateIsPlaying);
-    Provider.of<MusicStreamer>(context, listen: false)
-        .addListener(updateIsLiked);
+    if (musicStreamer != null) {
+      musicStreamer!.addListener(updateIsPlaying);
+      musicStreamer!.addListener(updateIsLiked);
+    }
   }
 
   @override
   void dispose() {
-    // Remove the listener from the provider before disposing the widget
-    Provider.of<MusicStreamer>(context, listen: false)
-        .removeListener(updateIsPlaying);
-    Provider.of<MusicStreamer>(context, listen: false)
-        .addListener(updateIsLiked);
+    musicStreamer!.removeListener(updateIsPlaying);
+    musicStreamer!.removeListener(updateIsLiked);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isPlaying =
-        Provider.of<MusicStreamer>(context, listen: false).isPlaying;
-    final currentPlayingTrackId =
-        Provider.of<MusicStreamer>(context, listen: false).currentTrack?.id;
-    final model = Provider.of<MusicStreamer>(context, listen: false);
+    final model = musicStreamer!;
+    final isPlaying = musicStreamer!.isPlaying;
+    final currentPlayingTrackId = musicStreamer!.currentTrack?.id;
 
     return Container(
       color: Colors.grey.withOpacity(0.15),
@@ -85,20 +85,18 @@ class _CollectionListItemState extends State<CollectionListItem> {
                 ? Icons.pause
                 : Icons.play_arrow),
             onPressed: () async {
-              final streamer =
-                  Provider.of<MusicStreamer>(context, listen: false);
-
-              if (isPlaying) {
-                if (currentPlayingTrackId != widget.track.id) {
-                  await streamer.stop();
-                  await streamer.startTrack(widget.streamingContext);
+              if(musicStreamer != null){
+                if (isPlaying) {
+                  if (currentPlayingTrackId != widget.track.id) {
+                    await musicStreamer!.stop();
+                    await musicStreamer!.startTrack(widget.streamingContext);
+                  } else {
+                    await musicStreamer!.pause();
+                  }
                 } else {
-                  await streamer.pause();
+                  await musicStreamer!.startTrack(widget.streamingContext);
                 }
-              } else {
-                await streamer.startTrack(widget.streamingContext);
               }
-
               updateIsPlaying();
             },
           ),
@@ -122,6 +120,8 @@ class _CollectionListItemState extends State<CollectionListItem> {
                       }),
                       if(widget.track.id == model.currentTrack?.id){
                         model.toggleIsLiked()
+                      }else if(widget.track.id == model.nextTrack?.id){
+                        model.nextTrack!.isLiked = !model.nextTrack!.isLiked!
                       },
                     }
                   });

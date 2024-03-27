@@ -88,7 +88,7 @@ class TracksService extends ApiService {
 
     var response = await request.send();
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       print('Uploaded!');
       return true;
     } else {
@@ -165,6 +165,25 @@ class TracksService extends ApiService {
       rethrow;
     }
   } 
+
+  Future<List<Track>> getMySongs() async {
+    try {
+      final response = await httpGet('Tracks/GetTracksByUser');
+
+      List<dynamic> data = List<dynamic>.from(response['data']);
+
+      // Convert each Map to a Track
+      final List<Track> result = List.empty(growable: true);
+
+      for (var item in data) {
+        result.add(Track.fromJson(item));
+      }
+
+      return result;
+    } on Exception {
+      rethrow;
+    }
+  }
 
 
   Track _mapToTrack(dynamic item) {

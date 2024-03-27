@@ -21,6 +21,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
   String _trackName = '';
   late PlatformFile _selectedFile;
   bool _fileReady = false;
+  int maximumFileSize = 10000000; // 10MB
 
   Future<void> _uploadFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -28,7 +29,23 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
       allowedExtensions: ['mp3', 'wav', 'mid', 'midi'],
     );
 
-    if (result != null) {
+    // check if the file is bigger than maximumFileSize
+    if (result != null ) {
+      if(result.files.first.size > maximumFileSize){
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('File is too big. Please select a file smaller than 10MB.'),
+          ),
+        );
+      return;
+      } else if (result.files.first.size == 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('File is empty. Please select a file with content.'),
+          ),
+        );
+        return;
+      }
       _selectedFile = result.files.first;
       setState(() {
         _fileReady = true;
@@ -54,7 +71,6 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
 
     // create a new TrackUploadDto
     var trackMetaData = TrackUploadDto(
-      albumId: 1.toString(),
       trackName: _trackName,
       userId: userId,
     );
@@ -113,35 +129,38 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                     onSaved: (value) {
                       _trackName = value!;
                     },
+                    onChanged: (value) {
+                      setState(() {
+                        _trackName = value;
+                      });
+                    },
                   ),
-                  Container(
-                    width: double.infinity,
-                    child: DropdownButton<String>(
-                      items: <String>['Album']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: null,
-                      hint: Text('Select Album'),
-                    ),
-                  ),
+                  // Container(
+                  //   width: double.infinity,
+                  //   child: DropdownButton<String>(
+                  //     items: <String>['Album']
+                  //         .map<DropdownMenuItem<String>>((String value) {
+                  //       return DropdownMenuItem<String>(
+                  //         value: value,
+                  //         child: Text(value),
+                  //       );
+                  //     }).toList(),
+                  //     onChanged: null,
+                  //     hint: Text('Select Album'),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
             Container(
               width: double.infinity,
               child: Column(
-                // space between the elements
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
                       child: Text('Select Media'),
-                      // make the button be highlighted
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).primaryColor,
                       ),
@@ -153,8 +172,12 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                     margin: EdgeInsets.fromLTRB(0, 12, 0, 0),
                     child: ElevatedButton(
                       child: Text('Submit'),
-                      // disable the button (make it non clickable) if _fileReady is false
-                      onPressed: _validate() ? _submit : null,
+                      onPressed: _validate() ? () {
+                        // Dynamically check if form is valid and file is ready. Trigger submission or do nothing accordingly.
+                        if (_formKey.currentState != null && _validate()) {
+                          _submit();
+                        }
+                      } : null,
                     ),
                   ),
                 ],

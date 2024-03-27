@@ -91,7 +91,12 @@ namespace Services.Implementations
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<MusewaveDbContext>();
                 var trackId = int.Parse(messageObject.TrackId);
-                var track = await dbContext.Tracks.FindAsync(trackId);
+                var track = await dbContext.Tracks.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == trackId);
+                if (track == null)
+                {
+                       Console.WriteLine($"Track with ID {trackId} not found.");
+                       return;
+                }
                 track.FilePath = messageObject.Payload;
                 track.Duration = messageObject.Duration;
                 

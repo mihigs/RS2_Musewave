@@ -29,7 +29,8 @@ class MediaPlayerPage extends StatefulWidget {
 }
 
 class _MediaPlayerPageState extends State<MediaPlayerPage> {
-  late bool trackLoaded;
+  MusicStreamer? musicStreamer;
+  bool trackLoaded = false; //LateError (LateInitializationError: Field 'trackLoaded' has not been initialized.) TODO
   Track? currentTrack;
   late bool isLiked = false;
   bool isPlaying = false;
@@ -38,45 +39,51 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
   void initState() {
     super.initState();
 
+    musicStreamer = Provider.of<MusicStreamer>(context, listen: false);
+
     updateIsPlaying();
     checkIfTrackAlreadyLoaded();
-
-    if (!trackLoaded) {
-      initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
-    } else {
-      updateCurrentTrack();
-      if (currentTrack?.id.toString() != widget.trackId) {
-        initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
-      } else {
-        updateTrackData();
-      }
-    }
-
   }
 
   void checkIfTrackAlreadyLoaded() {
     setState(() {
-      trackLoaded =
-          Provider.of<MusicStreamer>(context, listen: false).trackLoaded;
+      if(musicStreamer != null){
+        trackLoaded = musicStreamer!.trackLoaded;
+
+        if (!trackLoaded) {
+          initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
+        } else {
+          updateCurrentTrack();
+          if (currentTrack?.id.toString() != widget.trackId) {
+            initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
+          } else {
+            updateTrackData();
+          }
+        }
+      }
     });
   }
 
   void updateIsPlaying() {
     setState(() {
-      isPlaying = Provider.of<MusicStreamer>(context, listen: false).isPlaying;
+      if(musicStreamer != null){
+        isPlaying = musicStreamer!.isPlaying;
+      }
     });
   }
 
   void updateIsLiked() {
     setState(() {
-      isLiked = Provider.of<MusicStreamer>(context, listen: false).isLiked;
+      if(musicStreamer != null){
+        isLiked = musicStreamer!.isLiked;
+      }
     });
   }
 
   void updateCurrentTrack() {
-    setState(() {
-      var currentTrackFromProvider = Provider.of<MusicStreamer>(context, listen: false).currentTrack!;
-      if(currentTrackFromProvider.id != currentTrack?.id){
+    setState(() { 
+      var currentTrackFromProvider = musicStreamer?.currentTrack;
+      if(currentTrackFromProvider?.id != currentTrack?.id && currentTrackFromProvider != null){
         currentTrack = currentTrackFromProvider;
         isLiked = currentTrack!.isLiked ?? false;
       }
@@ -85,7 +92,7 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
 
   void updateTrackData(){
     setState(() {
-      currentTrack = Provider.of<MusicStreamer>(context, listen: false).currentTrack!;
+      currentTrack = musicStreamer!.currentTrack!;
       if(currentTrack != null){
         isLiked = currentTrack!.isLiked ?? false;
       }
@@ -106,11 +113,12 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
         isLiked = currentTrack!.isLiked!;
       }
 
-      mounted
-          ? Provider.of<MusicStreamer>(context, listen: false).startTrack(
-              StreamingContext(currentTrack!, int.parse(contextId),
-                  getStreamingContextTypeFromString(streamingContextType)))
-          : null;
+      if(musicStreamer != null){
+        mounted ? musicStreamer!.startTrack(
+                StreamingContext(currentTrack!, int.parse(contextId),
+                    getStreamingContextTypeFromString(streamingContextType)))
+                : null;
+      }
     }
   }
 
@@ -118,30 +126,24 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Listen to the MusicStreamer and update isPlaying when it changes
-    Provider.of<MusicStreamer>(context, listen: false)
-        .addListener(updateIsPlaying);
-    Provider.of<MusicStreamer>(context, listen: false)
-        .addListener(updateIsLiked);
-    Provider.of<MusicStreamer>(context, listen: false)
-        .addListener(updateCurrentTrack);
+    if (musicStreamer != null) {
+      musicStreamer!.addListener(updateIsPlaying);
+      musicStreamer!.addListener(updateIsLiked);
+      musicStreamer!.addListener(updateCurrentTrack);
+    }
   }
 
   @override
   void dispose() {
-    // Remove the listener when the widget is disposed to avoid memory leaks
-    Provider.of<MusicStreamer>(context, listen: false)
-        .removeListener(updateIsPlaying);
-    Provider.of<MusicStreamer>(context, listen: false)
-        .removeListener(updateCurrentTrack);
-    Provider.of<MusicStreamer>(context, listen: false)
-        .addListener(updateIsLiked);
+    musicStreamer!.removeListener(updateIsPlaying);
+    musicStreamer!.removeListener(updateIsLiked);
+    musicStreamer!.removeListener(updateCurrentTrack);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final MusicStreamer model = Provider.of<MusicStreamer>(context);
+    final MusicStreamer model = musicStreamer!;
 
     return Scaffold(
       appBar: AppBar(
@@ -182,7 +184,7 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
                   Container(
                     height: 275,
                     width: 275,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,

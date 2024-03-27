@@ -26,6 +26,8 @@ namespace DataContext.Repositories
             return await _dbContext.Set<Album>()
                 .Where(t => t.Id == albumId)
                 .Include(t => t.Tracks)
+                .ThenInclude(t => t.Artist)
+                .ThenInclude(a => a.User)
                 .SelectMany(t => t.Tracks)
                 .ToListAsync();
         }

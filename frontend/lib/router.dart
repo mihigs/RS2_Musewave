@@ -37,18 +37,6 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         path: Routes.login,
         builder: (_, __) => LoginPage(),
       ),
-      // GoRoute(
-      //   path: Routes.home,
-      //   builder: (_, __) => ContainerWithNavigation(),
-      // ),
-      // GoRoute(
-      //   path: Routes.search,
-      //   builder: (_, __) => ContainerWithNavigation(),
-      // ),
-      // GoRoute(
-      //   path: Routes.profile,
-      //   builder: (_, __) => ContainerWithNavigation(),
-      // ),
       GoRoute(
         path: '/',
         builder: (_, __) => ContainerWithNavigation(),
@@ -70,8 +58,10 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         path: '${Routes.album}/:albumId',
         builder: (context, state) {
           final albumId = state.pathParameters['albumId'];
-          return AlbumPage(
-            albumId: int.parse(albumId!),
+          return PersistentPlayerContainer(
+            child: AlbumPage(
+              albumId: int.parse(albumId!),
+            ),
           );
         },
       ),

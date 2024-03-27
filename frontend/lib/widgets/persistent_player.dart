@@ -11,25 +11,31 @@ class PersistentPlayer extends StatefulWidget {
 }
 
 class _PersistentPlayerState extends State<PersistentPlayer> {
+  MusicStreamer? musicStreamer;
   bool isPlaying = false;
   int? currentTrackId;
 
   void updateCurrentTrack() {
     setState(() {
-      currentTrackId =
-          Provider.of<MusicStreamer>(context, listen: false).currentTrack?.id;
+      if(musicStreamer != null){
+        currentTrackId = musicStreamer!.currentTrack?.id;
+      }
     });
   }
 
   void updateIsPlaying() {
     setState(() {
-      isPlaying = Provider.of<MusicStreamer>(context, listen: false).isPlaying;
+      if(musicStreamer != null){
+        isPlaying = musicStreamer!.isPlaying;
+      }
     });
   }
 
   @override
     void initState() {
     super.initState();
+
+    musicStreamer = Provider.of<MusicStreamer>(context, listen: false);
 
     updateIsPlaying();
     updateCurrentTrack();
@@ -39,23 +45,22 @@ class _PersistentPlayerState extends State<PersistentPlayer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Listen to the MusicStreamer and update isPlaying when it changes
-    Provider.of<MusicStreamer>(context, listen: false)
-        .addListener(updateIsPlaying);
-    Provider.of<MusicStreamer>(context, listen: false)
-        .addListener(updateCurrentTrack);
+    if (musicStreamer != null) {
+      musicStreamer!.addListener(updateIsPlaying);
+      musicStreamer!.addListener(updateCurrentTrack);
+    }
   }
 
   @override
   void dispose() {
-    Provider.of<MusicStreamer>(context, listen: false).removeListener(updateIsPlaying);
-    Provider.of<MusicStreamer>(context, listen: false).removeListener(updateCurrentTrack);
+    musicStreamer?.removeListener(updateIsPlaying);
+    musicStreamer?.removeListener(updateCurrentTrack);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final model = Provider.of<MusicStreamer>(context);
+    final model = musicStreamer!;
 
     return GestureDetector(
       onTap: () {

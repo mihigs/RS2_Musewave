@@ -20,11 +20,11 @@ namespace DataContext.Repositories
                 .ToListAsync();
         }
 
-        public Task<Artist> GetArtistByUserIdAsync(string userId)
+        public async Task<Artist> GetArtistByUserId(string userId)
         {
             return _dbContext.Set<Artist>()
                 .Include(a => a.User)
-                .FirstOrDefaultAsync(a => a.UserId == userId);
+                .FirstOrDefault(a => a.UserId == userId);
         }
     }
 }

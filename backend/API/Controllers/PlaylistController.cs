@@ -46,6 +46,33 @@ namespace API.Controllers
             return apiResponse;
         }
 
+        [HttpGet("GetUserPlaylists")]
+        public async Task<ApiResponse> GetUserPlaylists()
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                // gets the user id from the token
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                apiResponse.Data = await _playlistService.GetPlaylistsByUserIdAsync(userId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
+
         //[HttpGet]
         //public async Task<ApiResponse> GetAllPlaylists()
         //{

@@ -36,7 +36,27 @@ class PlaylistService extends ApiService {
       rethrow;
     }
     }
+
+    Future<List<Playlist>> GetUserPlaylists() async {
+      try {
+        final response = await httpGet('Playlist/GetUserPlaylists');
+
+        List<dynamic> data = List<dynamic>.from(response['data']);
+
+        // Convert each Map to a Playlist
+        final List<Playlist> result = List.empty(growable: true);
+
+        for (var item in data) {
+          result.add(Playlist.fromJson(item));
+        }
+
+        return result;
+      } on Exception {
+        rethrow;
+      }
+    }
   }
+  
   
   Playlist _mapToPlaylist(response) {
     if (response == null) {

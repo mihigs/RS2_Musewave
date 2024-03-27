@@ -17,13 +17,15 @@ namespace Services.Implementations
         private readonly IAlbumRepository _albumRepository;
         private readonly IPlaylistRepository _playlistRepository;
         private readonly ILikeRepository _likeRepository;
+        private readonly IArtistRepository _artistRepository;
 
-        public TracksService(ITrackRepository trackRespository, IAlbumRepository albumRepository, IPlaylistRepository playlistRepository, ILikeRepository likeRepository)
+        public TracksService(ITrackRepository trackRespository, IAlbumRepository albumRepository, IPlaylistRepository playlistRepository, ILikeRepository likeRepository, IArtistRepository artistRepository)
         {
             _trackRepository = trackRespository ?? throw new ArgumentNullException(nameof(trackRespository));
             _albumRepository = albumRepository;
             _playlistRepository = playlistRepository;
             _likeRepository = likeRepository;
+            _artistRepository = artistRepository;
         }
 
         public async Task<IEnumerable<Track>> GetLikedTracksAsync(string userId)
@@ -54,7 +56,10 @@ namespace Services.Implementations
             {
                 throw new Exception("Track not found");
             }
-
+            if(trackResult.FilePath == null)
+            {
+                throw new Exception("Track is not processed yet");
+            }
             var signedUrl = GenerateSignedTrackUrl(trackResult.FilePath, trackResult.ArtistId.ToString());
             trackResult.SignedUrl = signedUrl;
 
@@ -227,6 +232,21 @@ namespace Services.Implementations
         public async Task<Like?> CheckIfTrackIsLikedByUser(int trackId, string userId)
         {
             return await _likeRepository.CheckIfTrackIsLikedByUser(trackId, userId);
+        }
+
+        public async Task<List<Track>> GetTracksByArtistId(int artistId)
+        {
+            return await _trackRepository.GetTracksByArtistId(artistId);
+        }
+
+        public async Task<List<Track>> GetTracksByUserId(string userId)
+        {
+            var artist = await _artistRepository.GetArtistByUserId(userId);
+            if (artist == null)
+            {
+                throw new Exception("User is not linked to an Artist");
+            }
+            return await _trackRepository.GetTracksByArtistId(artist.Id);
         }
     }
 }

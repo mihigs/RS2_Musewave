@@ -40,7 +40,7 @@ namespace Services.Implementations
         public async Task<Track> CreateTrackDatabaseEntry(TrackUploadDetailsDto trackDetails)
         {
             // Check if the user is an artist
-            var artist = await _artistRepository.GetArtistByUserIdAsync(trackDetails.userId);
+            var artist = await _artistRepository.GetArtistByUserId(trackDetails.userId);
             if (artist == null)
             {
                 // create an artist entry in the database
