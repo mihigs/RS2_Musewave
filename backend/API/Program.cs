@@ -143,6 +143,11 @@ services.AddAuthorization(options =>
     options.AddPolicy("User", policy => policy.RequireRole("User"));
 });
 
+//builder.WebHost.ConfigureKestrel(serverOptions =>
+//{
+//    serverOptions.Limits.MaxRequestBodySize = 10 * 1024 * 1024; // Set the max request body size to 10 MB
+//});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

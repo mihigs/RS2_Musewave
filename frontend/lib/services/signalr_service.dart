@@ -1,3 +1,5 @@
+import 'package:frontend/models/signalRMessages/track_processed_message.dart';
+import 'package:frontend/models/signalRMessages/track_processing_failed_message.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 class SignalRService {
@@ -58,8 +60,17 @@ class SignalRService {
 
   void registerOnTrackReady(Function(dynamic data) onTrackReady) {
     hubConnection?.on('TrackReady', (arguments) {
-      onTrackReady(arguments?[0]);
-      print('SignalR Track Ready!');
+      TrackProcessed deserializedMessage = TrackProcessed.fromJson(arguments?[0]);
+      onTrackReady(deserializedMessage);
+      print('Track Ready!');
+    });
+  }
+
+  void registerTrackUploadFailed(Function(dynamic data) onTrackUploadFailed) {
+    hubConnection?.on('UploadFailed', (arguments) {
+      TrackProcessingFailedMessage deserializedMessage = TrackProcessingFailedMessage.fromJson(arguments?[0]);
+      onTrackUploadFailed(deserializedMessage);
+      print('Track Upload Failed!');
     });
   }
 

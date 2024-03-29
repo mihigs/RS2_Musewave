@@ -59,6 +59,7 @@ void main() async {
 
   // Initialize Router
   final router = routerGenerator(authService.getLoggedInState());
+  getIt.registerSingleton<GoRouter>(router);
 
   runApp(ChangeNotifierProvider(
     create: (context) => MusicStreamer(),
@@ -70,8 +71,9 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final GoRouter router;
-  MyApp({required this.router});
 
+  MyApp({required this.router});
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
@@ -83,6 +85,12 @@ class MyApp extends StatelessWidget {
         hintColor: Colors.black,
         useMaterial3: true,
       ),
+      builder: (context, router) {
+        // Wrap the router with the SignalRListenerWidget
+        return SignalRListenerWidget(
+          router: router!
+        );
+      },
       debugShowCheckedModeBanner: false,
     );
   }

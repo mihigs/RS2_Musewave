@@ -106,7 +106,7 @@ namespace Services.Implementations
                 await dbContext.SaveChangesAsync();
 
                 // Send notification
-                var notificationData = new { trackId = messageObject.TrackId, track.Title };
+                var notificationData = new { trackId = messageObject.TrackId, trackTitle = track.Title };
                 Console.WriteLine($"Track ready! Track name: {track.Title}");
                 Console.WriteLine($"Sent to user: {messageObject.UserId}");
                 await _hubContext.Clients.User(messageObject.UserId).SendAsync("TrackReady", notificationData);
