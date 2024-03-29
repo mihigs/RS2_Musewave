@@ -11,6 +11,7 @@ class MusicStreamer extends ChangeNotifier {
   final AudioPlayer _player = AudioPlayer();
   ConcatenatingAudioSource? _playlist;
   final String _listenerUrl = const String.fromEnvironment('LISTENER_URL');
+  final double initialVolume = 0.4;
 
   StreamingContext? currentStreamingContext;
 
@@ -36,7 +37,7 @@ class MusicStreamer extends ChangeNotifier {
   List<int> get trackHistoryIds => _trackHistory.map((track) => track.id).toList();
 
   MusicStreamer() {
-    _player.setVolume(0.3);
+    _player.setVolume(initialVolume);
     setupCurrentIndexListener();
   }
 
@@ -169,6 +170,7 @@ class MusicStreamer extends ChangeNotifier {
 
   Future<void> play() async {
     try {
+      await _player.setVolume(initialVolume); // Ensure volume is back to initial before playing
       _player.play();
       _isPlaying = true;
       notifyListeners();
@@ -180,6 +182,7 @@ class MusicStreamer extends ChangeNotifier {
 
   Future<void> resume() async {
     try {
+      await _player.setVolume(initialVolume); // Ensure volume is back to initial before playing
       if (_lastPosition != null) {
         await seek(_lastPosition!);
       }
@@ -190,10 +193,19 @@ class MusicStreamer extends ChangeNotifier {
     }
   }
 
-  Future<void> pause() async {
+  Future<void> pause({bool gradually = true}) async {
+    if(gradually){
+      // Gradually decrease the volume to almost 0 before pausing
+      double currentVolume = initialVolume;
+      while (currentVolume > 0.01) { // Stop decreasing when volume is very low but not 0
+        currentVolume = (currentVolume - 0.05).clamp(0.0, initialVolume); // Decrease volume and clamp to min 0
+        await _player.setVolume(currentVolume);
+        await Future.delayed(Duration(milliseconds: 30)); // Wait a bit before next decrease to create a smooth transition
+      }
+    }
     await _player.pause();
-    _lastPosition = _player.position;
     _isPlaying = false;
+    _lastPosition = _player.position;
     notifyListeners();
   }
 

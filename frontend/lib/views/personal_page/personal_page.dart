@@ -24,7 +24,7 @@ class PersonalPage extends StatelessWidget {
           future: authService.getUserDetails(),
           builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
+              return const Expanded(child: Center(child: CircularProgressIndicator()));
             } else if (snapshot.hasError) {
               return Expanded(child: Text('Error: ${snapshot.error}'));
             } else {

@@ -10,9 +10,11 @@ import 'package:frontend/services/authentication_service.dart';
 import 'package:frontend/services/base/api_service.dart';
 import 'package:frontend/services/playlist_service.dart';
 import 'package:frontend/services/tracks_service.dart';
+import 'package:frontend/widgets/shared/signalr_listener.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/services/signalr_service.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -26,8 +28,7 @@ class MyHttpOverrides extends HttpOverrides {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized before using SecureStorage
   GoRouter.optionURLReflectsImperativeAPIs = true;
-
-  // const baseUrl = String.fromEnvironment('BASE_URL'); // 'https://10.0.2.2:7074/api'
+  const String signalrHubURL = String.fromEnvironment('SIGNALR_HUB_URL');
 
   final getIt = GetIt.instance;
 
@@ -35,19 +36,28 @@ void main() async {
   HttpOverrides.global = MyHttpOverrides();
 
   // Register secure storage
-  final secureStorage = await getIt.registerSingleton(FlutterSecureStorage());
+  final secureStorage = getIt.registerSingleton(const FlutterSecureStorage());
+
+  // Initialize and register the SignalRService
+  final signalRService = getIt.registerSingleton<SignalRService>(SignalRService(signalrHubURL));
 
   // Register services
-  final apiService = await getIt.registerSingleton(ApiService(secureStorage: secureStorage));
-  final authService = await getIt.registerSingleton(AuthenticationService(secureStorage: secureStorage));
-  final tracksService = await getIt.registerSingleton(TracksService(secureStorage));
-  final albumService = await getIt.registerSingleton(AlbumService(secureStorage));
-  final artistService = await getIt.registerSingleton(ArtistService(secureStorage));
-  final playlistService = await getIt.registerSingleton(PlaylistService(secureStorage));
+  getIt.registerSingleton(ApiService(secureStorage: secureStorage));
+  getIt.registerSingleton(TracksService(secureStorage));
+  getIt.registerSingleton(AlbumService(secureStorage));
+  getIt.registerSingleton(ArtistService(secureStorage));
+  getIt.registerSingleton(PlaylistService(secureStorage));
+  final authService = getIt.registerSingleton(AuthenticationService(secureStorage: secureStorage));
 
   // Get the token from secure storage
-  final access_token = await authService.checkLocalStorageForToken();
+  final accessToken = await authService.checkLocalStorageForToken();
 
+  // Initialize SignalR connection if the user is logged in
+  if(accessToken != null && !signalRService.isInitialized){
+    await signalRService.initializeConnection(accessToken);
+  }
+
+  // Initialize Router
   final router = routerGenerator(authService.getLoggedInState());
 
   runApp(ChangeNotifierProvider(
@@ -69,7 +79,7 @@ class MyApp extends StatelessWidget {
       routerConfig: router,
       darkTheme: ThemeData.dark(),
       theme: ThemeData(
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
         hintColor: Colors.black,
         useMaterial3: true,
       ),

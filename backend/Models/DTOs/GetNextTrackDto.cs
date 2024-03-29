@@ -13,6 +13,7 @@ namespace Models.DTOs
         public IFormFile mediaFile { get; set; }
         public int? artistId { get; set; }
         public int trackId { get; set; }
+        public string userId { get; set; }
     }
 
 }

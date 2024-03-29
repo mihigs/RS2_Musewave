@@ -45,7 +45,8 @@ namespace Listener.Services
                     Payload = fileName,
                     ArtistId = model.artistId,
                     TrackId = model.trackId,
-                    Duration = mediaDurationInSeconds
+                    Duration = mediaDurationInSeconds,
+                    UserId = model.userId
                 });
             }
             catch (Exception ex)

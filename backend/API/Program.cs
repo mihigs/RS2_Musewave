@@ -36,6 +36,9 @@ var services = builder.Services;
 // Add RabbitMQ services
 services.AddRabbitMqServices();
 
+// Add SignalR
+services.AddSignalR();
+
 // Enable CORS
 builder.Services.AddCors(options =>
 {
@@ -98,7 +101,6 @@ services.RegisterDbContext(connectionString)
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        // console writeline all the configuration entries names
         foreach (var item in configuration.AsEnumerable())
         {
             Console.WriteLine(item.Key);
@@ -114,6 +116,24 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = configuration["Jwt:Issuer"],
             ValidAudience = configuration["Jwt:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(key)
+        };
+
+        // Configure SignalR to accept JWT token
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                // Only accept tokens from the query string for SignalR requests
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    path.StartsWithSegments("/notificationHub"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            },
         };
     });
 
@@ -141,5 +161,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();

@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/DTOs/TrackUploadDto.dart';
 import 'package:frontend/services/authentication_service.dart';
+import 'package:frontend/services/signalr_service.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +12,7 @@ import 'package:http_parser/http_parser.dart';
 class UploadMediaPage extends StatefulWidget {
   final TracksService tracksService = GetIt.I<TracksService>();
   final AuthenticationService authService = GetIt.I<AuthenticationService>();
+  final SignalRService signalrService = GetIt.I<SignalRService>();
 
   @override
   _UploadMediaPageState createState() => _UploadMediaPageState();
@@ -68,6 +70,9 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
     if (userId == null) {
       return;
     }
+
+    // connect to the SignalR service, so we can listen for when the track finished uploading
+    widget.signalrService.startConnection();
 
     // create a new TrackUploadDto
     var trackMetaData = TrackUploadDto(

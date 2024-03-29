@@ -30,7 +30,8 @@ namespace Services.Implementations
             {
                 artistId = trackEntry.ArtistId,
                 mediaFile = trackUploadDetailsDto.mediaFile,
-                trackId = trackEntry.Id
+                trackId = trackEntry.Id,
+                userId = trackUploadDetailsDto.userId
             };
             SendToListenerForProcessing(trackUploadDto);
 
@@ -70,6 +71,7 @@ namespace Services.Implementations
 
             // Convert the file into a ByteArrayContent
             using var ms = new MemoryStream();
+            trackUploadDto.mediaFile.OpenReadStream();
             await trackUploadDto.mediaFile.CopyToAsync(ms);
             var fileBytes = ms.ToArray();
             var fileContent = new ByteArrayContent(fileBytes);
@@ -80,6 +82,7 @@ namespace Services.Implementations
             // Add other properties to the MultipartFormDataContent
             content.Add(new StringContent(trackUploadDto.artistId.ToString()), "artistId");
             content.Add(new StringContent(trackUploadDto.trackId.ToString()), "trackId");
+            content.Add(new StringContent(trackUploadDto.userId), "userId");
 
             // Send a POST request to the specified Uri
             var response = await client.PostAsync($"{_configuration["ListenerApiUrl"]}/Tracks/UploadTrack", content);

@@ -8,7 +8,7 @@ namespace Services.Interfaces
         Task<IEnumerable<Track>> GetLikedTracksAsync(string userId);
         Task<IEnumerable<Track>> GetTracksByNameAsync(string name);
         Task<Track> InitializeTrack(Track track);
-        Task<Track> handleListenerDoneProcessing(RabbitMqMessage messageObject);
+        //Task<Track> handleListenerDoneProcessing(RabbitMqMessage messageObject);
         Task<Track> GetTrackByIdAsync(int trackId, string userId);
         string GenerateSignedTrackUrl(string listenerTrackId, string artistId);
         Task<Track> GetNextTrackAsync(GetNextTrackDto getNextTrackDto, string userId);

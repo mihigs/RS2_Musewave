@@ -35,7 +35,6 @@ class _SeekBarState extends State<SeekBar> {
                       Text(formatDuration((positionValue ~/ 1000).toInt()), style: TextStyle(fontSize: 10)),
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.only(right: 50),
                           child: Stack(
                             alignment: Alignment.centerLeft,
                             children: <Widget>[
@@ -49,11 +48,14 @@ class _SeekBarState extends State<SeekBar> {
                                   activeTrackColor: Colors.grey, // Buffered color
                                   inactiveTrackColor: Colors.grey.shade300,
                                 ),
-                                child: Slider(
-                                  min: 0.0,
-                                  max: totalDurationValue,
-                                  value: bufferedPositionValue.clamp(0.0, totalDurationValue),
-                                  onChanged: null, // Making this slider non-interactive
+                                child: Container(
+                                  padding: EdgeInsets.only(right: 50),
+                                  child: Slider(
+                                    min: 0.0,
+                                    max: totalDurationValue,
+                                    value: bufferedPositionValue.clamp(0.0, totalDurationValue),
+                                    onChanged: null, // Making this slider non-interactive
+                                  ),
                                 ),
                                 ),
                               ),
@@ -80,7 +82,7 @@ class _SeekBarState extends State<SeekBar> {
                                     });
                                   },
                                   onChangeStart: (value) {
-                                    streamer.pause();
+                                    streamer.pause(gradually: false);
                                   },
                                 ),
                               ),

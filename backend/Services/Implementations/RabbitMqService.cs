@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using DataContext;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Services.Implementations
 {
@@ -19,8 +20,8 @@ namespace Services.Implementations
         private readonly IModel _channel;
         private readonly IServiceScopeFactory _serviceProvider;
         private readonly IConfiguration _configuration;
-
-        public RabbitMqService(IServiceScopeFactory serviceProvider, IConfiguration configuration)
+        private readonly IHubContext<NotificationHub> _hubContext;
+        public RabbitMqService(IServiceScopeFactory serviceProvider, IConfiguration configuration, IHubContext<NotificationHub> hubContext)
         {
             _configuration = configuration;
             var factory = new ConnectionFactory() { HostName = _configuration["RabbitMqHost"] };
@@ -32,6 +33,7 @@ namespace Services.Implementations
                                  autoDelete: false,
                                  arguments: null);
             _serviceProvider = serviceProvider;
+            _hubContext = hubContext;
         }
 
         public void Receive()
@@ -102,6 +104,12 @@ namespace Services.Implementations
                 
                 var result = dbContext.Update(track);
                 await dbContext.SaveChangesAsync();
+
+                // Send notification
+                var notificationData = new { trackId = messageObject.TrackId, track.Title };
+                Console.WriteLine($"Track ready! Track name: {track.Title}");
+                Console.WriteLine($"Sent to user: {messageObject.UserId}");
+                await _hubContext.Clients.User(messageObject.UserId).SendAsync("TrackReady", notificationData);
             }
         }
     }

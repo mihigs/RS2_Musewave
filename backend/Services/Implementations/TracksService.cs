@@ -41,14 +41,14 @@ namespace Services.Implementations
         {
             return await _trackRepository.Add(track);
         }
-        public async Task<Track> handleListenerDoneProcessing(RabbitMqMessage messageObject)
-        {
-            var track = await _trackRepository.GetById(int.Parse(messageObject.TrackId));
-            track.FilePath = messageObject.Payload;
-            track.Duration = messageObject.Duration;
+        //public async Task<Track> handleListenerDoneProcessing(RabbitMqMessage messageObject)
+        //{
+        //    var track = await _trackRepository.GetById(int.Parse(messageObject.TrackId));
+        //    track.FilePath = messageObject.Payload;
+        //    track.Duration = messageObject.Duration;
 
-            return await _trackRepository.Update(track);
-        }
+        //    return await _trackRepository.Update(track);
+        //}
         public async Task<Track> GetTrackByIdAsync(int trackId, string userId)
         {
             var trackResult = await _trackRepository.GetById(trackId);
@@ -244,7 +244,7 @@ namespace Services.Implementations
             var artist = await _artistRepository.GetArtistByUserId(userId);
             if (artist == null)
             {
-                throw new Exception("User is not linked to an Artist");
+                return [];
             }
             return await _trackRepository.GetTracksByArtistId(artist.Id);
         }

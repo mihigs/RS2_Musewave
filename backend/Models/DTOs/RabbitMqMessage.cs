@@ -6,5 +6,6 @@
         public string TrackId { get; set; }
         public string Payload { get; set; }
         public int Duration { get; set; }
+        public string UserId { get; set; }
     }
 }
