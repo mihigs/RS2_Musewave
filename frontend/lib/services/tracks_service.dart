@@ -56,6 +56,25 @@ class TracksService extends ApiService {
     }
   }
 
+  Future<List<Track>> getJamendoTracksByName(String name) async {
+    try {
+      final response = await httpGet('Tracks/GetJamendoTracksByName?name=$name');
+
+      List<dynamic> data = List<dynamic>.from(response['data']);
+
+      // Convert each Map to a Track
+      final List<Track> result = List.empty(growable: true);
+
+      for (var item in data) {
+        result.add(Track.fromJson(item));
+      }
+
+      return result;
+    } on Exception {
+      rethrow;
+    }
+  }
+
   Future<bool> uploadTrack(
       TrackUploadDto trackUploadDto, PlatformFile file) async {
     
@@ -106,6 +125,18 @@ class TracksService extends ApiService {
     }
   }
 
+  Future<Track?> getJamendoTrack(String trackId) async {
+    try {
+      final response = await httpGet('Tracks/GetJamendoTrack/$trackId');
+      if (response == null) {
+        return null;
+      }
+      return _mapToTrack(response['data']);
+    } on Exception {
+      rethrow;
+    }
+  }
+
   Future<StreamedResponse> streamTrack(String trackSource) async {
     var token = await getTokenFromStorage();
     var request = http.Request('GET', Uri.parse(trackSource));
@@ -137,7 +168,7 @@ class TracksService extends ApiService {
     }
   }
 
-    Future<Track> GetNextPlaylistTrack(String currentTrackId, String playlistId) async {
+  Future<Track> GetNextPlaylistTrack(String currentTrackId, String playlistId) async {
     try {
       final response = await httpGet('Tracks/GetNextPlaylistTrack/$currentTrackId/$playlistId');
       return _mapToTrack(response['data']);

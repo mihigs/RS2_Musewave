@@ -4,7 +4,7 @@ using Models.Entities;
 
 namespace DataContext.Repositories
 {
-    public class TrackRepository : Repository<Track>, ITrackRepository
+    public class TrackRepository : Repository<BaseTrack>, ITrackRepository
     {
         private readonly MusewaveDbContext _dbContext;
 
@@ -13,14 +13,14 @@ namespace DataContext.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<IEnumerable<Track>> GetTracksByGenreAsync(int genreId)
+        public async Task<IEnumerable<BaseTrack>> GetTracksByGenreAsync(int genreId)
         {
             return await _dbContext.Tracks
                 .Where(t => t.GenreId == genreId)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Track>> GetLikedTracksAsync(string userId)
+        public async Task<IEnumerable<BaseTrack>> GetLikedTracksAsync(string userId)
         {
             return await _dbContext.Set<Like>()
                 .Where(l => l.UserId == userId)
@@ -28,26 +28,26 @@ namespace DataContext.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Track>> GetTracksByNameAsync(string name)
+        public async Task<IEnumerable<BaseTrack>> GetTracksByNameAsync(string name)
         {
-            return await _dbContext.Set<Track>()
+            return await _dbContext.Set<BaseTrack>()
                 .Where(t => t.Title.Contains(name))
                 .Include(t => t.Artist)
                 .ThenInclude(Artist => Artist.User)
                 .ToListAsync();
         }
 
-        public async Task<Track> GetById(int id)
+        public async Task<BaseTrack> GetById(int id)
         {
-            return await _dbContext.Set<Track>()
+            return await _dbContext.Set<BaseTrack>()
                 .Include(t => t.Artist)
                 .ThenInclude(Artist => Artist.User)
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public async Task<Track> GetRandomTrack(List<int> excluding)
+        public async Task<BaseTrack> GetRandomTrack(List<int> excluding)
         {
-            return await _dbContext.Set<Track>()
+            return await _dbContext.Set<BaseTrack>()
                 .Where(t => !excluding.Contains(t.Id))
                 .Include(t => t.Artist)
                 .ThenInclude(Artist => Artist.User)
@@ -55,9 +55,9 @@ namespace DataContext.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public Task<List<Track>> GetTracksByArtistId(int artistId)
+        public Task<List<BaseTrack>> GetTracksByArtistId(int artistId)
         {
-            return _dbContext.Set<Track>()
+            return _dbContext.Set<BaseTrack>()
                 .Where(t => t.ArtistId == artistId)
                 .Include(t => t.Artist)
                 .ThenInclude(Artist => Artist.User)

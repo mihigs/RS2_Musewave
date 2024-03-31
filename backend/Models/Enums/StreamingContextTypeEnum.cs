@@ -4,6 +4,7 @@
     {
         RADIO,
         ALBUM,
-        PLAYLIST
+        PLAYLIST,
+        JAMENDO
     }
 }

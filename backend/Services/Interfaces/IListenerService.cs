@@ -5,8 +5,8 @@ namespace Services.Interfaces
 {
     public interface IListenerService
     {
-        Task<Track> TrackUploadRequest(TrackUploadDetailsDto trackUploadDto);
-        Task<Track> CreateTrackDatabaseEntry(TrackUploadDetailsDto trackDetails);
+        Task<BaseTrack> TrackUploadRequest(TrackUploadDetailsDto trackUploadDto);
+        Task<BaseTrack> CreateTrackDatabaseEntry(TrackUploadDetailsDto trackDetails);
         Task SendToListenerForProcessing(TrackUploadDto trackUploadDto);
     }
 }

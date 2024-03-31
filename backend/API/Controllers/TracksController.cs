@@ -20,10 +20,13 @@ namespace API.Controllers
     {
         private readonly ITracksService _tracksService;
         private readonly IListenerService _listenerService;
-        public TracksController(ITracksService tracksService, IListenerService listenerService)
+        private readonly IJamendoService _jamendoService;
+
+        public TracksController(ITracksService tracksService, IListenerService listenerService, IJamendoService jamendoService)
         {
             _tracksService = tracksService ?? throw new ArgumentNullException(nameof(tracksService));
             _listenerService = listenerService ?? throw new ArgumentNullException(nameof(listenerService));
+            _jamendoService = jamendoService;
         }
 
         [HttpGet("GetLikedTracks")]
@@ -70,6 +73,24 @@ namespace API.Controllers
             return apiResponse;
         }
 
+        [HttpGet("GetJamendoTracksByName")]
+        public async Task<ApiResponse> GetJamendoTracksByName(string name)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                apiResponse.Data = await _jamendoService.SearchJamendoByTrackName(name);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
+
         [HttpPost("UploadTrack")]
         public async Task<IActionResult> UploadTrack(TrackUploadDetailsDto model)
         {
@@ -84,7 +105,7 @@ namespace API.Controllers
                 // Check if trackName is not empty
                 if (string.IsNullOrWhiteSpace(model.trackName))
                 {
-                    return BadRequest("Track name cannot be empty");
+                    return BadRequest("BaseTrack name cannot be empty");
                 }
                 // Check if userId is not empty
                 if (string.IsNullOrWhiteSpace(model.userId))
@@ -127,7 +148,7 @@ namespace API.Controllers
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                Track trackResult = null;
+                BaseTrack trackResult = null;
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
@@ -137,7 +158,34 @@ namespace API.Controllers
                 if (trackResult == null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-                    apiResponse.Errors.Add("Track not found");
+                    apiResponse.Errors.Add("BaseTrack not found");
+                    return NotFound(apiResponse);
+                }
+
+                apiResponse.Data = trackResult;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
+
+        //GetJamendoTrack
+        [HttpGet("GetJamendoTrack/{jamendoId}")]
+        public async Task<IActionResult> GetJamendoTrack(int jamendoId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var trackResult = await _jamendoService.GetTrackById(jamendoId);
+                if (trackResult == null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("Jamendo track not found");
                     return NotFound(apiResponse);
                 }
 
@@ -154,7 +202,7 @@ namespace API.Controllers
         }
 
         [HttpPost("GetNextTrack")]
-        public async Task<IActionResult> GetNextTrack([FromBody] GetNextTrackDto getNextTrackDto)
+        public async Task<IActionResult> GetNextTrack([FromBody] GetNextTrackRequestDto getNextTrackDto)
         {
             ApiResponse apiResponse = new ApiResponse();
             try
@@ -173,7 +221,7 @@ namespace API.Controllers
                 if (nextTrack == null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-                    apiResponse.Errors.Add("Track not found");
+                    apiResponse.Errors.Add("BaseTrack not found");
                     return NotFound(apiResponse);
                 }
                 apiResponse.Data = nextTrack;
@@ -199,7 +247,7 @@ namespace API.Controllers
         //        if (nextTrack == null)
         //        {
         //            apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-        //            apiResponse.Errors.Add("Track not found");
+        //            apiResponse.Errors.Add("BaseTrack not found");
         //        }
         //        apiResponse.Data = nextTrack;
         //        apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
@@ -223,7 +271,7 @@ namespace API.Controllers
         //        if (nextTrack == null)
         //        {
         //            apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-        //            apiResponse.Errors.Add("Track not found");
+        //            apiResponse.Errors.Add("BaseTrack not found");
         //        }
         //        apiResponse.Data = nextTrack;
         //        apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
@@ -247,7 +295,7 @@ namespace API.Controllers
         //        if (nextTrack == null)
         //        {
         //            apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-        //            apiResponse.Errors.Add("Track not found");
+        //            apiResponse.Errors.Add("BaseTrack not found");
         //        }
         //        apiResponse.Data = nextTrack;
         //        apiResponse.StatusCode = System.Net.HttpStatusCode.OK;

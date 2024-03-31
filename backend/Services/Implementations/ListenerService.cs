@@ -22,7 +22,7 @@ namespace Services.Implementations
             _hubContext = hubContext;
         }
 
-        public async Task<Track> TrackUploadRequest(TrackUploadDetailsDto trackUploadDetailsDto)
+        public async Task<BaseTrack> TrackUploadRequest(TrackUploadDetailsDto trackUploadDetailsDto)
         {
             // First create an entry in the database for the track
             var trackEntry = await CreateTrackDatabaseEntry(trackUploadDetailsDto);
@@ -41,7 +41,7 @@ namespace Services.Implementations
             return trackEntry;
         }
 
-        public async Task<Track> CreateTrackDatabaseEntry(TrackUploadDetailsDto trackDetails)
+        public async Task<BaseTrack> CreateTrackDatabaseEntry(TrackUploadDetailsDto trackDetails)
         {
             // Check if the user is an artist
             var artist = await _artistRepository.GetArtistByUserId(trackDetails.userId);
@@ -56,7 +56,7 @@ namespace Services.Implementations
             }
 
             // create a track entry in the database
-            var track = new Track
+            var track = new BaseTrack
             {
                 Title = trackDetails.trackName,
                 ArtistId = artist.Id,
@@ -99,7 +99,7 @@ namespace Services.Implementations
                 // Ensure the request was successful
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("Track sent to Listener for processing.");
+                    Console.WriteLine("BaseTrack sent to Listener for processing.");
                 }
                 else
                 {
@@ -113,42 +113,6 @@ namespace Services.Implementations
             }
             return;
         }
-
-        //public async Task SendToListenerForProcessing(TrackUploadDto trackUploadDto)
-        //{
-        //    var client = new HttpClient();
-
-        //    // Create a MultipartFormDataContent
-        //    var content = new MultipartFormDataContent();
-
-        //    // Convert the file into a ByteArrayContent
-        //    using var ms = new MemoryStream();
-        //    trackUploadDto.mediaFile.OpenReadStream();
-        //    await trackUploadDto.mediaFile.CopyToAsync(ms);
-        //    var fileBytes = ms.ToArray();
-        //    var fileContent = new ByteArrayContent(fileBytes);
-
-        //    // Add the file content to the MultipartFormDataContent
-        //    content.Add(fileContent, "mediaFile", trackUploadDto.mediaFile.FileName);
-
-        //    // Add other properties to the MultipartFormDataContent
-        //    content.Add(new StringContent(trackUploadDto.artistId.ToString()), "artistId");
-        //    content.Add(new StringContent(trackUploadDto.trackId.ToString()), "trackId");
-        //    content.Add(new StringContent(trackUploadDto.userId), "userId");
-
-        //    // Send a POST request to the specified Uri
-        //    var response = await client.PostAsync($"{_configuration["ListenerApiUrl"]}/Tracks/UploadTrack", content);
-
-        //    // Ensure the request was successful
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        Console.WriteLine("Track sent to Listener for processing.");
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("Failed to process track.");
-        //    }
-        //}
 
     }
 }

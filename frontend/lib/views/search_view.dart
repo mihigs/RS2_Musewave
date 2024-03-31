@@ -27,6 +27,7 @@ class _SearchPageState extends State<SearchPage> {
   late FocusNode _focusNode;
   bool isSearching = false;
   late Future<List<Track>> _tracksFuture;
+  late Future<List<Track>> _jamendoTracksFuture;
   late Future<List<Album>> _albumsFuture;
   late Future<List<Artist>> _artistsFuture;
   late Future<List<Playlist>> _playlistsFuture;
@@ -34,6 +35,7 @@ class _SearchPageState extends State<SearchPage> {
   void handleSubmitted(String value) {
     setState(() {
       _tracksFuture = widget.tracksService.getTracksByName(value);
+      _jamendoTracksFuture = widget.tracksService.getJamendoTracksByName(value);
       _albumsFuture = widget.albumService.getAlbumsByTitle(value);
       _artistsFuture = widget.artistService.getArtistsByName(value);
       _playlistsFuture = widget.playlistService.getPlaylistsByName(value);
@@ -47,6 +49,7 @@ class _SearchPageState extends State<SearchPage> {
     _focusNode = FocusNode();
     _focusNode.requestFocus();
     _tracksFuture = Future.value([]);
+    _jamendoTracksFuture = Future.value([]);
     _albumsFuture = Future.value([]);
     _artistsFuture = Future.value([]);
     _playlistsFuture = Future.value([]);
@@ -73,6 +76,7 @@ class _SearchPageState extends State<SearchPage> {
           Expanded(
             child: SearchResults(
                 tracksFuture: _tracksFuture,
+                jamendoTracksFuture: _jamendoTracksFuture,
                 albumsFuture: _albumsFuture,
                 artistsFuture: _artistsFuture,
                 playlistsFuture: _playlistsFuture

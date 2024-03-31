@@ -30,7 +30,7 @@ class MediaPlayerPage extends StatefulWidget {
 
 class _MediaPlayerPageState extends State<MediaPlayerPage> {
   MusicStreamer? musicStreamer;
-  bool trackLoaded = false; //LateError (LateInitializationError: Field 'trackLoaded' has not been initialized.) TODO
+  bool trackLoaded = false;
   Track? currentTrack;
   late bool isLiked = false;
   bool isPlaying = false;
@@ -47,22 +47,53 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
 
   void checkIfTrackAlreadyLoaded() {
     setState(() {
-      if(musicStreamer != null){
-        trackLoaded = musicStreamer!.trackLoaded;
 
-        if (!trackLoaded) {
-          initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
-        } else {
-          updateCurrentTrack();
-          if (currentTrack?.id.toString() != widget.trackId) {
-            initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
-          } else {
-            updateTrackData();
-          }
-        }
+      if (musicStreamer == null) return;
+      bool trackLoaded = musicStreamer!.trackLoaded;
+      var currentStreamingType = musicStreamer!.currentStreamingContext?.type ?? 
+          getStreamingContextTypeFromString(widget.contextType);
+      var streamingTypeFromURL = getStreamingContextTypeFromString(widget.contextType);
+
+      if (streamingTypeFromURL != StreamingContextType.JAMENDO) {
+          currentStreamingType = streamingTypeFromURL;
       }
+
+      if (currentStreamingType == StreamingContextType.JAMENDO) {
+          handleJamendoStreaming(trackLoaded);
+      } else {
+          handleOtherStreaming(trackLoaded);
+      }
+
     });
   }
+
+  void handleJamendoStreaming(bool trackLoaded) {
+    if (!trackLoaded) {
+        widget.tracksService.getJamendoTrack(widget.trackId).then((jamendoTrack) {
+            if (jamendoTrack != null) {
+                musicStreamer!.startTrack(StreamingContext(jamendoTrack, int.parse(widget.contextId), StreamingContextType.JAMENDO));
+            } else {
+                GoRouter.of(context).go('/');
+            }
+        });
+    } else {
+        updateCurrentTrack();
+        updateTrackData();
+    }
+}
+
+void handleOtherStreaming(bool trackLoaded) {
+    if (!trackLoaded) {
+        initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
+    } else {
+        updateCurrentTrack();
+        if (currentTrack?.id.toString() == widget.trackId) {
+            updateTrackData();
+        } else {
+            initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
+        }
+    }
+}
 
   void updateIsPlaying() {
     setState(() {
@@ -100,7 +131,7 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
   }
 
   Future<void> initializeTrackData(String currentTrackId, String contextId,
-      String streamingContextType) async {
+    String streamingContextType) async {
     Track currentTrackResult =
         await widget.tracksService.getTrack(int.parse(currentTrackId));
     setState(() {
@@ -158,7 +189,7 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
           },
         ),
         actions: <Widget>[
-          IconButton(
+          model.currentStreamingContext?.type != StreamingContextType.JAMENDO ? IconButton(
             icon: Icon(isLiked ? Icons.star : Icons.star_border, size: 32),
               onPressed: () async {
                 if(currentTrack != null){
@@ -169,7 +200,7 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
                   });
                 }
               },
-          ),
+          ) : Container(margin: EdgeInsets.only(right: 20) , child: Text("Powered by Jamendo"),),
         ],
       ),
       body: currentTrack == null

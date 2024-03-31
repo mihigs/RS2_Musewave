@@ -21,7 +21,7 @@ namespace DataContext.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Track>> GetAlbumTracksAsync(int albumId)
+        public async Task<IEnumerable<BaseTrack>> GetAlbumTracksAsync(int albumId)
         {
             return await _dbContext.Set<Album>()
                 .Where(t => t.Id == albumId)

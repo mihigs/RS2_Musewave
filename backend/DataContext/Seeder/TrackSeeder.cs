@@ -16,14 +16,16 @@ namespace DataContext.Seeder
         private readonly ITrackRepository _trackRepository;
         private readonly IArtistRepository _artistRepository;
         private readonly IConfiguration _configuration;
+        private readonly IUserRepository _userRepository;
 
-        public TrackSeeder(IUnitOfWork unitOfWork, IAlbumRepository albumRepository, IGenreRepository genreRepository, ITrackRepository trackRepository, IArtistRepository artistRepository, IConfiguration configuration) : base(unitOfWork)
+        public TrackSeeder(IUnitOfWork unitOfWork, IAlbumRepository albumRepository, IGenreRepository genreRepository, ITrackRepository trackRepository, IArtistRepository artistRepository, IConfiguration configuration, IUserRepository userRepository) : base(unitOfWork)
         {
             _albumRepository = albumRepository;
             _genreRepository = genreRepository;
             _trackRepository = trackRepository;
             _artistRepository = artistRepository;
             _configuration = configuration;
+            _userRepository = userRepository;
         }
 
         public async Task<bool> Seed()
@@ -34,9 +36,10 @@ namespace DataContext.Seeder
                 var albums = await _albumRepository.GetAll();
                 var genres = await _genreRepository.GetAll();
                 var artists = await _artistRepository.GetAll();
+                var adminUserId = _userRepository.GetAdminUser().Result.Id;
 
                 // Create a list to hold the tracks
-                //List<Track> tracks = new List<Track>();
+                //List<BaseTrack> tracks = new List<BaseTrack>();
 
                 // Log the source directory
                 Console.WriteLine($"Source directory: {sourceDir}");
@@ -56,8 +59,8 @@ namespace DataContext.Seeder
 
                 foreach (var mediaFile in mediaFiles)
                 {
-                    // Create a new Track entity
-                    var track = new Track();
+                    // Create a new BaseTrack entity
+                    var track = new BaseTrack();
 
                     // Set the title to the file name, capitalised, without dashes
                     var fileName = Path.GetFileNameWithoutExtension(mediaFile);
@@ -78,7 +81,7 @@ namespace DataContext.Seeder
                     await _trackRepository.Add(track);
 
                     // Upload tracks to the Listener
-                    var response = await UploadTrack(mediaFile, track.ArtistId, track.Id);
+                    var response = await UploadTrack(mediaFile, track.ArtistId, track.Id, adminUserId);
                     if (!response.IsSuccessStatusCode)
                     {
                         throw new Exception("Failed to upload track to the Listener.");
@@ -125,7 +128,7 @@ namespace DataContext.Seeder
             }
         }
 
-        public async Task<HttpResponseMessage> UploadTrack(string filePath, int artistId, int trackId)
+        public async Task<HttpResponseMessage> UploadTrack(string filePath, int artistId, int trackId, string userId)
         {
             try
             {
@@ -145,6 +148,7 @@ namespace DataContext.Seeder
                     // Add artistId and trackId to the content
                     content.Add(new StringContent(artistId.ToString()), "artistId");
                     content.Add(new StringContent(trackId.ToString()), "trackId");
+                    content.Add(new StringContent(userId), "userId");
 
                     Console.WriteLine($"Listener URL: {_configuration["ListenerApiUrl"]}/Tracks/UploadTrack");
 

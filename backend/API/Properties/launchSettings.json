@@ -20,7 +20,9 @@
         "Jwt__AccessExpirationSeconds": "999999",
         "AllowedHosts": "*",
         "ListenerApiUrl": "http://localhost:7151/api",
-        "RabbitMqHost": "localhost"
+        "RabbitMqHost": "localhost",
+        "Jamendo__ClientId": "edf55456",
+        "Jamendo__BaseUrl": "https://api.jamendo.com/v3.0/tracks/"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7074;http://localhost:5234"
@@ -47,7 +49,9 @@
         "Jwt__AccessExpirationSeconds": "999999",
         "AllowedHosts": "*",
         "ListenerApiUrl": "http://listener:8082/api",
-        "RabbitMqHost": "rabbitmq"
+        "RabbitMqHost": "rabbitmq",
+        "Jamendo__ClientId": "edf55456",
+        "Jamendo__BaseUrl": "https://api.jamendo.com/v3.0/tracks/"
       },
       "publishAllPorts": true,
       "useSSL": true

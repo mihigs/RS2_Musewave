@@ -16,11 +16,13 @@ class Track extends BaseEntity {
   List<Like>? likes;
   int? genreId;
   Genre? genre;
-  int artistId;
+  int? artistId;
   Artist? artist;
   String? filePath;
   String? signedUrl;
   bool? isLiked;
+  String? imageUrl;
+  String? jamendoId;
 
   Track({
     required super.id,
@@ -38,6 +40,8 @@ class Track extends BaseEntity {
     this.filePath,
     this.signedUrl,
     this.isLiked,
+    this.imageUrl,
+    this.jamendoId,
   });
 
     // A necessary factory constructor for creating a new Track instance

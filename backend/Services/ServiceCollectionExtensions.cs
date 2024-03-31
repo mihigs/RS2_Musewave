@@ -16,6 +16,7 @@ namespace Services
             services.AddScoped<IPlaylistService, PlaylistService>();
             services.AddScoped<ITracksService, TracksService>();
             services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IJamendoService, JamendoService>();
 
             return services;
         }

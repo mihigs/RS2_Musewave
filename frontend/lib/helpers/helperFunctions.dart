@@ -19,19 +19,6 @@ String formatDuration(int durationInSeconds) {
   return '$minutesStr:$secondsStr';
 }
 
-// StreamingContextType getStreamingContextTypeFromString(String typeString) {
-//   switch (typeString.toUpperCase()) {
-//     case 'RADIO' || "0":
-//       return StreamingContextType.RADIO;
-//     case 'ALBUM' || "1":
-//       return StreamingContextType.ALBUM;
-//     case 'PLAYLIST' || "2":
-//       return StreamingContextType.PLAYLIST;
-//     default:
-//       throw Exception('Unknown streaming context type: $typeString');
-//   }
-// }
-
 StreamingContextType getStreamingContextTypeFromString(String typeString) {
   if (typeString.toUpperCase() == 'RADIO' || typeString == "0") {
     return StreamingContextType.RADIO;
@@ -39,6 +26,8 @@ StreamingContextType getStreamingContextTypeFromString(String typeString) {
     return StreamingContextType.ALBUM;
   } else if (typeString.toUpperCase() == 'PLAYLIST' || typeString == "2") {
     return StreamingContextType.PLAYLIST;
+  } else if (typeString.toUpperCase() == 'JAMENDO' || typeString == "3") {
+    return StreamingContextType.JAMENDO;
   } else {
     throw Exception('Unknown streaming context type: $typeString');
   }
@@ -52,6 +41,8 @@ String getStringFromStreamingContextType(StreamingContextType type) {
       return "ALBUM";
     case StreamingContextType.PLAYLIST:
       return "PLAYLIST";
+    case StreamingContextType.JAMENDO:
+      return "JAMENDO";
     default:
       throw Exception('Unknown streaming context type');
   }

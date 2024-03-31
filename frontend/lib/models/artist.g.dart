@@ -10,7 +10,7 @@ Artist _$ArtistFromJson(Map<String, dynamic> json) => Artist(
       id: json['id'] as int,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
-      userId: json['userId'] as String,
+      userId: json['userId'] as String?,
       user: json['user'] == null
           ? null
           : User.fromJson(json['user'] as Map<String, dynamic>),

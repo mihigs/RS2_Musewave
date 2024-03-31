@@ -7,7 +7,7 @@ namespace DataContext
 {
     public class MusewaveDbContext : IdentityDbContext<User>
     {
-        public DbSet<Track> Tracks { get; set; }
+        public DbSet<BaseTrack> Tracks { get; set; }
         public DbSet<Album> Albums { get; set; }
         public DbSet<Artist> Artists { get; set; }
         public override DbSet<User> Users { get; set; }
@@ -23,11 +23,11 @@ namespace DataContext
         {
             base.OnModelCreating(modelBuilder);
 
-            // Apply a global query filter for Track entity, to exclude tracks that have not been uploaded yet
-            modelBuilder.Entity<Track>().HasQueryFilter(t => t.FilePath != null);
+            // Apply a global query filter for BaseTrack entity, to exclude tracks that have not been uploaded yet
+            modelBuilder.Entity<BaseTrack>().HasQueryFilter(t => t.FilePath != null);
 
             #region Relationship Configuration
-            modelBuilder.Entity<Track>()
+            modelBuilder.Entity<BaseTrack>()
                 .HasOne(t => t.Genre)
                 .WithMany()
                 .HasForeignKey(t => t.GenreId)
@@ -65,10 +65,10 @@ namespace DataContext
 
             #endregion
 
-            modelBuilder.Entity<Track>()
+            modelBuilder.Entity<BaseTrack>()
                 .Ignore(t => t.SignedUrl);
 
-            modelBuilder.Entity<Track>()
+            modelBuilder.Entity<BaseTrack>()
                 .Ignore(t => t.IsLiked);
         }
     }

@@ -312,7 +312,7 @@ namespace DataContext.Migrations
                     b.ToTable("PlaylistTrack");
                 });
 
-            modelBuilder.Entity("Models.Entities.Track", b =>
+            modelBuilder.Entity("Models.Entities.BaseTrack", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -337,6 +337,9 @@ namespace DataContext.Migrations
 
                     b.Property<int?>("GenreId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PlaylistId")
                         .HasColumnType("int");
@@ -505,7 +508,7 @@ namespace DataContext.Migrations
 
             modelBuilder.Entity("Models.Entities.Like", b =>
                 {
-                    b.HasOne("Models.Entities.Track", "Track")
+                    b.HasOne("Models.Entities.BaseTrack", "BaseTrack")
                         .WithMany("Likes")
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -517,7 +520,7 @@ namespace DataContext.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Track");
+                    b.Navigation("BaseTrack");
 
                     b.Navigation("User");
                 });
@@ -541,7 +544,7 @@ namespace DataContext.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Models.Entities.Track", "Track")
+                    b.HasOne("Models.Entities.BaseTrack", "BaseTrack")
                         .WithMany()
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -549,10 +552,10 @@ namespace DataContext.Migrations
 
                     b.Navigation("Playlist");
 
-                    b.Navigation("Track");
+                    b.Navigation("BaseTrack");
                 });
 
-            modelBuilder.Entity("Models.Entities.Track", b =>
+            modelBuilder.Entity("Models.Entities.BaseTrack", b =>
                 {
                     b.HasOne("Models.Entities.Album", "Album")
                         .WithMany("Tracks")
@@ -590,7 +593,7 @@ namespace DataContext.Migrations
                     b.Navigation("Tracks");
                 });
 
-            modelBuilder.Entity("Models.Entities.Track", b =>
+            modelBuilder.Entity("Models.Entities.BaseTrack", b =>
                 {
                     b.Navigation("Likes");
                 });

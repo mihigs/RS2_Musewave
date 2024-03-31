@@ -18,53 +18,62 @@ namespace Services.Implementations
         private readonly IPlaylistRepository _playlistRepository;
         private readonly ILikeRepository _likeRepository;
         private readonly IArtistRepository _artistRepository;
+        private readonly IJamendoService _jamendoService;
 
-        public TracksService(ITrackRepository trackRespository, IAlbumRepository albumRepository, IPlaylistRepository playlistRepository, ILikeRepository likeRepository, IArtistRepository artistRepository)
+        public TracksService(ITrackRepository trackRespository, IAlbumRepository albumRepository, IPlaylistRepository playlistRepository, ILikeRepository likeRepository, IArtistRepository artistRepository, IJamendoService jamendoService)
         {
             _trackRepository = trackRespository ?? throw new ArgumentNullException(nameof(trackRespository));
             _albumRepository = albumRepository;
             _playlistRepository = playlistRepository;
             _likeRepository = likeRepository;
             _artistRepository = artistRepository;
+            _jamendoService = jamendoService;
         }
 
-        public async Task<IEnumerable<Track>> GetLikedTracksAsync(string userId)
+        public async Task<IEnumerable<BaseTrack>> GetLikedTracksAsync(string userId)
         {
             return await _trackRepository.GetLikedTracksAsync(userId);
         }
 
-        public async Task<IEnumerable<Track>> GetTracksByNameAsync(string name)
+        public async Task<IEnumerable<BaseTrack>> GetTracksByNameAsync(string name)
         {
             return await _trackRepository.GetTracksByNameAsync(name);
         }
-        public async Task<Track> InitializeTrack(Track track)
+
+        public async Task<BaseTrack> InitializeTrack(BaseTrack track)
         {
             return await _trackRepository.Add(track);
         }
-        //public async Task<Track> handleListenerDoneProcessing(RabbitMqMessage messageObject)
-        //{
-        //    var track = await _trackRepository.GetById(int.Parse(messageObject.TrackId));
-        //    track.FilePath = messageObject.Payload;
-        //    track.Duration = messageObject.Duration;
-
-        //    return await _trackRepository.Update(track);
-        //}
-        public async Task<Track> GetTrackByIdAsync(int trackId, string userId)
+        public async Task<BaseTrack> GetTrackByIdAsync(int trackId, string userId)
         {
             var trackResult = await _trackRepository.GetById(trackId);
             if (trackResult == null)
             {
-                throw new Exception("Track not found");
+                throw new Exception("BaseTrack not found");
             }
             if(trackResult.FilePath == null)
             {
-                throw new Exception("Track is not processed yet");
+                throw new Exception("BaseTrack is not processed yet");
             }
             var signedUrl = GenerateSignedTrackUrl(trackResult.FilePath, trackResult.ArtistId.ToString());
             trackResult.SignedUrl = signedUrl;
 
             // Check if the track is liked by the user
             trackResult.IsLiked = await CheckIfTrackIsLikedByUser(trackResult.Id, userId) != null;
+            return trackResult;
+        }
+
+        //GetJamendoTrackById
+        public async Task<BaseTrack> GetJamendoTrackByIdAsync(int trackId, string userId)
+        {
+            var trackResult = await _jamendoService.GetTrackById(trackId);
+            if (trackResult == null)
+            {
+                throw new Exception("Jamendo Track not found");
+            }
+
+            // Check if the track is liked by the user
+            //trackResult.IsLiked = await CheckIfTrackIsLikedByUser(trackResult.Id, userId) != null;
             return trackResult;
         }
 
@@ -96,7 +105,7 @@ namespace Services.Implementations
             return url;
         }
 
-        public async Task<Track> GetNextTrackAsync(int currentTrackId, string userId, List<int> trackHistoryIds)
+        public async Task<BaseTrack> GetNextTrackAsync(int currentTrackId, string userId, List<int> trackHistoryIds)
         {
             var currentTrack = await _trackRepository.GetById(currentTrackId);
             if (currentTrack == null)
@@ -104,8 +113,8 @@ namespace Services.Implementations
                 throw new Exception("Current track not found");
             }
 
-            Track nextTrack = null;
-            IEnumerable<Track> tracksSameGenre = null;
+            BaseTrack nextTrack = null;
+            IEnumerable<BaseTrack> tracksSameGenre = null;
 
             // If the current track has a genre, get tracks of the same genre
             if (currentTrack.GenreId.HasValue)
@@ -130,7 +139,7 @@ namespace Services.Implementations
             return nextTrack;
         }
 
-        public async Task<Track> GetNextPlaylistTrackAsync(int currentTrackId, int playlistId)
+        public async Task<BaseTrack> GetNextPlaylistTrackAsync(int currentTrackId, int playlistId)
         {
             var playlist = await _playlistRepository.GetById(playlistId);
             if (playlist == null)
@@ -138,10 +147,10 @@ namespace Services.Implementations
                 throw new Exception("Playlist not found");
             }
 
-            Track track = null;
+            BaseTrack track = null;
             // Get the next track in the playlist
             var playlistTracks = await _playlistRepository.GetPlaylistTracksAsync(playlistId);
-            List<Track> playlistTracksList = playlistTracks.ToList();
+            List<BaseTrack> playlistTracksList = playlistTracks.ToList();
             var currentTrackIndex = playlistTracksList.FindIndex(x => x.Id == currentTrackId);
             if (currentTrackIndex == -1)
             {
@@ -158,7 +167,7 @@ namespace Services.Implementations
             return track;
         }
 
-        public async Task<Track> GetNextAlbumTrackAsync(int currentTrackId, int albumId)
+        public async Task<BaseTrack> GetNextAlbumTrackAsync(int currentTrackId, int albumId)
         {
             var album = await _albumRepository.GetById(albumId);
             if (album == null)
@@ -166,7 +175,7 @@ namespace Services.Implementations
                 throw new Exception("Album not found");
             }
 
-            Track track = null;
+            BaseTrack track = null;
             // Get the next track in the album
             var albumTracks = await _albumRepository.GetAlbumTracksAsync(albumId);
             var currentTrackIndex = albumTracks.ToList().FindIndex(x => x.Id == currentTrackId);
@@ -186,9 +195,9 @@ namespace Services.Implementations
             return track;
         }
 
-        public async Task<Track> GetNextTrackAsync(GetNextTrackDto getNextTrackDto, string userId)
+        public async Task<BaseTrack> GetNextTrackAsync(GetNextTrackRequestDto getNextTrackDto, string userId)
         {
-            var nextTrack = new Track();
+            var nextTrack = new BaseTrack();
             switch (getNextTrackDto.StreamingContextType)
             {
                 case StreamingContextType.RADIO:
@@ -199,6 +208,9 @@ namespace Services.Implementations
                     break;
                 case StreamingContextType.PLAYLIST:
                     nextTrack = await GetNextPlaylistTrackAsync(getNextTrackDto.CurrentTrackId, getNextTrackDto.ContextId.Value);
+                    break;
+                case StreamingContextType.JAMENDO:
+                    nextTrack = await _trackRepository.GetRandomTrack(excluding: getNextTrackDto.TrackHistoryIds ?? []);
                     break;
                 default:
                     throw new ArgumentException("Invalid streaming context type");
@@ -234,12 +246,12 @@ namespace Services.Implementations
             return await _likeRepository.CheckIfTrackIsLikedByUser(trackId, userId);
         }
 
-        public async Task<List<Track>> GetTracksByArtistId(int artistId)
+        public async Task<List<BaseTrack>> GetTracksByArtistId(int artistId)
         {
             return await _trackRepository.GetTracksByArtistId(artistId);
         }
 
-        public async Task<List<Track>> GetTracksByUserId(string userId)
+        public async Task<List<BaseTrack>> GetTracksByUserId(string userId)
         {
             var artist = await _artistRepository.GetArtistByUserId(userId);
             if (artist == null)

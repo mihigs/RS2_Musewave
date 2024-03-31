@@ -96,7 +96,7 @@ namespace Services.Implementations
                 var track = await dbContext.Tracks.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == trackId);
                 if (track == null)
                 {
-                       Console.WriteLine($"Track with ID {trackId} not found.");
+                       Console.WriteLine($"BaseTrack with ID {trackId} not found.");
                        return;
                 }
                 track.FilePath = messageObject.Payload;
@@ -107,7 +107,7 @@ namespace Services.Implementations
 
                 // Send notification
                 var notificationData = new { trackId = messageObject.TrackId, trackTitle = track.Title };
-                Console.WriteLine($"Track ready! Track name: {track.Title}");
+                Console.WriteLine($"BaseTrack ready! BaseTrack name: {track.Title}");
                 Console.WriteLine($"Sent to user: {messageObject.UserId}");
                 await _hubContext.Clients.User(messageObject.UserId).SendAsync("TrackReady", notificationData);
             }

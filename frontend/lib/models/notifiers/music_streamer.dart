@@ -66,6 +66,13 @@ class MusicStreamer extends ChangeNotifier {
           await setNextTrackState(nextTrack);
           await setCurrentTrackState(_trackHistory.last);
         }
+
+        // Update the streaming context type based on the current track
+        if(currentTrack!.jamendoId != null){
+          currentStreamingContext!.type = StreamingContextType.JAMENDO;
+        }else{
+          currentStreamingContext!.type = StreamingContextType.RADIO;
+        }
         previousIndex = currentIndex;
         notifyListeners();
       }
@@ -90,12 +97,9 @@ class MusicStreamer extends ChangeNotifier {
 
   void addToPlaylist(String url) {
     String fullUrl = getFullUrl(url);
+
     if (_playlist != null) {
       _playlist!.add(AudioSource.uri(Uri.parse(fullUrl)));
-    }
-    // for each entry in playlist, log the url
-    for (var audioSource in _playlist!.children) {
-      debugPrint('Playlist URL: ${audioSource}');
     }
   }
 
@@ -253,6 +257,9 @@ class MusicStreamer extends ChangeNotifier {
   }
 
   String getFullUrl(String signedUrl) {
+    if (signedUrl.contains("jamendo")){
+      return signedUrl;
+    }
     return '$_listenerUrl/Tracks/Stream/$signedUrl';
   }
 
