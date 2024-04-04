@@ -209,6 +209,53 @@ namespace DataContext.Migrations
                     b.ToTable("Artists");
                 });
 
+            modelBuilder.Entity("Models.Entities.BaseTrack", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AlbumId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ArtistId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PlaylistId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AlbumId");
+
+                    b.HasIndex("ArtistId");
+
+                    b.HasIndex("PlaylistId");
+
+                    b.ToTable("Tracks");
+                });
+
             modelBuilder.Entity("Models.Entities.Genre", b =>
                 {
                     b.Property<int>("Id")
@@ -229,7 +276,7 @@ namespace DataContext.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genre");
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("Models.Entities.Like", b =>
@@ -312,56 +359,22 @@ namespace DataContext.Migrations
                     b.ToTable("PlaylistTrack");
                 });
 
-            modelBuilder.Entity("Models.Entities.BaseTrack", b =>
+            modelBuilder.Entity("Models.Entities.TrackGenre", b =>
                 {
+                    b.Property<int>("TrackId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AlbumId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ArtistId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Duration")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("GenreId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PlaylistId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AlbumId");
-
-                    b.HasIndex("ArtistId");
+                    b.HasKey("TrackId", "GenreId");
 
                     b.HasIndex("GenreId");
 
-                    b.HasIndex("PlaylistId");
-
-                    b.ToTable("Tracks");
+                    b.ToTable("TrackGenres");
                 });
 
             modelBuilder.Entity("Models.Entities.User", b =>
@@ -506,9 +519,30 @@ namespace DataContext.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Models.Entities.BaseTrack", b =>
+                {
+                    b.HasOne("Models.Entities.Album", "Album")
+                        .WithMany("Tracks")
+                        .HasForeignKey("AlbumId");
+
+                    b.HasOne("Models.Entities.Artist", "Artist")
+                        .WithMany()
+                        .HasForeignKey("ArtistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Models.Entities.Playlist", null)
+                        .WithMany("Tracks")
+                        .HasForeignKey("PlaylistId");
+
+                    b.Navigation("Album");
+
+                    b.Navigation("Artist");
+                });
+
             modelBuilder.Entity("Models.Entities.Like", b =>
                 {
-                    b.HasOne("Models.Entities.BaseTrack", "BaseTrack")
+                    b.HasOne("Models.Entities.BaseTrack", "Track")
                         .WithMany("Likes")
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -520,7 +554,7 @@ namespace DataContext.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("BaseTrack");
+                    b.Navigation("Track");
 
                     b.Navigation("User");
                 });
@@ -544,7 +578,7 @@ namespace DataContext.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Models.Entities.BaseTrack", "BaseTrack")
+                    b.HasOne("Models.Entities.BaseTrack", "Track")
                         .WithMany()
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -552,35 +586,26 @@ namespace DataContext.Migrations
 
                     b.Navigation("Playlist");
 
-                    b.Navigation("BaseTrack");
+                    b.Navigation("Track");
                 });
 
-            modelBuilder.Entity("Models.Entities.BaseTrack", b =>
+            modelBuilder.Entity("Models.Entities.TrackGenre", b =>
                 {
-                    b.HasOne("Models.Entities.Album", "Album")
-                        .WithMany("Tracks")
-                        .HasForeignKey("AlbumId");
-
-                    b.HasOne("Models.Entities.Artist", "Artist")
-                        .WithMany()
-                        .HasForeignKey("ArtistId")
+                    b.HasOne("Models.Entities.Genre", "Genre")
+                        .WithMany("TrackGenres")
+                        .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Models.Entities.Genre", "Genre")
-                        .WithMany()
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Models.Entities.Playlist", null)
-                        .WithMany("Tracks")
-                        .HasForeignKey("PlaylistId");
-
-                    b.Navigation("Album");
-
-                    b.Navigation("Artist");
+                    b.HasOne("Models.Entities.BaseTrack", "Track")
+                        .WithMany("TrackGenres")
+                        .HasForeignKey("TrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Genre");
+
+                    b.Navigation("Track");
                 });
 
             modelBuilder.Entity("Models.Entities.Album", b =>
@@ -588,14 +613,21 @@ namespace DataContext.Migrations
                     b.Navigation("Tracks");
                 });
 
-            modelBuilder.Entity("Models.Entities.Playlist", b =>
-                {
-                    b.Navigation("Tracks");
-                });
-
             modelBuilder.Entity("Models.Entities.BaseTrack", b =>
                 {
                     b.Navigation("Likes");
+
+                    b.Navigation("TrackGenres");
+                });
+
+            modelBuilder.Entity("Models.Entities.Genre", b =>
+                {
+                    b.Navigation("TrackGenres");
+                });
+
+            modelBuilder.Entity("Models.Entities.Playlist", b =>
+                {
+                    b.Navigation("Tracks");
                 });
 
             modelBuilder.Entity("Models.Entities.User", b =>

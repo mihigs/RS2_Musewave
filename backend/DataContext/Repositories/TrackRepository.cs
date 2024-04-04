@@ -15,8 +15,9 @@ namespace DataContext.Repositories
 
         public async Task<IEnumerable<BaseTrack>> GetTracksByGenreAsync(int genreId)
         {
-            return await _dbContext.Tracks
-                .Where(t => t.GenreId == genreId)
+            return await _dbContext.TrackGenres
+                .Where(tg => tg.GenreId == genreId)
+                .Select(tg => tg.Track)
                 .ToListAsync();
         }
 

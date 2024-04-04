@@ -117,9 +117,9 @@ namespace Services.Implementations
             IEnumerable<BaseTrack> tracksSameGenre = null;
 
             // If the current track has a genre, get tracks of the same genre
-            if (currentTrack.GenreId.HasValue)
+            if (currentTrack.TrackGenres.Count > 0)
             {
-                tracksSameGenre = await _trackRepository.GetTracksByGenreAsync(currentTrack.GenreId.Value);
+                tracksSameGenre = await _trackRepository.GetTracksByGenreAsync(currentTrack.TrackGenres.First().Id);
                 // remove tracks that are in the track history
                 tracksSameGenre = tracksSameGenre.Where(x => !trackHistoryIds.Contains(x.Id));
                 tracksSameGenre = tracksSameGenre.Where(x => x.Id != currentTrackId);

@@ -8,19 +8,14 @@ namespace Models.Entities
         public int Duration { get; set; }
         public int? AlbumId { get; set; }
         public virtual Album? Album { get; set; }
-        public virtual List<Like> Likes { get; set; }
-        public int? GenreId { get; set; }
-        public virtual Genre? Genre { get; set; }
+        public virtual List<Like> Likes { get; set; } = new List<Like>();
+        public virtual ICollection<TrackGenre> TrackGenres { get; set; } = new List<TrackGenre>();
         public virtual Artist Artist { get; set; }
         public int ArtistId { get; set; }
         public string? FilePath { get; set; }
         public string? SignedUrl { get; set; }
         public bool? IsLiked { get; set; }
         public string? ImageUrl { get; set; }
-        public BaseTrack()
-        {
-            Likes = new List<Like>();
-        }
     }
 
     public class TrackGenre
@@ -46,8 +41,7 @@ namespace Models.Entities
                 AlbumId = baseTrack.AlbumId,
                 Album = baseTrack.Album,
                 Likes = baseTrack.Likes,
-                GenreId = baseTrack.GenreId,
-                Genre = baseTrack.Genre,
+                TrackGenres = baseTrack.TrackGenres,
                 Artist = baseTrack.Artist,
                 ArtistId = baseTrack.ArtistId,
                 FilePath = baseTrack.FilePath,

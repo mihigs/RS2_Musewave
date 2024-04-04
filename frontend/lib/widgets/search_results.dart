@@ -31,7 +31,7 @@ class SearchResults extends StatefulWidget {
 
 class _SearchResultsState extends State<SearchResults> {
   int _tracksToShow = 3;
-  int _jamendoTracksToShow = 3;
+  int _jamendoTracksToShow = 6;
   int _albumsToShow = 3;
   int _artistsToShow = 3;
   int _playlistsToShow = 3;

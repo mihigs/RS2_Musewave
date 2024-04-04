@@ -34,12 +34,8 @@ namespace DataContext.Seeder
             {
                 // Fetch all albums and genres from the database
                 var albums = await _albumRepository.GetAll();
-                var genres = await _genreRepository.GetAll();
                 var artists = await _artistRepository.GetAll();
                 var adminUserId = _userRepository.GetAdminUser().Result.Id;
-
-                // Create a list to hold the tracks
-                //List<BaseTrack> tracks = new List<BaseTrack>();
 
                 // Log the source directory
                 Console.WriteLine($"Source directory: {sourceDir}");
@@ -66,16 +62,26 @@ namespace DataContext.Seeder
                     var fileName = Path.GetFileNameWithoutExtension(mediaFile);
                     track.Title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(fileName.Replace("-", " "));
 
-                    // Set the duration (you might need a library to read the duration from the file)
-                    // track.Duration = GetDuration(mediaFile);
-
-                    // Assign a random artistId, albumId, and genreId to the track
+                    // Assign a random artistId and albumId to the track
                     track.ArtistId = artists.ToList()[rng.Next(artists.Count())].Id;
                     track.AlbumId = albums.ToList()[rng.Next(albums.Count())].Id;
-                    track.GenreId = genres.ToList()[rng.Next(genres.Count())].Id;
 
-                    // Add the track to the list
-                    //tracks.Add(track);
+                    // Use TagLib# to read file metadata and get the track genre
+                    var file = TagLib.File.Create(mediaFile);
+                    string genreFromFile = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(file.Tag.FirstGenre);
+                    // Create and assign a new Genre entity to the track
+                    var genre = _genreRepository.GetGenresByNameAsync(genreFromFile).Result.FirstOrDefault() ?? new Genre { Name = genreFromFile };
+                    if (genre.Id == 0)
+                    {
+                        await _genreRepository.Add(genre);
+                    }
+                    track.TrackGenres.Add(new TrackGenre
+                    {
+                        Genre = genre,
+                        GenreId = genre.Id,
+                        Track = track,
+                        TrackId = track.Id
+                    });
 
                     // Add the tracks to the database
                     await _trackRepository.Add(track);

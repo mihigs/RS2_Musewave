@@ -11,7 +11,8 @@ namespace DataContext
         public DbSet<Album> Albums { get; set; }
         public DbSet<Artist> Artists { get; set; }
         public override DbSet<User> Users { get; set; }
-        //public DbSet<Playlist> Playlists { get; set; }
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<TrackGenre> TrackGenres { get; set; }
 
         public MusewaveDbContext(DbContextOptions<MusewaveDbContext> options)
             : base(options)
@@ -27,11 +28,18 @@ namespace DataContext
             modelBuilder.Entity<BaseTrack>().HasQueryFilter(t => t.FilePath != null);
 
             #region Relationship Configuration
-            modelBuilder.Entity<BaseTrack>()
-                .HasOne(t => t.Genre)
-                .WithMany()
-                .HasForeignKey(t => t.GenreId)
-                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<TrackGenre>()
+                .HasKey(tg => new { tg.TrackId, tg.GenreId });
+
+            modelBuilder.Entity<TrackGenre>()
+                .HasOne(tg => tg.Track)
+                .WithMany(b => b.TrackGenres)
+                .HasForeignKey(tg => tg.TrackId);
+
+            modelBuilder.Entity<TrackGenre>()
+                .HasOne(tg => tg.Genre)
+                .WithMany(g => g.TrackGenres)
+                .HasForeignKey(tg => tg.GenreId);
 
             modelBuilder.Entity<Artist>()
                 .HasOne(a => a.User)

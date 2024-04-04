@@ -16,13 +16,11 @@ class MediaPlayerPage extends StatefulWidget {
   final String contextId;
   final String contextType;
 
-  MediaPlayerPage(
-    {
-      required this.trackId,
-      required this.contextId,
-      required this.contextType,
-    }
-  );
+  MediaPlayerPage({
+    required this.trackId,
+    required this.contextId,
+    required this.contextType,
+  });
 
   @override
   _MediaPlayerPageState createState() => _MediaPlayerPageState();
@@ -47,57 +45,58 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
 
   void checkIfTrackAlreadyLoaded() {
     setState(() {
-
       if (musicStreamer == null) return;
       bool trackLoaded = musicStreamer!.trackLoaded;
-      var currentStreamingType = musicStreamer!.currentStreamingContext?.type ?? 
+      var currentStreamingType = musicStreamer!.currentStreamingContext?.type ??
           getStreamingContextTypeFromString(widget.contextType);
-      var streamingTypeFromURL = getStreamingContextTypeFromString(widget.contextType);
+      var streamingTypeFromURL =
+          getStreamingContextTypeFromString(widget.contextType);
 
       if (streamingTypeFromURL != StreamingContextType.JAMENDO) {
-          currentStreamingType = streamingTypeFromURL;
+        currentStreamingType = streamingTypeFromURL;
       }
 
       if (currentStreamingType == StreamingContextType.JAMENDO) {
-          handleJamendoStreaming(trackLoaded);
+        handleJamendoStreaming(trackLoaded);
       } else {
-          handleOtherStreaming(trackLoaded);
+        handleOtherStreaming(trackLoaded);
       }
-
     });
   }
 
   void handleJamendoStreaming(bool trackLoaded) {
     if (!trackLoaded) {
-        widget.tracksService.getJamendoTrack(widget.trackId).then((jamendoTrack) {
-            if (jamendoTrack != null) {
-                musicStreamer!.startTrack(StreamingContext(jamendoTrack, int.parse(widget.contextId), StreamingContextType.JAMENDO));
-            } else {
-                GoRouter.of(context).go('/');
-            }
-        });
-    } else {
-        updateCurrentTrack();
-        updateTrackData();
-    }
-}
-
-void handleOtherStreaming(bool trackLoaded) {
-    if (!trackLoaded) {
-        initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
-    } else {
-        updateCurrentTrack();
-        if (currentTrack?.id.toString() == widget.trackId) {
-            updateTrackData();
+      widget.tracksService.getJamendoTrack(widget.trackId).then((jamendoTrack) {
+        if (jamendoTrack != null) {
+          musicStreamer!.startTrack(StreamingContext(jamendoTrack,
+              int.parse(widget.contextId), StreamingContextType.JAMENDO));
         } else {
-            initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
+          GoRouter.of(context).go('/');
         }
+      });
+    } else {
+      updateCurrentTrack();
+      updateTrackData();
     }
-}
+  }
+
+  void handleOtherStreaming(bool trackLoaded) {
+    if (!trackLoaded) {
+      initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
+    } else {
+      updateCurrentTrack();
+      if (currentTrack?.id.toString() == widget.trackId) {
+        updateTrackData();
+      } else {
+        initializeTrackData(
+            widget.trackId, widget.contextId, widget.contextType);
+      }
+    }
+  }
 
   void updateIsPlaying() {
     setState(() {
-      if(musicStreamer != null){
+      if (musicStreamer != null) {
         isPlaying = musicStreamer!.isPlaying;
       }
     });
@@ -105,33 +104,34 @@ void handleOtherStreaming(bool trackLoaded) {
 
   void updateIsLiked() {
     setState(() {
-      if(musicStreamer != null){
+      if (musicStreamer != null) {
         isLiked = musicStreamer!.isLiked;
       }
     });
   }
 
   void updateCurrentTrack() {
-    setState(() { 
+    setState(() {
       var currentTrackFromProvider = musicStreamer?.currentTrack;
-      if(currentTrackFromProvider?.id != currentTrack?.id && currentTrackFromProvider != null){
+      if (currentTrackFromProvider?.id != currentTrack?.id &&
+          currentTrackFromProvider != null) {
         currentTrack = currentTrackFromProvider;
         isLiked = currentTrack!.isLiked ?? false;
       }
     });
   }
 
-  void updateTrackData(){
+  void updateTrackData() {
     setState(() {
       currentTrack = musicStreamer!.currentTrack!;
-      if(currentTrack != null){
+      if (currentTrack != null) {
         isLiked = currentTrack!.isLiked ?? false;
       }
     });
   }
 
   Future<void> initializeTrackData(String currentTrackId, String contextId,
-    String streamingContextType) async {
+      String streamingContextType) async {
     Track currentTrackResult =
         await widget.tracksService.getTrack(int.parse(currentTrackId));
     setState(() {
@@ -144,11 +144,13 @@ void handleOtherStreaming(bool trackLoaded) {
         isLiked = currentTrack!.isLiked!;
       }
 
-      if(musicStreamer != null){
-        mounted ? musicStreamer!.startTrack(
-                StreamingContext(currentTrack!, int.parse(contextId),
-                    getStreamingContextTypeFromString(streamingContextType)))
-                : null;
+      if (musicStreamer != null) {
+        mounted
+            ? musicStreamer!.startTrack(StreamingContext(
+                currentTrack!,
+                int.parse(contextId),
+                getStreamingContextTypeFromString(streamingContextType)))
+            : null;
       }
     }
   }
@@ -189,18 +191,24 @@ void handleOtherStreaming(bool trackLoaded) {
           },
         ),
         actions: <Widget>[
-          model.currentStreamingContext?.type != StreamingContextType.JAMENDO ? IconButton(
-            icon: Icon(isLiked ? Icons.star : Icons.star_border, size: 32),
-              onPressed: () async {
-                if(currentTrack != null){
-                  widget.tracksService.toggleLikeTrack(currentTrack!.id).then((response) => {
-                    if (response) {
-                      model.toggleIsLiked()
+          model.currentStreamingContext?.type != StreamingContextType.JAMENDO
+              ? IconButton(
+                  icon:
+                      Icon(isLiked ? Icons.star : Icons.star_border, size: 32),
+                  onPressed: () async {
+                    if (currentTrack != null) {
+                      widget.tracksService
+                          .toggleLikeTrack(currentTrack!.id)
+                          .then((response) => {
+                                if (response) {model.toggleIsLiked()}
+                              });
                     }
-                  });
-                }
-              },
-          ) : Container(margin: EdgeInsets.only(right: 20) , child: Text("Powered by Jamendo"),),
+                  },
+                )
+              : Container(
+                  margin: EdgeInsets.only(right: 20),
+                  child: Text("Powered by Jamendo"),
+                ),
         ],
       ),
       body: currentTrack == null
@@ -211,18 +219,35 @@ void handleOtherStreaming(bool trackLoaded) {
                 // space-around
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  // Placeholder for track cover art
-                  Container(
-                    height: 275,
-                    width: 275,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Colors.deepPurple, Colors.purpleAccent],
-                      ),
-                    ),
-                  ),
+                  // Track cover art
+                  model.currentTrack!.imageUrl != null
+                      ? Container(
+                          height: 275,
+                          width: 275,
+                          child: Image.network(
+                            model.currentTrack!.imageUrl!,
+                            fit: BoxFit.cover, // Adjust the image's fit as needed
+                            loadingBuilder: (BuildContext context, Widget child,
+                                ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null)
+                                return child; // Image has finished loading
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },
+                          ),
+                        )
+                      : Container(
+                          height: 275,
+                          width: 275,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Colors.deepPurple, Colors.purpleAccent],
+                            ),
+                          ),
+                        ),
                   SizedBox(height: 30),
                   // Displaying current track title
                   Text(

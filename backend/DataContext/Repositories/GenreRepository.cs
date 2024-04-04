@@ -13,7 +13,7 @@ namespace DataContext.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<IEnumerable<Genre>> GetGenresByNameAsync(string name)
+        public async Task<List<Genre>> GetGenresByNameAsync(string name)
         {
             return await _dbContext.Set<Genre>()
                 .Where(g => g.Name.Contains(name))
