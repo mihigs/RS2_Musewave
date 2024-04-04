@@ -36,17 +36,23 @@ class _SearchResultsState extends State<SearchResults> {
   int _artistsToShow = 3;
   int _playlistsToShow = 3;
 
+  final List<Track> _errorTrackList = [];
+  final List<Track> _errorJamendoTrackList = [];
+  final List<Album> _errorAlbumList = [];
+  final List<Artist> _errorArtistList = [];
+  final List<Playlist> _errorPlaylistList = [];
+
   @override
   Widget build(BuildContext context) {
     final MusicStreamer model = Provider.of<MusicStreamer>(context, listen: false);
 
     return FutureBuilder<List<dynamic>>(
       future: Future.wait([
-        widget.tracksFuture,
-        widget.jamendoTracksFuture,
-        widget.albumsFuture,
-        widget.artistsFuture,
-        widget.playlistsFuture
+        widget.tracksFuture.catchError((_) => _errorTrackList),
+        widget.jamendoTracksFuture.catchError((_) => _errorJamendoTrackList),
+        widget.albumsFuture.catchError((_) => _errorAlbumList),
+        widget.artistsFuture.catchError((_) => _errorArtistList),
+        widget.playlistsFuture.catchError((_) => _errorPlaylistList)
       ]),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -55,11 +61,11 @@ class _SearchResultsState extends State<SearchResults> {
           return Text('Error: ${snapshot.error}');
         } else {
           var results = snapshot.data!;
-          var tracks = results[0] as List<Track>;
-          var jamendoTracks = results[1] as List<Track>;
-          var albums = results[2] as List<Album>;
-          var artists = results[3] as List<Artist>;
-          var playlists = results[4] as List<Playlist>;
+          var tracks = results[0] != _errorTrackList ? results[0] as List<Track> : [];
+          var jamendoTracks = results[1] != _errorJamendoTrackList ? results[1] as List<Track> : [];
+          var albums = results[2] != _errorAlbumList ? results[2] as List<Album> : [];
+          var artists = results[3] != _errorArtistList ? results[3] as List<Artist> : [];
+          var playlists = results[4] != _errorPlaylistList ? results[4] as List<Playlist> : [];
 
           return SingleChildScrollView(
             child: Padding(

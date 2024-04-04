@@ -21,7 +21,7 @@ namespace DataContext.Repositories
         public virtual async Task<T> Remove(int id)
         {
             var entity = await _context.Set<T>().FindAsync(id);
-            if (entity == null)
+            if (entity is null)
             {
                 return null;
             }

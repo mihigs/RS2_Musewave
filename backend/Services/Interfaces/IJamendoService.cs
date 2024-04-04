@@ -5,11 +5,12 @@ namespace Services.Interfaces
 {
     public interface IJamendoService
     {
-        Task<IEnumerable<Track>> SearchJamendoByTrackName(string trackName);
-        Task<Track> GetTrackById(int trackId);
+        Task<IEnumerable<Track>> SearchJamendoByTrackName(string trackName, string userId);
+        Task<Track> GetTrackById(int trackId, string userId);
 
-        Track MapJamendoResponseToTrack(JamendoResult response);
+        Task<Track?> MapJamendoResponseToTrack(JamendoResult? response, string userId);
         JamendoApiResponse MapJamendoApiResponse(string response);
+        Task<IEnumerable<Track>> CheckIfTracksAreCached(IEnumerable<Track> tracks);
 
     }
 }

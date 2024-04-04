@@ -26,7 +26,7 @@ namespace Services.Implementations
 
         public async Task<Album> AddAlbumAsync(Album album)
         {
-            if (album == null)
+            if (album is null)
                 throw new ArgumentNullException(nameof(album));
 
             return await _albumRepository.Add(album).ConfigureAwait(false);
@@ -34,7 +34,7 @@ namespace Services.Implementations
 
         public async Task<Album> UpdateAlbumAsync(Album album)
         {
-            if (album == null)
+            if (album is null)
                 throw new ArgumentNullException(nameof(album));
 
             return await _albumRepository.Update(album).ConfigureAwait(false);
@@ -55,7 +55,7 @@ namespace Services.Implementations
             return await _albumRepository.GetAlbumsByTitleAsync(title).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<BaseTrack>> GetAlbumTracksAsync(int albumId)
+        public async Task<IEnumerable<Track>> GetAlbumTracksAsync(int albumId)
         {
             return await _albumRepository.GetAlbumTracksAsync(albumId).ConfigureAwait(false);
         }

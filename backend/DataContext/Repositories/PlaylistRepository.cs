@@ -21,7 +21,7 @@ namespace DataContext.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<BaseTrack>> GetPlaylistTracksAsync(int playlistId)
+        public async Task<IEnumerable<Track>> GetPlaylistTracksAsync(int playlistId)
         {
             return await _dbContext.Set<PlaylistTrack>()
                 .Include(pt => pt.Track)

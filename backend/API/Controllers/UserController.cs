@@ -96,7 +96,7 @@ namespace API.Controllers
             try
             {
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim == null)
+                if (userIdClaim is null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
                     apiResponse.Errors.Add("User not found");

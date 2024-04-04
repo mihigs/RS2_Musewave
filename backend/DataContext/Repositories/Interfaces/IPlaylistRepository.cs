@@ -5,7 +5,7 @@ namespace DataContext.Repositories.Interfaces
     public interface IPlaylistRepository : IRepository<Playlist>
     {
         Task<IEnumerable<Playlist>> GetPlaylistsByNameAsync(string name, bool arePublic);
-        Task<IEnumerable<BaseTrack>> GetPlaylistTracksAsync(int playlistId);
+        Task<IEnumerable<Track>> GetPlaylistTracksAsync(int playlistId);
         Task<Playlist> GetPlaylistDetails(int playlistId);
         Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(string userId);
     }

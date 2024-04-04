@@ -55,8 +55,8 @@ namespace DataContext.Seeder
 
                 foreach (var mediaFile in mediaFiles)
                 {
-                    // Create a new BaseTrack entity
-                    var track = new BaseTrack();
+                    // Create a new Track entity
+                    var track = new Track();
 
                     // Set the title to the file name, capitalised, without dashes
                     var fileName = Path.GetFileNameWithoutExtension(mediaFile);

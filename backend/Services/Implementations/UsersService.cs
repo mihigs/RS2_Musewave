@@ -48,7 +48,7 @@ namespace Services.Implementations
             try
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null)
+                if (user is null)
                 {
                     return new UserLoginResponse { Error = LoginError.UserDoesNotExist };
                 }
@@ -108,7 +108,7 @@ namespace Services.Implementations
             try
             {
                 User result = await _userManager.FindByIdAsync(userId);
-                if (result == null)
+                if (result is null)
                 {
                     throw new Exception("User not found");
                 }

@@ -100,7 +100,7 @@ namespace API.Controllers
             try
             {
                 var removedAlbum = await _albumService.RemoveAlbumAsync(id);
-                if (removedAlbum == null)
+                if (removedAlbum is null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
                     return apiResponse;
@@ -143,7 +143,7 @@ namespace API.Controllers
             {
                 // gets the user id from the token
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim == null)
+                if (userIdClaim is null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
                     apiResponse.Errors.Add("User not found");

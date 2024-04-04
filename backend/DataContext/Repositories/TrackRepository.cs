@@ -4,7 +4,7 @@ using Models.Entities;
 
 namespace DataContext.Repositories
 {
-    public class TrackRepository : Repository<BaseTrack>, ITrackRepository
+    public class TrackRepository : Repository<Track>, ITrackRepository
     {
         private readonly MusewaveDbContext _dbContext;
 
@@ -13,7 +13,7 @@ namespace DataContext.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<IEnumerable<BaseTrack>> GetTracksByGenreAsync(int genreId)
+        public async Task<IEnumerable<Track>> GetTracksByGenreAsync(int genreId)
         {
             return await _dbContext.TrackGenres
                 .Where(tg => tg.GenreId == genreId)
@@ -21,7 +21,7 @@ namespace DataContext.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<BaseTrack>> GetLikedTracksAsync(string userId)
+        public async Task<IEnumerable<Track>> GetLikedTracksAsync(string userId)
         {
             return await _dbContext.Set<Like>()
                 .Where(l => l.UserId == userId)
@@ -29,40 +29,62 @@ namespace DataContext.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<BaseTrack>> GetTracksByNameAsync(string name)
+        public async Task<IEnumerable<Track>> GetTracksByNameAsync(string name)
         {
-            return await _dbContext.Set<BaseTrack>()
+            return await _dbContext.Set<Track>()
                 .Where(t => t.Title.Contains(name))
+                //.Where(t => t.JamendoId is null) // Exclude Jamendo tracks from platfrom search
                 .Include(t => t.Artist)
                 .ThenInclude(Artist => Artist.User)
                 .ToListAsync();
         }
 
-        public async Task<BaseTrack> GetById(int id)
+        public override async Task<Track> GetById(int id)
         {
-            return await _dbContext.Set<BaseTrack>()
+            return await _dbContext.Set<Track>()
                 .Include(t => t.Artist)
                 .ThenInclude(Artist => Artist.User)
+                .Include(t => t.TrackGenres)
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public async Task<BaseTrack> GetRandomTrack(List<int> excluding)
+        public async Task<Track> GetRandomTrack(List<int> excluding)
         {
-            return await _dbContext.Set<BaseTrack>()
-                .Where(t => !excluding.Contains(t.Id))
+            var countQuery = _dbContext.Set<Track>().Where(t => !excluding.Contains(t.Id));
+            int count = await countQuery.CountAsync();
+
+            if (count == 0) return null;
+
+            Random rnd = new Random();
+            int skip = rnd.Next(0, count); // Get a random index to skip to.
+
+            // Now fetch the track at that index.
+            Track randomTrack = await countQuery
+                .Skip(skip)
                 .Include(t => t.Artist)
                 .ThenInclude(Artist => Artist.User)
-                .OrderBy(t => Guid.NewGuid())
                 .FirstOrDefaultAsync();
+
+            return randomTrack;
         }
 
-        public Task<List<BaseTrack>> GetTracksByArtistId(int artistId)
+
+        public Task<List<Track>> GetTracksByArtistId(int artistId)
         {
-            return _dbContext.Set<BaseTrack>()
+            return _dbContext.Set<Track>()
                 .Where(t => t.ArtistId == artistId)
                 .Include(t => t.Artist)
                 .ThenInclude(Artist => Artist.User)
                 .ToListAsync();
+        }
+
+        public async Task<Track> GetByJamendoId(string jamendoId)
+        {
+            return _dbContext.Tracks
+                .IgnoreQueryFilters()
+                .Include(t => t.Artist)
+                .ThenInclude(Artist => Artist.User)
+                .FirstOrDefault(t => t.JamendoId.Equals(jamendoId));
         }
     }
 }

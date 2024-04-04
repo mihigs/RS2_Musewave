@@ -99,7 +99,7 @@
 //            try
 //            {
 //                var removedAlbum = await _albumService.RemoveAlbumAsync(id);
-//                if (removedAlbum == null)
+//                if (removedAlbum is null)
 //                {
 //                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
 //                    return apiResponse;

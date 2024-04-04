@@ -191,24 +191,18 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
           },
         ),
         actions: <Widget>[
-          model.currentStreamingContext?.type != StreamingContextType.JAMENDO
-              ? IconButton(
-                  icon:
-                      Icon(isLiked ? Icons.star : Icons.star_border, size: 32),
-                  onPressed: () async {
-                    if (currentTrack != null) {
-                      widget.tracksService
-                          .toggleLikeTrack(currentTrack!.id)
-                          .then((response) => {
-                                if (response) {model.toggleIsLiked()}
-                              });
-                    }
-                  },
-                )
-              : Container(
-                  margin: EdgeInsets.only(right: 20),
-                  child: Text("Powered by Jamendo"),
-                ),
+          IconButton(
+            icon: Icon(isLiked ? Icons.star : Icons.star_border, size: 32),
+            onPressed: () async {
+              if (currentTrack != null) {
+                widget.tracksService
+                    .toggleLikeTrack(currentTrack!.id)
+                    .then((response) => {
+                          if (response) {model.toggleIsLiked()}
+                        });
+              }
+            },
+          )
         ],
       ),
       body: currentTrack == null
@@ -226,7 +220,8 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
                           width: 275,
                           child: Image.network(
                             model.currentTrack!.imageUrl!,
-                            fit: BoxFit.cover, // Adjust the image's fit as needed
+                            fit: BoxFit
+                                .cover, // Adjust the image's fit as needed
                             loadingBuilder: (BuildContext context, Widget child,
                                 ImageChunkEvent? loadingProgress) {
                               if (loadingProgress == null)

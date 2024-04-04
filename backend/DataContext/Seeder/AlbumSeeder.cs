@@ -23,7 +23,7 @@ namespace DataContext.Seeder
                 // Fetch all artists including users from the database
                 var artists = await _artistRepository.GetAllIncluding(["User"]);
 
-                if (artists == null || artists.Count() == 0)
+                if (artists is null || artists.Count() == 0)
                 {
                     Console.WriteLine("No artists found in the database. Skipping album seeding.");
                     return false;

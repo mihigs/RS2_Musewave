@@ -96,6 +96,40 @@ namespace Models.DTOs
 
             [JsonPropertyName("audiodownload_allowed")]
             public bool AudiodownloadAllowed { get; set; }
+            [JsonPropertyName("musicinfo")]
+            public MusicInfo MusicInfo { get; set; }
+        }
+        public class MusicInfo
+        {
+            [JsonPropertyName("vocalinstrumental")]
+            public string VocalInstrumental { get; set; }
+
+            [JsonPropertyName("lang")]
+            public string Lang { get; set; }
+
+            [JsonPropertyName("gender")]
+            public string Gender { get; set; }
+
+            [JsonPropertyName("acousticelectric")]
+            public string AcousticElectric { get; set; }
+
+            [JsonPropertyName("speed")]
+            public string Speed { get; set; }
+
+            [JsonPropertyName("tags")]
+            public Tags Tags { get; set; }
+        }
+
+        public class Tags
+        {
+            [JsonPropertyName("genres")]
+            public List<string> Genres { get; set; }
+
+            [JsonPropertyName("instruments")]
+            public List<string> Instruments { get; set; }
+
+            [JsonPropertyName("vartags")]
+            public List<string> VarTags { get; set; }
         }
     }
 }

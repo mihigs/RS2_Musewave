@@ -36,7 +36,7 @@ namespace API.Controllers
             try
             {
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim == null)
+                if (userIdClaim is null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
                     apiResponse.Errors.Add("User not found");
@@ -79,7 +79,16 @@ namespace API.Controllers
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                apiResponse.Data = await _jamendoService.SearchJamendoByTrackName(name);
+                // Get the userId from the token
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                var userId = userIdClaim.Value;
+                apiResponse.Data = await _jamendoService.SearchJamendoByTrackName(name, userId);
                 apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
             }
             catch (Exception ex)
@@ -98,14 +107,14 @@ namespace API.Controllers
             try
             {
                 // Check if file is not empty
-                if (model.mediaFile == null || model.mediaFile.Length == 0)
+                if (model.mediaFile is null || model.mediaFile.Length == 0)
                 {
                     return BadRequest("File cannot be empty");
                 }
                 // Check if trackName is not empty
                 if (string.IsNullOrWhiteSpace(model.trackName))
                 {
-                    return BadRequest("BaseTrack name cannot be empty");
+                    return BadRequest("Track name cannot be empty");
                 }
                 // Check if userId is not empty
                 if (string.IsNullOrWhiteSpace(model.userId))
@@ -148,17 +157,17 @@ namespace API.Controllers
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                BaseTrack trackResult = null;
+                Track trackResult = null;
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
                     string userId = userIdClaim.Value;
                     trackResult = await _tracksService.GetTrackByIdAsync(trackId, userId);
                 }
-                if (trackResult == null)
+                if (trackResult is null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-                    apiResponse.Errors.Add("BaseTrack not found");
+                    apiResponse.Errors.Add("Track not found");
                     return NotFound(apiResponse);
                 }
 
@@ -181,8 +190,16 @@ namespace API.Controllers
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var trackResult = await _jamendoService.GetTrackById(jamendoId);
-                if (trackResult == null)
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return BadRequest(apiResponse);
+                }
+                string userId = userIdClaim.Value;
+                var trackResult = await _jamendoService.GetTrackById(jamendoId, userId);
+                if (trackResult is null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
                     apiResponse.Errors.Add("Jamendo track not found");
@@ -209,7 +226,7 @@ namespace API.Controllers
             {
                 // gets the user id from the token
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim == null)
+                if (userIdClaim is null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
                     apiResponse.Errors.Add("User not found");
@@ -218,10 +235,10 @@ namespace API.Controllers
                 string userId = userIdClaim.Value;
                 // gets the next track based on the streaming context type
                 var nextTrack = await _tracksService.GetNextTrackAsync(getNextTrackDto, userId);
-                if (nextTrack == null)
+                if (nextTrack is null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-                    apiResponse.Errors.Add("BaseTrack not found");
+                    apiResponse.Errors.Add("Track not found");
                     return NotFound(apiResponse);
                 }
                 apiResponse.Data = nextTrack;
@@ -244,10 +261,10 @@ namespace API.Controllers
         //    try
         //    {
         //        var nextTrack = await _tracksService.GetNextTrackAsync(currentTrackId);
-        //        if (nextTrack == null)
+        //        if (nextTrack is null)
         //        {
         //            apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-        //            apiResponse.Errors.Add("BaseTrack not found");
+        //            apiResponse.Errors.Add("Track not found");
         //        }
         //        apiResponse.Data = nextTrack;
         //        apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
@@ -268,10 +285,10 @@ namespace API.Controllers
         //    try
         //    {
         //        var nextTrack = await _tracksService.GetNextPlaylistTrackAsync(currentTrackId, playlistId);
-        //        if (nextTrack == null)
+        //        if (nextTrack is null)
         //        {
         //            apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-        //            apiResponse.Errors.Add("BaseTrack not found");
+        //            apiResponse.Errors.Add("Track not found");
         //        }
         //        apiResponse.Data = nextTrack;
         //        apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
@@ -292,10 +309,10 @@ namespace API.Controllers
         //    try
         //    {
         //        var nextTrack = await _tracksService.GetNextAlbumTrackAsync(currentTrackId, albumId);
-        //        if (nextTrack == null)
+        //        if (nextTrack is null)
         //        {
         //            apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-        //            apiResponse.Errors.Add("BaseTrack not found");
+        //            apiResponse.Errors.Add("Track not found");
         //        }
         //        apiResponse.Data = nextTrack;
         //        apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
@@ -317,7 +334,7 @@ namespace API.Controllers
             try
             {
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim == null)
+                if (userIdClaim is null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
                     apiResponse.Errors.Add("User not found");
@@ -361,7 +378,7 @@ namespace API.Controllers
             try
             {
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim == null)
+                if (userIdClaim is null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
                     apiResponse.Errors.Add("User not found");

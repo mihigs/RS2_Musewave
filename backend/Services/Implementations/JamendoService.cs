@@ -1,6 +1,9 @@
-﻿using DataContext.Repositories;
+﻿using Azure;
+using DataContext.Repositories;
 using DataContext.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Models.Entities;
 using Services.Interfaces;
 using System.Text.Json;
@@ -11,30 +14,45 @@ namespace Services.Implementations
     public class JamendoService : IJamendoService
     {
         private readonly IConfiguration _configuration;
+        private readonly ITrackRepository _trackRepository;
+        private readonly IArtistRepository _artistRepository;
+        private readonly IGenreRepository _genreRepository;
+        private readonly ILikeRepository _likeRepository;
 
-        public JamendoService(IConfiguration configuration)
+        public JamendoService(IConfiguration configuration, ITrackRepository trackRepository, IArtistRepository artistRepository, IGenreRepository genreRepository, ILikeRepository likeRepository)
         {
             _configuration = configuration;
+            _trackRepository = trackRepository;
+            _artistRepository = artistRepository;
+            _genreRepository = genreRepository;
+            _likeRepository = likeRepository;
         }
 
-        public Task<IEnumerable<Track>> SearchJamendoByTrackName(string trackName)
+        public async Task<IEnumerable<Track>> SearchJamendoByTrackName(string trackName, string userId)
         {
             try
             {
                 using var client = new HttpClient();
                 client.BaseAddress = new Uri(_configuration["Jamendo:BaseUrl"]);
-                var response = client.GetAsync($"?client_id={_configuration["Jamendo:ClientId"]}&format=jsonpretty&name={trackName}").Result;
+                var response = client.GetAsync($"?client_id={_configuration["Jamendo:ClientId"]}&include=musicinfo&format=jsonpretty&name={trackName}").Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    var serializedResponse = response.Content.ReadAsStringAsync().Result;
-                    var result = MapJamendoApiResponse(serializedResponse);
-                    var tracks = result.Results.Select(MapJamendoResponseToTrack);
+                    var serializedResponse = await response.Content.ReadAsStringAsync();
+                    var deserializedResponse = MapJamendoApiResponse(serializedResponse);
+                    var tracks = new List<Track>();
+                    foreach (var track in deserializedResponse.Results)
+                    {
+                        if (track != null)
+                        {
+                            tracks.Add(await MapJamendoResponseToTrack(track, userId));
+                        }
+                    }
 
-                    return Task.FromResult(tracks);
+                    return tracks;
                 }
                 else
                 {
-                    throw new Exception("Failed to search Jamendo by track name");
+                    throw new Exception("Failed to query Jamendo");
                 }
             }
             catch (Exception e)
@@ -44,66 +62,83 @@ namespace Services.Implementations
             }
         }
 
-        public Task<Track> GetTrackById(int trackId)
+        public async Task<Track?> MapJamendoResponseToTrack(JamendoResult? response, string userId)
         {
-            try
+            if (response != null)
             {
-                using var client = new HttpClient();
-                client.BaseAddress = new Uri(_configuration["Jamendo:BaseUrl"]);
-                var response = client.GetAsync($"?client_id={_configuration["Jamendo:ClientId"]}&format=jsonpretty&id={trackId}").Result;
-                if (response.IsSuccessStatusCode)
+                // Check if track already exists in the database
+                var existingTrack = await _trackRepository.GetByJamendoId(response.Id);
+                if (existingTrack != null)
                 {
-                    var serializedResponse = response.Content.ReadAsStringAsync().Result;
-                    var result = MapJamendoApiResponse(serializedResponse);
-                    var track = MapJamendoResponseToTrack(result.Results.FirstOrDefault());
-
-                    return Task.FromResult(track);
+                    // Check if the track is liked by the user
+                    existingTrack.IsLiked = await CheckIfTrackIsLikedByUser(existingTrack.Id, userId) != null;
+                    return existingTrack;
                 }
-                else
+                var track = new Track
                 {
-                    throw new Exception("Failed to get Jamendo track by id");
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw new Exception("Failed to get Jamendo track by id", e);
-            }
-        }
-
-        public Track MapJamendoResponseToTrack(JamendoResult response)
-        {
-            var track = new Track
-            {
-                JamendoId = response.Id,
-                Title = response.Name,
-                Duration = response.Duration,
-                ImageUrl = response.Image,
-                SignedUrl = response.Audio,
-                //AlbumId = response.AlbumId,
-                //ArtistId = response.ArtistId,
-                //GenreId = response.GenreId,
-                //FilePath = response.FilePath,
-            };
-
-            if (response.ArtistId != null)
-            {
-                track.Artist = new Artist
-                {
-                    User = new User
-                    {
-                        UserName = response.ArtistName,
-                        NormalizedUserName = response.ArtistName.ToUpper(),
-                        EmailConfirmed = false,
-                        PhoneNumberConfirmed = false,
-                        TwoFactorEnabled = false,
-                        LockoutEnabled = false,
-                        AccessFailedCount = 0
-                    }
+                    JamendoId = response.Id,
+                    Title = response.Name,
+                    Duration = response.Duration,
+                    ImageUrl = response.Image,
+                    SignedUrl = response.Audio,
                 };
-            }
 
-            return track;
+                if (response.ArtistId != null)
+                {
+                    // Check if artist already exists in the database
+                    var existingArtist = await _artistRepository.GetArtistsByNameAsync(response.ArtistName);
+                    if (existingArtist.Count() > 0)
+                    {
+                        track.ArtistId = existingArtist.First().Id;
+                    }
+                    else
+                    {
+                        track.Artist = new Artist
+                        {
+                            User = new User
+                            {
+                                UserName = response.ArtistName,
+                                NormalizedUserName = response.ArtistName.ToUpper(),
+                                EmailConfirmed = false,
+                                PhoneNumberConfirmed = false,
+                                TwoFactorEnabled = false,
+                                LockoutEnabled = false,
+                                AccessFailedCount = 0
+                            }
+                        };
+                    };
+                }
+                if (response?.MusicInfo?.Tags?.Genres != null)
+                {
+                    foreach (var genre in response.MusicInfo.Tags.Genres)
+                    {
+                        // Check if genre already exists in the database
+                        var existingGenre = await _genreRepository.GetGenresByNameAsync(genre);
+                        if (existingGenre.IsNullOrEmpty())
+                        {
+                            track.TrackGenres.Add(new TrackGenre
+                            {
+                                Genre = new Genre
+                                {
+                                    Name = genre
+                                }
+                            });
+                        }
+                        else
+                        {
+                            track.TrackGenres.Add(new TrackGenre
+                            {
+                                GenreId = existingGenre.First().Id
+                            });
+                        }
+                    }
+                }
+
+                await _trackRepository.Add(track);
+
+                return track;
+            }
+            return null;
         }
 
         public JamendoApiResponse MapJamendoApiResponse(string response)
@@ -112,23 +147,80 @@ namespace Services.Implementations
             var jamendoApiResponse = JsonSerializer.Deserialize<JamendoApiResponse>(response);
 
             // Check if the deserialization was successful
-            if (jamendoApiResponse == null || jamendoApiResponse.Results == null)
+            if (jamendoApiResponse is null || jamendoApiResponse.Results is null)
             {
                 throw new JsonException("Failed to deserialize Jamendo API response.");
             }
 
-            // Process each result and map it to Track
-            var tracks = new List<Track>();
-            foreach (var result in jamendoApiResponse.Results)
-            {
-                var track = MapJamendoResponseToTrack(result);
-                tracks.Add(track);
-            }
-
-            // Optionally, process these tracks, save them to the database, etc.
-
             return jamendoApiResponse;
         }
 
+
+        public async Task<IEnumerable<Track>> CheckIfTracksAreCached(IEnumerable<Track> tracks)
+        {
+            var newTracks = new List<Track>();
+            foreach (var track in tracks)
+            {
+                var existingTrack = await _trackRepository.GetByJamendoId(track.JamendoId);
+                if (existingTrack is null)
+                {
+                    newTracks.Add(track);
+                } else
+                {
+                    foreach (var genre in existingTrack.TrackGenres)
+                    {
+                        var existingGenre = _genreRepository.GetGenresByNameAsync(genre.Genre.Name).Result.FirstOrDefault();
+                        if (existingGenre is null)
+                        {
+                            await _genreRepository.Add(genre.Genre);
+                        }
+                    }
+                    if (existingTrack.Artist != null)
+                    {
+                        var existingArtist = await _artistRepository.GetArtistsByNameAsync(track.Artist.User.UserName);
+                        if (existingArtist is null)
+                        {
+                           await _artistRepository.Add(track.Artist);
+                        }
+                    }
+                }
+            }
+            return newTracks;
+        }
+
+        public async Task<Track> GetTrackById(int trackId, string userId)
+        {
+            try
+            {
+                var track = await _trackRepository.GetByJamendoId(trackId.ToString());
+
+                if (track is null)
+                {
+                    using var client = new HttpClient();
+                    client.BaseAddress = new Uri(_configuration["Jamendo:BaseUrl"]);
+                    var response = client.GetAsync($"?client_id={_configuration["Jamendo:ClientId"]}&format=jsonpretty&id={trackId}").Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var serializedResponse = response.Content.ReadAsStringAsync().Result;
+                        var result = MapJamendoApiResponse(serializedResponse);
+                        track = await MapJamendoResponseToTrack(result.Results.FirstOrDefault(), userId);
+                    }
+                    else
+                    {
+                        throw new Exception("Failed to get Jamendo track by id");
+                    }
+                }
+                return track;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception("Error getting Jamendo track", e);
+            }
+        }
+        public async Task<Like?> CheckIfTrackIsLikedByUser(int trackId, string userId)
+        {
+            return await _likeRepository.CheckIfTrackIsLikedByUser(trackId, userId);
+        }
     }
 }

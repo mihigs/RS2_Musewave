@@ -27,7 +27,7 @@ namespace API.Controllers
             {
                 // gets the user id from the token
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim == null)
+                if (userIdClaim is null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
                     apiResponse.Errors.Add("User not found");
@@ -54,7 +54,7 @@ namespace API.Controllers
             {
                 // gets the user id from the token
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim == null)
+                if (userIdClaim is null)
                 {
                     apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
                     apiResponse.Errors.Add("User not found");
@@ -154,7 +154,7 @@ namespace API.Controllers
         //    try
         //    {
         //        var removedPlaylist = await _playlistService.RemovePlaylistAsync(id);
-        //        if (removedPlaylist == null)
+        //        if (removedPlaylist is null)
         //        {
         //            apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
         //            return apiResponse;

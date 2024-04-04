@@ -22,7 +22,7 @@ namespace Services.Implementations
             _hubContext = hubContext;
         }
 
-        public async Task<BaseTrack> TrackUploadRequest(TrackUploadDetailsDto trackUploadDetailsDto)
+        public async Task<Track> TrackUploadRequest(TrackUploadDetailsDto trackUploadDetailsDto)
         {
             // First create an entry in the database for the track
             var trackEntry = await CreateTrackDatabaseEntry(trackUploadDetailsDto);
@@ -41,11 +41,11 @@ namespace Services.Implementations
             return trackEntry;
         }
 
-        public async Task<BaseTrack> CreateTrackDatabaseEntry(TrackUploadDetailsDto trackDetails)
+        public async Task<Track> CreateTrackDatabaseEntry(TrackUploadDetailsDto trackDetails)
         {
             // Check if the user is an artist
             var artist = await _artistRepository.GetArtistByUserId(trackDetails.userId);
-            if (artist == null)
+            if (artist is null)
             {
                 // create an artist entry in the database
                 artist = new Artist
@@ -56,7 +56,7 @@ namespace Services.Implementations
             }
 
             // create a track entry in the database
-            var track = new BaseTrack
+            var track = new Track
             {
                 Title = trackDetails.trackName,
                 ArtistId = artist.Id,
@@ -99,7 +99,7 @@ namespace Services.Implementations
                 // Ensure the request was successful
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("BaseTrack sent to Listener for processing.");
+                    Console.WriteLine("Track sent to Listener for processing.");
                 }
                 else
                 {

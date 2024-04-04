@@ -24,11 +24,11 @@ public class Program
                 Console.WriteLine("Migrations finished.");
 
                 // Check if the database is already seeded
-                //if (context.Set<Artist>().Any())
-                //{
-                //    Console.WriteLine("Database already seeded. Skipping seeding.");
-                //    return;
-                //}
+                if (context.Set<Artist>().Any())
+                {
+                    Console.WriteLine("Database already seeded. Skipping seeding.");
+                    return;
+                }
             }
             catch (Exception ex)
             {

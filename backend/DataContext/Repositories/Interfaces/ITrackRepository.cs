@@ -2,12 +2,15 @@
 
 namespace DataContext.Repositories.Interfaces
 {
-    public interface ITrackRepository : IRepository<BaseTrack>
+    public interface ITrackRepository : IRepository<Track>
     {
-        Task<IEnumerable<BaseTrack>> GetTracksByGenreAsync(int genreId);
-        Task<IEnumerable<BaseTrack>> GetLikedTracksAsync(string userId);
-        Task<IEnumerable<BaseTrack>> GetTracksByNameAsync(string name);
-        Task<BaseTrack> GetRandomTrack(List<int> excluding);
-        Task<List<BaseTrack>> GetTracksByArtistId(int artistId);
+        Task<IEnumerable<Track>> GetTracksByGenreAsync(int genreId);
+        Task<IEnumerable<Track>> GetLikedTracksAsync(string userId);
+        Task<IEnumerable<Track>> GetTracksByNameAsync(string name);
+        Task<Track> GetRandomTrack(List<int> excluding);
+        Task<List<Track>> GetTracksByArtistId(int artistId);
+        Task<Track> GetByJamendoId(string jamendoId);
+        Task<Track> GetById(int id);
+
     }
 }

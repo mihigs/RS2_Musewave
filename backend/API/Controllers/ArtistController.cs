@@ -99,7 +99,7 @@ namespace API.Controllers
         //    try
         //    {
         //        var removedArtist = await _artistService.RemoveArtistAsync(id);
-        //        if (removedArtist == null)
+        //        if (removedArtist is null)
         //        {
         //            apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
         //            return apiResponse;
