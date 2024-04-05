@@ -19,6 +19,7 @@ namespace DataContext
             services.AddScoped<ITrackRepository, TrackRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPlaylistTrackRepository, PlaylistTrackRepository>();
+            services.AddScoped<ITrackGenreRepository, TrackGenreRepository>();
 
             return services;
         }
@@ -26,7 +27,7 @@ namespace DataContext
         {
             services.AddDbContext<MusewaveDbContext>(options =>
             {
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(connectionString, x => x.MigrationsAssembly("DataContext.Migrations"));
             }, ServiceLifetime.Scoped);
 
             return services;

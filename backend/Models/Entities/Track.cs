@@ -21,7 +21,6 @@ namespace Models.Entities
 
     public class TrackGenre
     {
-        public int Id { get; set; }
         public int TrackId { get; set; }
         public virtual Track Track { get; set; }
         public int GenreId { get; set; }

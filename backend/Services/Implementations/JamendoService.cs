@@ -62,7 +62,7 @@ namespace Services.Implementations
             }
         }
 
-        public async Task<Track?> MapJamendoResponseToTrack(JamendoResult? response, string userId)
+        public async Task<Track?> MapJamendoResponseToTrack(JamendoResult? response, string? userId = null)
         {
             if (response != null)
             {
@@ -71,7 +71,10 @@ namespace Services.Implementations
                 if (existingTrack != null)
                 {
                     // Check if the track is liked by the user
-                    existingTrack.IsLiked = await CheckIfTrackIsLikedByUser(existingTrack.Id, userId) != null;
+                    if(userId != null)
+                    {
+                        existingTrack.IsLiked = await CheckIfTrackIsLikedByUser(existingTrack.Id, userId) != null;
+                    }
                     return existingTrack;
                 }
                 var track = new Track
@@ -222,5 +225,42 @@ namespace Services.Implementations
         {
             return await _likeRepository.CheckIfTrackIsLikedByUser(trackId, userId);
         }
+
+        public async Task<IEnumerable<Track>> GetJamendoTracksPerGenres(string[] genres)
+        {
+            try
+            {
+                string tags = string.Join("+", genres);
+                using var client = new HttpClient();
+                client.BaseAddress = new Uri(_configuration["Jamendo:BaseUrl"]);
+                var response = client.GetAsync($"?client_id={_configuration["Jamendo:ClientId"]}&format=jsonpretty&limit=5&include=musicinfo&tags={tags}").Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var serializedResponse = await response.Content.ReadAsStringAsync();
+                    var deserializedResponse = MapJamendoApiResponse(serializedResponse);
+                    var tracks = new List<Track>();
+                    foreach (var track in deserializedResponse.Results)
+                    {
+                        if (track != null)
+                        {
+                            tracks.Add(await MapJamendoResponseToTrack(track));
+                        }
+                    }
+
+                    return tracks;
+                }
+                else
+                {
+                    throw new Exception("Failed to query Jamendo");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception("Failed to get Jamendo tracks by genres", e);
+            }
+        }
+
+
     }
 }

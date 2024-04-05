@@ -1,8 +1,6 @@
 ﻿using DataContext.Repositories;
 using DataContext.Repositories.Interfaces;
 using Models.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DataContext.Seeder
 {

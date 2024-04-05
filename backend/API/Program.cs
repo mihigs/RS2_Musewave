@@ -11,14 +11,25 @@ using Microsoft.Extensions.Options;
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
-// Add configuration
+// Set database configuration
 var configuration = builder.Configuration;
 configuration.AddEnvironmentVariables();
-var connectionString = configuration["ConnectionString"];
+var dbConnectionString = configuration["ConnectionString"];
+if(string.IsNullOrEmpty(dbConnectionString))
+{
+    throw new ArgumentNullException("ConnectionString", "API: Connection string is required.");
+}
+// Set Redis configuration
+var redisHost = configuration["Redis:Host"];
+var redisPort = configuration["Redis:Port"];
+if (string.IsNullOrEmpty(redisHost) || string.IsNullOrEmpty(redisPort))
+{
+    throw new ArgumentNullException("Redis:ConnectionString", "Redis host and port are required.");
+}
+var redisConnectionString = $"{redisHost}:{redisPort}";
 
 var services = builder.Services;
 
-//Console.WriteLine("Configuration: " + configuration);
 //// Log the configuration entries
 //foreach (var item in configuration.AsEnumerable())
 //{
@@ -26,9 +37,9 @@ var services = builder.Services;
 //    Console.WriteLine(item.Value);
 //}
 
-//Console.WriteLine("Connection string: " + connectionString);
+//Console.WriteLine("Connection string: " + dbConnectionString);
 //// Check if the connection string is set
-//if (string.IsNullOrEmpty(connectionString))
+//if (string.IsNullOrEmpty(dbConnectionString))
 //{
 //    throw new ArgumentNullException("ConnectionString", "Connection string is required.");
 //}
@@ -71,7 +82,7 @@ services.AddSwaggerGen(c =>
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
-        Scheme = "bearer"  // must be lowercase
+        Scheme = "bearer"
     });
 
     // Apply the BearerAuth scheme globally to all API operations
@@ -91,11 +102,13 @@ services.AddSwaggerGen(c =>
     });
 });
 
-// Add application services
-services.RegisterDbContext(connectionString)
+// Add all Services defined in the Services project
+services.RegisterDbContext(dbConnectionString)
+    .AddRedisServices(redisConnectionString)
     .AddRepositories()
     .RegisterIdentity()
-    .AddApplicationServices();
+    .AddApplicationServices()
+    .AddBackgroundServices();
 
 // Authentication and authorization
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

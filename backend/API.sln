@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataContext", "DataContext\DataContext.csproj", "{9870D899-C8E8-4D5B-B54B-CB34325B5D5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{6A21C42E-4C2D-4602-8028-7C3DE9BBE67F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{6A21C42E-4C2D-4602-8028-7C3DE9BBE67F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{071B0C74-CFD6-4FB9-91A8-03FF5441A600}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{071B0C74-CFD6-4FB9-91A8-03FF5441A600}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,7 +18,6 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0F667E0D-BBE3-4D3B-8D81-4D0EC7FA0EDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F667E0D-BBE3-4D3B-8D81-4D0EC7FA0EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F667E0D-BBE3-4D3B-8D81-4D0EC7FA0EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F667E0D-BBE3-4D3B-8D81-4D0EC7FA0EDA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9870D899-C8E8-4D5B-B54B-CB34325B5D5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

@@ -2,6 +2,7 @@
 using RabbitMQ.Client;
 using Services.Implementations;
 using Services.Interfaces;
+using StackExchange.Redis;
 
 namespace Services
 {
@@ -21,10 +22,27 @@ namespace Services
             return services;
         }
 
+        public static IServiceCollection AddBackgroundServices(this IServiceCollection services)
+        {
+            services.AddHostedService<JamendoBackgroundService>();
+            services.AddHostedService<GenreSimilarityTracker>();
+            services.AddHostedService<ExploreWeeklyPlaylistGenerator>();
+
+            return services;
+        }
+
         public static IServiceCollection AddRabbitMqServices(this IServiceCollection services)
         {
             services.AddSingleton<IRabbitMqService, RabbitMqService>();
             services.AddHostedService<RabbitMqListener>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddRedisServices(this IServiceCollection services, string connectionString)
+        {
+            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(connectionString));
+            services.AddSingleton<IRedisService, RedisService>();
 
             return services;
         }
