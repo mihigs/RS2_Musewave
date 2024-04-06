@@ -115,27 +115,37 @@ namespace Services.Implementations
                 {
                     foreach (var genre in response.MusicInfo.Tags.Genres)
                     {
-                        // Check if genre already exists in the database
                         var existingGenre = await _genreRepository.GetGenresByNameAsync(genre);
+                        TrackGenre trackGenre;
                         if (existingGenre.IsNullOrEmpty())
                         {
-                            track.TrackGenres.Add(new TrackGenre
+                            trackGenre = new TrackGenre
                             {
                                 Genre = new Genre
                                 {
                                     Name = genre
                                 }
-                            });
+                            };
                         }
                         else
                         {
-                            track.TrackGenres.Add(new TrackGenre
+                            // Check if the track already has this genre to avoid adding a duplicate
+                            var genreId = existingGenre.First().Id;
+                            if (track.TrackGenres.Any(tg => tg.GenreId == genreId))
                             {
-                                GenreId = existingGenre.First().Id
-                            });
+                                continue; // Skip adding this genre since it's already added
+                            }
+
+                            trackGenre = new TrackGenre
+                            {
+                                GenreId = genreId
+                            };
                         }
+
+                        track.TrackGenres.Add(trackGenre);
                     }
                 }
+
 
                 await _trackRepository.Add(track);
 
@@ -201,7 +211,7 @@ namespace Services.Implementations
                 {
                     using var client = new HttpClient();
                     client.BaseAddress = new Uri(_configuration["Jamendo:BaseUrl"]);
-                    var response = client.GetAsync($"?client_id={_configuration["Jamendo:ClientId"]}&format=jsonpretty&id={trackId}").Result;
+                    var response = client.GetAsync($"?client_id={_configuration["Jamendo:ClientId"]}&include=musicinfo&format=jsonpretty&id={trackId}").Result;
                     if (response.IsSuccessStatusCode)
                     {
                         var serializedResponse = response.Content.ReadAsStringAsync().Result;

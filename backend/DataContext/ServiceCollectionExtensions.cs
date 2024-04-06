@@ -27,7 +27,7 @@ namespace DataContext
         {
             services.AddDbContext<MusewaveDbContext>(options =>
             {
-                options.UseSqlServer(connectionString, x => x.MigrationsAssembly("DataContext.Migrations"));
+                options.UseSqlServer(connectionString);
             }, ServiceLifetime.Scoped);
 
             return services;

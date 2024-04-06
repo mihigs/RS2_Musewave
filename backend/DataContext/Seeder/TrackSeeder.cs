@@ -156,9 +156,11 @@ namespace DataContext.Seeder
                     content.Add(new StringContent(trackId.ToString()), "trackId");
                     content.Add(new StringContent(userId), "userId");
 
-                    Console.WriteLine($"Listener URL: {_configuration["ListenerApiUrl"]}/Tracks/UploadTrack");
+                    var temp = _configuration["ApiSettings:ListenerApiUrl"];
 
-                    var response = await httpClient.PostAsync($"{_configuration["ListenerApiUrl"]}/Tracks/UploadTrack", content);
+                    Console.WriteLine($"Listener URL: {_configuration["ApiSettings:ListenerApiUrl"]}/Tracks/UploadTrack");
+
+                    var response = await httpClient.PostAsync($"{_configuration["ApiSettings:ListenerApiUrl"]}/Tracks/UploadTrack", content);
 
                     return response;
                 }

@@ -222,7 +222,11 @@ class MusicStreamer extends ChangeNotifier {
 
   void toggleIsLiked() {
     if (_currentTrack != null) {
-      _currentTrack!.isLiked = !_currentTrack!.isLiked!;
+      if(_currentTrack!.isLiked == null){
+        _currentTrack!.isLiked = true;
+      }else{
+        _currentTrack!.isLiked = !_currentTrack!.isLiked!;
+      }
       notifyListeners();
     }
   }

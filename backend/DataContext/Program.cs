@@ -92,60 +92,59 @@ public class Program
 
     public static IHostBuilder CreateHostBuilder(string[] args)
     {
-
-        var builder = Host.CreateDefaultBuilder(args)
+        return Host.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration((hostingContext, config) =>
             {
-                var env = hostingContext.HostingEnvironment;
-
-                var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
-                var listenerApiUrl = Environment.GetEnvironmentVariable("ListenerApiUrl");
-
-                var envVars = Environment.GetEnvironmentVariables();
-                foreach (var envVar in envVars.Keys)
-                {
-                    Console.WriteLine(envVar + ": " + envVars[envVar]);
-                }
-
-                if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(listenerApiUrl))
-                {
-                    var launchSettingsPath = Path.Combine(env.ContentRootPath, "Properties", "launchSettings.json");
-                    if (File.Exists(launchSettingsPath))
-                    {
-                        var launchSettingsConfig = new ConfigurationBuilder()
-                            .AddJsonFile(launchSettingsPath)
-                            .Build();
-
-                        var profile = launchSettingsConfig
-                            .GetSection($"profiles:{env.ApplicationName}")
-                            .Get<LaunchSettingsProfile>();
-
-                        if (profile?.EnvironmentVariables != null)
-                        {
-                            foreach (var kvp in profile.EnvironmentVariables)
-                            {
-                                // Set or override the environment variable for this process
-                                Environment.SetEnvironmentVariable(kvp.Key, kvp.Value);
-                            }
-                        }
-                    }
-                }
+                // Configuration sources have been added by default, including appsettings.json and appsettings.{Environment}.json
+                config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                      .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true)
+                      .AddEnvironmentVariables();
             })
-
-            builder.ConfigureServices((hostContext, services) =>
+            .ConfigureServices((hostContext, services) =>
             {
+                // Access configuration
+                var configuration = hostContext.Configuration;
+
+                // Get the connection string from the configuration
+                var connectionString = configuration.GetConnectionString("DefaultConnection")
+                    ?? throw new InvalidOperationException("DataContext: Connection string 'DefaultConnection' not found.");
+
+                // Get ListenerApiUrl from the configuration
+                var listenerApiUrl = configuration.GetValue<string>("ApiSettings:ListenerApiUrl")
+                    ?? throw new InvalidOperationException("DataContext: ListenerApiUrl not found.");
+
                 // Configuration and service registration
-                services.RegisterDbContext(connectionString)
-                    .AddRepositories()
-                    .RegisterIdentity();
+                services.RegisterDbContext(connectionString) // Make sure this method uses the connection string properly
+                        .AddRepositories()
+                        .RegisterIdentity();
                 services.AddScoped<MusewaveDbSeeder>();
                 services.AddScoped<IUnitOfWork, UnitOfWork>();
             });
     }
 
-}
 
-internal class LaunchSettingsProfile
-{
-    public Dictionary<string, string> EnvironmentVariables { get; set; }
+
+    //public static IHostBuilder CreateHostBuilder(string[] args)
+    //{
+
+    //    var builder = Host.CreateDefaultBuilder(args)
+    //        .ConfigureAppConfiguration((hostingContext, config) =>
+    //        {
+    //        {
+    //            config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    //                  .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+    //            config.AddEnvironmentVariables(); // This adds environment variables to the configuration system
+    //        })
+
+    //        builder.ConfigureServices((hostContext, services) =>
+    //        {
+    //            // Configuration and service registration
+    //            services.RegisterDbContext(connectionString)
+    //                .AddRepositories()
+    //                .RegisterIdentity();
+    //            services.AddScoped<MusewaveDbSeeder>();
+    //            services.AddScoped<IUnitOfWork, UnitOfWork>();
+    //        });
+    //}
+
 }

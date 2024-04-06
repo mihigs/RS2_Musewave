@@ -7,13 +7,9 @@ namespace Models.Entities
         public string Name { get; set; }
         public string UserId { get; set; }
         public virtual User User { get; set; }
-        public virtual List<Track> Tracks { get; set; }
+        public virtual List<PlaylistTrack> Tracks { get; set; } = new List<PlaylistTrack>();
         public bool IsPublic { get; set; }
         public bool IsExploreWeekly { get; set; }
-        public Playlist()
-        {
-            Tracks = new List<Track>();
-        }
     }
 
     public class PlaylistTrack

@@ -4,32 +4,44 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Models.Entities;
 using Services.Interfaces;
+using System;
 using System.Text.Json;
 
-namespace Services.Implementations
+namespace Services.Implementations.BackgroundServices
 {
     public class GenreSimilarityTracker : BackgroundService
     {
         private readonly IRedisService _redisService;
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IServiceProvider _serviceProvider;
 
-        public GenreSimilarityTracker(IRedisService redisService, IServiceScopeFactory serviceScopeFactory)
+        public GenreSimilarityTracker(IRedisService redisService, IServiceScopeFactory serviceScopeFactory, IServiceProvider serviceProvider)
         {
             _redisService = redisService;
             _serviceScopeFactory = serviceScopeFactory;
+            _serviceProvider = serviceProvider;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            try
             {
-                Console.WriteLine("Genre similarity tracker is running.");
+                while (!stoppingToken.IsCancellationRequested)
+                {
+                    _serviceProvider.GetRequiredService<ServiceRunControl>().WaitJamendoServiceDone(stoppingToken);  // Wait for JamendoBackgroundService to finish
 
-                await CalculateAndStoreGenreSimilarities();
+                    Console.WriteLine("Genre similarity tracker is running.");
+                    await CalculateAndStoreGenreSimilarities();
+                    Console.WriteLine("Genre similarity tracker has finished!");
 
-                Console.WriteLine("Genre similarity tracker has finished!");
+                    _serviceProvider.GetRequiredService<ServiceRunControl>().NotifyGenreSimilarityTrackerDone();
 
-                await Task.Delay(TimeSpan.FromDays(1), stoppingToken); // Every day
+                    await Task.Delay(TimeSpan.FromDays(1), stoppingToken); // Every day
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GenreSimilarityTracker: {ex.Message}");
             }
         }
 

@@ -22,27 +22,33 @@ if(string.IsNullOrEmpty(dbConnectionString))
 // Set Redis configuration
 var redisHost = configuration["Redis:Host"];
 var redisPort = configuration["Redis:Port"];
+var redisAbortOnConnectFail = configuration["Redis:AbortOnConnectFail"];
 if (string.IsNullOrEmpty(redisHost) || string.IsNullOrEmpty(redisPort))
 {
     throw new ArgumentNullException("Redis:ConnectionString", "Redis host and port are required.");
 }
 var redisConnectionString = $"{redisHost}:{redisPort}";
+if (redisAbortOnConnectFail == "false")
+{
+    redisConnectionString += ",abortConnect=false";
+}
+Console.WriteLine("Redis connection string: " + redisConnectionString);
 
 var services = builder.Services;
 
-//// Log the configuration entries
-//foreach (var item in configuration.AsEnumerable())
-//{
-//    Console.Write(item.Key + ":");
-//    Console.WriteLine(item.Value);
-//}
+// Log the configuration entries
+foreach (var item in configuration.AsEnumerable())
+{
+    Console.Write(item.Key + ":");
+    Console.WriteLine(item.Value);
+}
 
-//Console.WriteLine("Connection string: " + dbConnectionString);
-//// Check if the connection string is set
-//if (string.IsNullOrEmpty(dbConnectionString))
-//{
-//    throw new ArgumentNullException("ConnectionString", "Connection string is required.");
-//}
+Console.WriteLine("Connection string: " + dbConnectionString);
+// Check if the connection string is set
+if (string.IsNullOrEmpty(dbConnectionString))
+{
+    throw new ArgumentNullException("ConnectionString", "Connection string is required.");
+}
 
 // Add RabbitMQ services
 services.AddRabbitMqServices();

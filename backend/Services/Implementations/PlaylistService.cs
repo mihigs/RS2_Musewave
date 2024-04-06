@@ -25,10 +25,10 @@ namespace Services.Implementations
         {
             var playlistDetails = await _playlistRepository.GetPlaylistDetails(id);
             // add the SignedUrl to each track in the playlist
-            foreach (var track in playlistDetails.Tracks)
+            foreach (var playlistTrack in playlistDetails.Tracks)
             {
-                track.SignedUrl = _tracksService.GenerateSignedTrackUrl(track.FilePath, track.ArtistId.ToString());
-                track.IsLiked = await _tracksService.CheckIfTrackIsLikedByUser(track.Id, userId) != null;
+                playlistTrack.Track.SignedUrl = _tracksService.GenerateSignedTrackUrl(playlistTrack.Track.FilePath, playlistTrack.Track.ArtistId.ToString());
+                playlistTrack.Track.IsLiked = await _tracksService.CheckIfTrackIsLikedByUser(playlistTrack.Track.Id, userId) != null;
             }
             return await _playlistRepository.GetPlaylistDetails(id);
         }
@@ -36,6 +36,11 @@ namespace Services.Implementations
         public async Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(string userId)
         {
             return await _playlistRepository.GetPlaylistsByUserIdAsync(userId);
+        }
+
+        public async Task<Playlist> GetExploreWeeklyPlaylistAsync(string userId)
+        {
+            return await _playlistRepository.GetExploreWeeklyPlaylistAsync(userId);
         }
     }
 }

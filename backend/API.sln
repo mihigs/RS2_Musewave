@@ -4,6 +4,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{0F667E0D-BBE3-4D3B-8D81-4D0EC7FA0EDA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6A21C42E-4C2D-4602-8028-7C3DE9BBE67F} = {6A21C42E-4C2D-4602-8028-7C3DE9BBE67F}
+		{9870D899-C8E8-4D5B-B54B-CB34325B5D5F} = {9870D899-C8E8-4D5B-B54B-CB34325B5D5F}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataContext", "DataContext\DataContext.csproj", "{9870D899-C8E8-4D5B-B54B-CB34325B5D5F}"
 EndProject
@@ -18,6 +22,7 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0F667E0D-BBE3-4D3B-8D81-4D0EC7FA0EDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F667E0D-BBE3-4D3B-8D81-4D0EC7FA0EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F667E0D-BBE3-4D3B-8D81-4D0EC7FA0EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F667E0D-BBE3-4D3B-8D81-4D0EC7FA0EDA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9870D899-C8E8-4D5B-B54B-CB34325B5D5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

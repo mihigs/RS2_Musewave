@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
-using Services.Implementations;
+using Services.Implementations.BackgroundServices;
 using Services.Interfaces;
 using StackExchange.Redis;
 
-namespace Services
+namespace Services.Implementations
 {
     public static class ServiceCollectionExtensions
     {
@@ -24,6 +24,7 @@ namespace Services
 
         public static IServiceCollection AddBackgroundServices(this IServiceCollection services)
         {
+            services.AddSingleton<ServiceRunControl>();
             services.AddHostedService<JamendoBackgroundService>();
             services.AddHostedService<GenreSimilarityTracker>();
             services.AddHostedService<ExploreWeeklyPlaylistGenerator>();

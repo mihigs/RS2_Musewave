@@ -1,11 +1,7 @@
 {
   "profiles": {
     "DataContext": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "ConnectionString": "Server=localhost;Database=MusewaveDbDev;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True",
-        "ListenerApiUrl": "http://localhost:7151/api"
-      }
+      "commandName": "Project"
     }
   }
 }

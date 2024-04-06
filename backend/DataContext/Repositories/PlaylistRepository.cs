@@ -34,29 +34,51 @@ namespace DataContext.Repositories
 
         public async Task<Playlist> GetPlaylistDetails(int playlistId)
         {
-            var playlistTracks = await _dbContext.Set<PlaylistTrack>()
-                .Where(pt => pt.PlaylistId == playlistId)
-                .Include(pt => pt.Track)
-                .ThenInclude(t => t.Artist)
-                .ThenInclude(a => a.User)
-                .ToListAsync();
-
-            // Get the playlist
             var playlist = await _dbContext.Set<Playlist>()
                 .Where(p => p.Id == playlistId)
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(p => p.Id == playlistId);
+                .Include(p => p.User) 
+                .Include(p => p.Tracks) 
+                    .ThenInclude(pt => pt.Track) 
+                        .ThenInclude(t => t.Artist) 
+                            .ThenInclude(a => a.User)
+                .FirstOrDefaultAsync();
 
-            // Add the tracks to the playlist
-            playlist.Tracks = playlistTracks.Select(pt => pt.Track).ToList();
             return playlist;
         }
+
 
         public async Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(string userId)
         {
             return await _dbContext.Set<Playlist>()
                 .Where(p => p.UserId == userId)
                 .ToListAsync();
+        }
+
+        public async Task<Playlist?> GetExploreWeeklyPlaylistAsync(string userId)
+        {
+            // get latest explore weekly playlist
+            var exploreWeeklyPlaylist = await _dbContext.Set<Playlist>()
+                .Where(p => p.UserId == userId)
+                .Where(p => p.IsExploreWeekly)
+                .OrderByDescending(p => p.CreatedAt)
+                .FirstOrDefaultAsync();
+
+
+            if (exploreWeeklyPlaylist is null)
+            {
+                return null;
+            }
+
+            var playlistTracks = await _dbContext.Set<PlaylistTrack>()
+                .Where(pt => pt.PlaylistId == exploreWeeklyPlaylist.Id)
+                .Include(pt => pt.Track)
+                .ThenInclude(t => t.Artist)
+                .ThenInclude(a => a.User)
+                .ToListAsync();
+
+            // Add the tracks to the playlist
+            exploreWeeklyPlaylist.Tracks = playlistTracks.ToList();
+            return exploreWeeklyPlaylist;
         }
     }
 }

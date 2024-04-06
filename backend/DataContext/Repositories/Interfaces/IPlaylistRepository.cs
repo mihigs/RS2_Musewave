@@ -8,5 +8,6 @@ namespace DataContext.Repositories.Interfaces
         Task<IEnumerable<Track>> GetPlaylistTracksAsync(int playlistId);
         Task<Playlist> GetPlaylistDetails(int playlistId);
         Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(string userId);
+        Task<Playlist> GetExploreWeeklyPlaylistAsync(string userId);
     }
 }

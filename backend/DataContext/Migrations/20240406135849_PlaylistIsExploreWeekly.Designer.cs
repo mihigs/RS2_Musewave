@@ -4,6 +4,7 @@ using DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataContext.Migrations
 {
     [DbContext(typeof(MusewaveDbContext))]
-    partial class MusewaveDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240406135849_PlaylistIsExploreWeekly")]
+    partial class PlaylistIsExploreWeekly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -341,6 +344,9 @@ namespace DataContext.Migrations
                     b.Property<string>("JamendoId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PlaylistId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SignedUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -356,6 +362,8 @@ namespace DataContext.Migrations
                     b.HasIndex("AlbumId");
 
                     b.HasIndex("ArtistId");
+
+                    b.HasIndex("PlaylistId");
 
                     b.ToTable("Tracks");
                 });
@@ -550,7 +558,7 @@ namespace DataContext.Migrations
             modelBuilder.Entity("Models.Entities.PlaylistTrack", b =>
                 {
                     b.HasOne("Models.Entities.Playlist", "Playlist")
-                        .WithMany("Tracks")
+                        .WithMany()
                         .HasForeignKey("PlaylistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -577,6 +585,10 @@ namespace DataContext.Migrations
                         .HasForeignKey("ArtistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Models.Entities.Playlist", null)
+                        .WithMany("Tracks")
+                        .HasForeignKey("PlaylistId");
 
                     b.Navigation("Album");
 
