@@ -69,6 +69,10 @@ namespace Services.Implementations.BackgroundServices
                 {
                     // 2. For each user, get their liked tracks
                     var likedTracks = await likeRepository.GetByUserAsync(user.Id);
+                    if (likedTracks.IsNullOrEmpty())
+                    {
+                        continue;
+                    }
 
                     // 3. Get the genres of each of those tracks
                     var userLikedGenreIds = new HashSet<int>(); // Using HashSet to avoid duplicates
@@ -80,10 +84,13 @@ namespace Services.Implementations.BackgroundServices
                             userLikedGenreIds.Add(genre.Id);
                         }
                     }
+                    if (userLikedGenreIds.IsNullOrEmpty())
+                    {
+                        continue;
+                    }
 
                     // 4. Use the similarity matrix to find tracks with similar genres
-                    var similarTracks = new HashSet<Track>(); // Using HashSet to avoid duplicate tracks
-                    var similarGenres = new HashSet<int>(); // To store IDs of genres similar to the user's liked genres
+                    var similarGenres = new Dictionary<int, double>(); // To store IDs of genres similar to the user's liked genres, and the similarity score
 
                     foreach (var userGenreId in userLikedGenreIds)
                     {
@@ -91,34 +98,94 @@ namespace Services.Implementations.BackgroundServices
                         foreach (var entry in similarityMatrix)
                         {
                             var genres = entry.Key.Split('-').Select(int.Parse).ToArray();
-                            if (genres.Contains(userGenreId) && entry.Value > 0.4) // Threshold for similarity
+                            if ((genres.Contains(userGenreId) && entry.Value > 0.5)) // Threshold for similarity
                             {
-                                similarGenres.UnionWith(genres);
+                                foreach (var genreId in genres)
+                                {
+                                    // Check if the genre is not already liked by the user
+                                    if (!userLikedGenreIds.Contains(genreId))
+                                    {
+                                        // Update or add the genre with its similarity score
+                                        if (similarGenres.ContainsKey(genreId))
+                                        {
+                                            // Update the score if the new score is higher
+                                            if (similarGenres[genreId] < entry.Value)
+                                            {
+                                                similarGenres[genreId] = entry.Value;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            similarGenres.Add(genreId, entry.Value);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
-
-                    // 5. Remove the genres already liked by the user to avoid recommending the same tracks
-                    similarGenres.ExceptWith(userLikedGenreIds);
-
-                    foreach (var genreId in similarGenres)
+                    if (similarGenres.IsNullOrEmpty())
                     {
-                        var tracksInGenre = await trackRepository.GetTracksByGenreAsync(genreId);
-                        foreach (var track in tracksInGenre)
+                        continue;
+                    }
+
+                    // 5. Filter 30 of the most similar genres
+                    var topSimilarGenres = similarGenres.OrderByDescending(entry => entry.Value)
+                                    .Take(30)
+                                    .ToDictionary(pair => pair.Key, pair => pair.Value);
+                    similarGenres = topSimilarGenres;
+
+                    // 6. Remove the genres already liked by the user to avoid recommending the same tracks
+                    var similarTracks = new HashSet<Track>(); // Using HashSet to avoid duplicate tracks
+
+                    // Helper function to add tracks
+                    async Task AddTracksPerGenre(IEnumerable<int> genreIds, int tracksToAddPerGenre)
+                    {
+                        foreach (var genreId in genreIds)
                         {
-                            if (!likedTracks.Any(t => t.Id == track.Id))
+                            var tracksInGenre = await trackRepository.GetTracksByGenreAsync(genreId);
+                            var addedTracks = 0;
+
+                            foreach (var track in tracksInGenre)
                             {
-                                similarTracks.Add(track);
+                                if (!likedTracks.Any(t => t.Id == track.Id) && !similarTracks.Any(t => t.Id == track.Id))
+                                {
+                                    similarTracks.Add(track);
+                                    addedTracks++;
+                                    if (addedTracks >= tracksToAddPerGenre) break; // Stop after adding the specified number of tracks per genre
+                                }
                             }
                         }
                     }
 
-                    // 6. Create a new playlist called "Explore Weekly" for each user and add the similar tracks to this playlist
+                    // First pass: Add one track per genre
+                    await AddTracksPerGenre(similarGenres.Keys, 2);
+
+                    // Subsequent passes: Add more tracks per genre if needed
+                    while (similarTracks.Count < 30)
+                    {
+                        var previousCount = similarTracks.Count;
+                        await AddTracksPerGenre(similarGenres.Keys, 1); // Try adding one more track per genre
+                        if (similarTracks.Count == previousCount) break; // Break if no new tracks were added
+                    }
+
+                    //foreach (var genreId in similarGenres.Keys)
+                    //{
+                    //    var tracksInGenre = await trackRepository.GetTracksByGenreAsync(genreId);
+                    //    foreach (var track in tracksInGenre)
+                    //    {
+                    //        if (!likedTracks.Any(t => t.Id == track.Id))
+                    //        {
+                    //            similarTracks.Add(track);
+                    //        }
+                    //    }
+                    //}
+
+
+                    // 7. Create a new playlist called "Explore Weekly" for each user and add the similar tracks to this playlist
                     var exploreWeeklyPlaylist = new Playlist
                     {
                         Name = "Explore Weekly",
                         UserId = user.Id,
-                        //Tracks = similarTracks.ToList(),
                         IsPublic = false,
                         IsExploreWeekly = true
                     };
@@ -128,7 +195,7 @@ namespace Services.Implementations.BackgroundServices
                     }
 
                     await playlistRepository.Add(exploreWeeklyPlaylist);
-                    await playlistTrackRepository.AddTracksToPlaylist(exploreWeeklyPlaylist.Id, similarTracks);
+                    //await playlistTrackRepository.AddTracksToPlaylist(exploreWeeklyPlaylist.Id, similarTracks);
                     Console.WriteLine($"Explore Weekly playlist created for user {user.Id}.");
                 }
             }

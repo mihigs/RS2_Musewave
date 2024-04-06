@@ -67,12 +67,12 @@ class MusicStreamer extends ChangeNotifier {
           await setCurrentTrackState(_trackHistory.last);
         }
 
-        // Update the streaming context type based on the current track
-        if(currentTrack!.jamendoId != null){
-          currentStreamingContext!.type = StreamingContextType.JAMENDO;
-        }else{
-          currentStreamingContext!.type = StreamingContextType.RADIO;
-        }
+        // // Update the streaming context type based on the current track
+        // if(currentTrack!.jamendoId != null){
+        //   currentStreamingContext!.type = StreamingContextType.JAMENDO;
+        // }else{
+        //   currentStreamingContext!.type = StreamingContextType.RADIO;
+        // }
         previousIndex = currentIndex;
         notifyListeners();
       }

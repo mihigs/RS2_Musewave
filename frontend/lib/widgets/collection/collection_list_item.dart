@@ -86,6 +86,7 @@ class _CollectionListItemState extends State<CollectionListItem> {
                 : Icons.play_arrow),
             onPressed: () async {
               if(musicStreamer != null){
+                widget.streamingContext.track.isLiked = isLiked;
                 if (isPlaying) {
                   if (currentPlayingTrackId != widget.track.id) {
                     await musicStreamer!.stop();
@@ -119,7 +120,7 @@ class _CollectionListItemState extends State<CollectionListItem> {
                         isLiked = !isLiked;
                       }),
                       if(widget.track.id == model.currentTrack?.id){
-                        model.toggleIsLiked()
+                        model.toggleIsLiked(),
                       }else if(widget.track.id == model.nextTrack?.id){
                         model.nextTrack!.isLiked = !model.nextTrack!.isLiked!
                       },

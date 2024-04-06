@@ -36,10 +36,10 @@ namespace DataContext
                 .WithMany(b => b.TrackGenres)
                 .HasForeignKey(tg => tg.TrackId);
 
-            modelBuilder.Entity<TrackGenre>()
-                .HasOne(tg => tg.Genre)
-                .WithMany(g => g.TrackGenres)
-                .HasForeignKey(tg => tg.GenreId);
+            //modelBuilder.Entity<TrackGenre>()
+            //    .HasOne(tg => tg.Genre)
+            //    .WithMany(g => g.TrackGenres)
+            //    .HasForeignKey(tg => tg.GenreId);
 
             modelBuilder.Entity<Artist>()
                 .HasOne(a => a.User)

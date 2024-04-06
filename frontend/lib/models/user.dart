@@ -56,29 +56,4 @@ class User {
   // The method is named after the source class, in this case, User.
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
-  // static fromJson(item) {
-  //   User result = User(
-  //     id: item['id'],
-  //     userName: item['userName'],
-  //     normalizedUserName: item['normalizedUserName'],
-  //     email: item['email'],
-  //     normalizedEmail: item['normalizedEmail'],
-  //     emailConfirmed: item['emailConfirmed'],
-  //     passwordHash: item['passwordHash'],
-  //     securityStamp: item['securityStamp'],
-  //     concurrencyStamp: item['concurrencyStamp'],
-  //     phoneNumber: item['phoneNumber'],
-  //     phoneNumberConfirmed: item['phoneNumberConfirmed'],
-  //     twoFactorEnabled: item['twoFactorEnabled'],
-  //     lockoutEnd: item['lockoutEnd'],
-  //     lockoutEnabled: item['lockoutEnabled'],
-  //     accessFailedCount: item['accessFailedCount'],
-  //     playlists: List<Playlist>.from(item['playlists'].map((playlist) => Playlist.fromJson(playlist))),
-  //     likes: List<Like>.from(item['likes'].map((like) => Like.fromJson(like))),
-  //     artist: item['artist'] != null ? Artist.fromJson(item['artist']) : null,
-  //     artistId: item['artistId'],
-  //   );
-
-  //   return result;
-  // }
 }

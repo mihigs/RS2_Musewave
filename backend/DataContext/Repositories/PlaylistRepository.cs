@@ -72,12 +72,15 @@ namespace DataContext.Repositories
             var playlistTracks = await _dbContext.Set<PlaylistTrack>()
                 .Where(pt => pt.PlaylistId == exploreWeeklyPlaylist.Id)
                 .Include(pt => pt.Track)
-                .ThenInclude(t => t.Artist)
-                .ThenInclude(a => a.User)
+                    .ThenInclude(t => t.TrackGenres)
+                    .ThenInclude(tg => tg.Genre)
+                .Include(pt => pt.Track)
+                    .ThenInclude(t => t.Artist)
+                        .ThenInclude(a => a.User)
                 .ToListAsync();
 
             // Add the tracks to the playlist
-            exploreWeeklyPlaylist.Tracks = playlistTracks.ToList();
+            //exploreWeeklyPlaylist.Tracks = playlistTracks.ToList();
             return exploreWeeklyPlaylist;
         }
     }
