@@ -11,7 +11,7 @@ class Playlist extends BaseEntity {
   String userId;
   User? user;
   bool isPublic;
-  List<Track>? tracks;
+  List<Track> tracks = [];
 
   Playlist({
     required super.id,
@@ -34,22 +34,18 @@ class Playlist extends BaseEntity {
   //     name: playlist['name'],
   //     userId: playlist['userId'],
   //     user: playlist['user'] != null ? User.fromJson(playlist['user']) : null,
-  //     tracks: List<Track>.from(playlist['tracks'].map((track) => Track.fromJson(track))),
+  //     playlistTracks: List<Track>.from(playlist['playlistTracks'].map((track) => Track.fromJson(track))),
   //   );
   // }
 }
 
 class PlaylistTrack {
-  int id;
   int playlistId;
-  Playlist playlist;
   int trackId;
   Track track;
 
   PlaylistTrack({
-    required this.id,
     required this.playlistId,
-    required this.playlist,
     required this.trackId,
     required this.track,
   });

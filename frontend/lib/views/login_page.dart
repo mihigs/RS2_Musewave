@@ -44,7 +44,6 @@ class _LoginPageState extends State<LoginPage> {
           await widget.authService.login(email, password);
       if (loginResponse.token != null) {
         // Authentication successful, navigate to home page
-        setState(() => _isLoading = false);
         GoRouter.of(context).push(Routes.home);
       } else if (loginResponse.error != null) {
         // Show error message
@@ -67,6 +66,12 @@ class _LoginPageState extends State<LoginPage> {
       // Handle other exceptions (network error, etc.)
       if (kDebugMode) {
         print('Login failed: $e');
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Login failed. Please try again."),
+          duration: const Duration(seconds: 3),
+          ),
+        );
       }
     }
   }

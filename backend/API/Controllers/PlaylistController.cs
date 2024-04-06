@@ -34,7 +34,7 @@ namespace API.Controllers
                     return apiResponse;
                 }
                 string userId = userIdClaim.Value;
-                apiResponse.Data = await _playlistService.GetPlaylistDetailsAsync(playlistId, userId);
+                apiResponse.Data = new PlaylistResponseDto(await _playlistService.GetPlaylistDetailsAsync(playlistId, userId));
                 apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
             }
             catch (Exception ex)
@@ -105,7 +105,7 @@ namespace API.Controllers
                     return apiResponse;
                 }
                 string userId = userIdClaim.Value;
-                apiResponse.Data = await _playlistService.GetExploreWeeklyPlaylistAsync(userId);
+                apiResponse.Data = new PlaylistResponseDto(await _playlistService.GetExploreWeeklyPlaylistAsync(userId));
                 apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
             }
             catch (Exception ex)

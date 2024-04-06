@@ -55,6 +55,17 @@ class PlaylistService extends ApiService {
         rethrow;
       }
     }
+
+    Future<Playlist> GetExploreWeeklyPlaylist() async {
+      try {
+        final response = await httpGet('Playlist/GetExploreWeeklyPlaylist');
+
+        return _mapToPlaylist(response['data']);
+
+      } on Exception {
+        rethrow;
+      }
+    }
   }
   
   

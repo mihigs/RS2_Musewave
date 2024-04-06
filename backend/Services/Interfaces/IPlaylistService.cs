@@ -1,4 +1,5 @@
-﻿using Playlist = Models.Entities.Playlist;
+﻿using Models.DTOs;
+using Playlist = Models.Entities.Playlist;
 
 namespace Services.Interfaces
 {

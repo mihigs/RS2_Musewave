@@ -14,8 +14,7 @@ class Track extends BaseEntity {
   int? albumId;
   Album? album;
   List<Like>? likes;
-  int? genreId;
-  Genre? genre;
+  List<Genre>? genres;
   int? artistId;
   Artist? artist;
   String? filePath;
@@ -33,8 +32,7 @@ class Track extends BaseEntity {
     this.albumId,
     this.album,
     this.likes,
-    this.genreId,
-    this.genre,
+    this.genres,
     required this.artist,
     required this.artistId,
     this.filePath,
@@ -55,15 +53,14 @@ class Track extends BaseEntity {
   Map<String, dynamic> toJson() => _$TrackToJson(this);
 }
 
+@JsonSerializable()
 class TrackGenre {
-  int id;
   int trackId;
   Track track;
   int genreId;
   Genre genre;
 
   TrackGenre({
-    required this.id,
     required this.trackId,
     required this.track,
     required this.genreId,

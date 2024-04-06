@@ -19,10 +19,9 @@ Track _$TrackFromJson(Map<String, dynamic> json) => Track(
       likes: (json['likes'] as List<dynamic>?)
           ?.map((e) => Like.fromJson(e as Map<String, dynamic>))
           .toList(),
-      genreId: json['genreId'] as int?,
-      genre: json['genre'] == null
-          ? null
-          : Genre.fromJson(json['genre'] as Map<String, dynamic>),
+      genres: (json['genres'] as List<dynamic>?)
+          ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
+          .toList(),
       artist: json['artist'] == null
           ? null
           : Artist.fromJson(json['artist'] as Map<String, dynamic>),
@@ -43,8 +42,7 @@ Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
       'albumId': instance.albumId,
       'album': instance.album,
       'likes': instance.likes,
-      'genreId': instance.genreId,
-      'genre': instance.genre,
+      'genres': instance.genres,
       'artistId': instance.artistId,
       'artist': instance.artist,
       'filePath': instance.filePath,
@@ -52,4 +50,19 @@ Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
       'isLiked': instance.isLiked,
       'imageUrl': instance.imageUrl,
       'jamendoId': instance.jamendoId,
+    };
+
+TrackGenre _$TrackGenreFromJson(Map<String, dynamic> json) => TrackGenre(
+      trackId: json['trackId'] as int,
+      track: Track.fromJson(json['track'] as Map<String, dynamic>),
+      genreId: json['genreId'] as int,
+      genre: Genre.fromJson(json['genre'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$TrackGenreToJson(TrackGenre instance) =>
+    <String, dynamic>{
+      'trackId': instance.trackId,
+      'track': instance.track,
+      'genreId': instance.genreId,
+      'genre': instance.genre,
     };

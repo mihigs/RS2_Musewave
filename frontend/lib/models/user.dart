@@ -22,7 +22,7 @@ class User {
   DateTime? lockoutEnd;
   bool lockoutEnabled;
   int accessFailedCount;
-  List<Playlist>? playlists;
+  // List<Playlist>? playlists;
   List<Like>? likes;
   Artist? artist;
   int? artistId;
@@ -43,7 +43,7 @@ class User {
     this.lockoutEnd,
     required this.lockoutEnabled,
     required this.accessFailedCount,
-    required this.playlists,
+    // required this.playlists,
     required this.likes,
     this.artist,
     this.artistId,

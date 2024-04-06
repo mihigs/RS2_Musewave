@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/playlist.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/router.dart';
+import 'package:frontend/services/playlist_service.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:frontend/widgets/for_you_results.dart';
 import 'package:frontend/widgets/navigation_menu.dart';
@@ -12,6 +14,7 @@ class HomePage extends StatefulWidget {
   HomePage({super.key, required this.changePage});
 
   final TracksService tracksService = GetIt.I<TracksService>();
+  final PlaylistService playlistService = GetIt.I<PlaylistService>();
 
   final void Function(int index) changePage;
 
@@ -20,12 +23,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<List<Track>> likedTracksFuture;
+  late Future<Playlist> exploreWeeklyPlaylist;
 
   @override
   void initState() {
     super.initState();
-    likedTracksFuture = widget.tracksService.getLikedTracks();
+    exploreWeeklyPlaylist = widget.playlistService.GetExploreWeeklyPlaylist();
   }
 
   Widget build(BuildContext context) {
@@ -46,7 +49,9 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
-          Expanded(child: ForYouResults(likedTracksFuture: likedTracksFuture)),
+          Expanded(child: ForYouResults(
+            exploreWeeklyPlaylist: exploreWeeklyPlaylist,  
+          )),
         ],
       );
   }

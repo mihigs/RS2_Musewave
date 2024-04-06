@@ -22,6 +22,7 @@ namespace Services.Implementations.BackgroundServices
             {
                 while (!stoppingToken.IsCancellationRequested)
                 {
+                    _serviceProvider.GetRequiredService<ServiceRunControl>().NotifyJamendoServiceDone(); // Skip run
                     await Task.Delay(TimeSpan.FromDays(1), stoppingToken); // Initial delay
 
                     Console.WriteLine("Getting Jamendo Tracks");

@@ -32,7 +32,6 @@ namespace DataContext.Seeder
                     TwoFactorEnabled = false,
                     LockoutEnabled = true,
                     AccessFailedCount = 0,
-                    Playlists = null,
                     Likes = null
                 };
                 List<User> casualUsers = new List<User>
@@ -48,7 +47,6 @@ namespace DataContext.Seeder
                         TwoFactorEnabled = false,
                         LockoutEnabled = true,
                         AccessFailedCount = 0,
-                        Playlists = null,
                         Likes = null
                     }
                 };
@@ -65,7 +63,6 @@ namespace DataContext.Seeder
                         TwoFactorEnabled = false,
                         LockoutEnabled = true,
                         AccessFailedCount = 0,
-                        Playlists = null,
                         Likes = null
                     }
                 };

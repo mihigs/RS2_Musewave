@@ -61,10 +61,13 @@ namespace DataContext
                 .HasForeignKey(l => l.TrackId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Playlists)
-                .WithOne(p => p.User)
-                .OnDelete(DeleteBehavior.NoAction);
+            //modelBuilder.Entity<User>()
+            //    .HasMany(u => u.Playlists)
+            //    .WithOne(p => p.User)
+            //    .OnDelete(DeleteBehavior.NoAction);
+
+            //modelBuilder.Entity<Playlist>()
+            //    .HasOne(p => p.User);
 
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Likes)

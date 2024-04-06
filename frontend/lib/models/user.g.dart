@@ -24,9 +24,6 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
           : DateTime.parse(json['lockoutEnd'] as String),
       lockoutEnabled: json['lockoutEnabled'] as bool,
       accessFailedCount: json['accessFailedCount'] as int,
-      playlists: (json['playlists'] as List<dynamic>?)
-          ?.map((e) => Playlist.fromJson(e as Map<String, dynamic>))
-          .toList(),
       likes: (json['likes'] as List<dynamic>?)
           ?.map((e) => Like.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -52,7 +49,6 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'lockoutEnd': instance.lockoutEnd?.toIso8601String(),
       'lockoutEnabled': instance.lockoutEnabled,
       'accessFailedCount': instance.accessFailedCount,
-      'playlists': instance.playlists,
       'likes': instance.likes,
       'artist': instance.artist,
       'artistId': instance.artistId,

@@ -24,13 +24,20 @@ namespace Services.Implementations
         public async Task<Playlist> GetPlaylistDetailsAsync(int id, string userId)
         {
             var playlistDetails = await _playlistRepository.GetPlaylistDetails(id);
+            if (playlistDetails == null)
+            {
+                return null;
+            }
             // add the SignedUrl to each track in the playlist
             foreach (var playlistTrack in playlistDetails.Tracks)
             {
-                playlistTrack.Track.SignedUrl = _tracksService.GenerateSignedTrackUrl(playlistTrack.Track.FilePath, playlistTrack.Track.ArtistId.ToString());
+                if (playlistTrack.Track.JamendoId == null)
+                {
+                    playlistTrack.Track.SignedUrl = _tracksService.GenerateSignedTrackUrl(playlistTrack.Track.FilePath, playlistTrack.Track.ArtistId.ToString());
+                }
                 playlistTrack.Track.IsLiked = await _tracksService.CheckIfTrackIsLikedByUser(playlistTrack.Track.Id, userId) != null;
             }
-            return await _playlistRepository.GetPlaylistDetails(id);
+            return playlistDetails;
         }
 
         public async Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(string userId)

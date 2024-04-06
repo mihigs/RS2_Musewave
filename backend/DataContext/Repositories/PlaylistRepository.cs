@@ -36,10 +36,10 @@ namespace DataContext.Repositories
         {
             var playlist = await _dbContext.Set<Playlist>()
                 .Where(p => p.Id == playlistId)
-                .Include(p => p.User) 
-                .Include(p => p.Tracks) 
-                    .ThenInclude(pt => pt.Track) 
-                        .ThenInclude(t => t.Artist) 
+                    .Include(p => p.User)
+                .Include(p => p.Tracks)
+                    .ThenInclude(pt => pt.Track)
+                        .ThenInclude(t => t.Artist)
                             .ThenInclude(a => a.User)
                 .FirstOrDefaultAsync();
 
