@@ -51,6 +51,8 @@ namespace DataContext.Repositories
         {
             return await _dbContext.Set<Playlist>()
                 .Where(p => p.UserId == userId)
+                .Where(p => !p.IsExploreWeekly)
+                .Include(p => p.Tracks)
                 .ToListAsync();
         }
 
@@ -82,6 +84,53 @@ namespace DataContext.Repositories
             // Add the tracks to the playlist
             //exploreWeeklyPlaylist.Tracks = playlistTracks.ToList();
             return exploreWeeklyPlaylist;
+        }
+
+        public async Task<int> GetExploreWeeklyPlaylistId(string userId)
+        {
+            return await _dbContext.Set<Playlist>()
+                .Where(p => p.UserId == userId)
+                .Where(p => p.IsExploreWeekly)
+                .OrderByDescending(p => p.CreatedAt)
+                .Select(p => p.Id)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task AddToPlaylistAsync(int playlistId, int trackId, string userId)
+        {
+            // check if the PlaylistTrack already exists
+            var existingPlaylistTrack = await _dbContext.Set<PlaylistTrack>()
+                .Where(pt => pt.PlaylistId == playlistId)
+                .Where(pt => pt.TrackId == trackId)
+                .FirstOrDefaultAsync();
+            if (existingPlaylistTrack == null)
+            {
+                var playlistTrack = new PlaylistTrack
+                {
+                    PlaylistId = playlistId,
+                    TrackId = trackId
+                };
+
+                await _dbContext.Set<PlaylistTrack>().AddAsync(playlistTrack);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
+
+        public Task RemoveTrackFromPlaylistAsync(int playlistId, int trackId)
+
+        {
+            var playlistTrack = _dbContext.Set<PlaylistTrack>()
+                .Where(pt => pt.PlaylistId == playlistId)
+                .Where(pt => pt.TrackId == trackId)
+                .FirstOrDefault();
+
+            if (playlistTrack != null)
+            {
+                _dbContext.Set<PlaylistTrack>().Remove(playlistTrack);
+                return _dbContext.SaveChangesAsync();
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

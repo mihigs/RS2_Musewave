@@ -114,5 +114,32 @@ namespace API.Controllers
             }
             return apiResponse;
         }
+
+        // GetHomepageDetails
+        [HttpGet("getHomepageDetails")]
+        public async Task<ApiResponse> GetHomepageDetails()
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                apiResponse.Data = await _usersService.GetHomepageDetails(userId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
     }
 }

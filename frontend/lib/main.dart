@@ -8,6 +8,7 @@ import 'package:frontend/services/album_service.dart';
 import 'package:frontend/services/artist_service.dart';
 import 'package:frontend/services/authentication_service.dart';
 import 'package:frontend/services/base/api_service.dart';
+import 'package:frontend/services/dashboard_service.dart';
 import 'package:frontend/services/playlist_service.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:frontend/widgets/shared/signalr_listener.dart';
@@ -47,6 +48,7 @@ void main() async {
   getIt.registerSingleton(AlbumService(secureStorage));
   getIt.registerSingleton(ArtistService(secureStorage));
   getIt.registerSingleton(PlaylistService(secureStorage));
+  getIt.registerSingleton(DashboardService(secureStorage));
   final authService = getIt.registerSingleton(AuthenticationService(secureStorage: secureStorage));
 
   // Get the token from secure storage

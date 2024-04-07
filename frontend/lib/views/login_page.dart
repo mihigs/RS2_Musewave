@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/models/constants/images.dart';
 import 'package:frontend/router.dart';
 import 'package:frontend/services/authentication_service.dart';
 import 'package:get_it/get_it.dart';
@@ -89,12 +90,18 @@ class _LoginPageState extends State<LoginPage> {
         Center(
           child: SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.fromLTRB(30, 50, 30, 50),
+              padding: EdgeInsets.fromLTRB(30, 0, 30, 70),
               child: Form(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
+                    Container(
+                      child: Image.asset(
+                        Images.musewaveLogo,
+                        fit: BoxFit.cover,
+                        width: 200,
+                      )),
                     TextFormField(
                       controller: _emailController,
                       decoration: InputDecoration(labelText: 'Email'),

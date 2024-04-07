@@ -10,5 +10,6 @@ namespace Services.Interfaces
         Task<UserLoginResponse> Login(UserLogin model);
         Task<string> AddUser(UserLogin model);
         Task<User> GetUserDetails(string userId);
+        Task<HomepageDetailsDto> GetHomepageDetails(string userId);
     }
 }

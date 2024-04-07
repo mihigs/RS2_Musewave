@@ -157,7 +157,7 @@ class TracksService extends ApiService {
       //streamingContext.trackHistoryIds is a List<String>
       var data = {
         'CurrentTrackId': streamingContext.track.id.toString(),
-        'ContextId': streamingContext.contextId.toString(),
+        'ContextId': streamingContext.contextId?.toString(),
         'StreamingContextType': getStringFromStreamingContextType(streamingContext.type),
         'TrackHistoryIds': streamingContext.trackHistoryIds,
       };

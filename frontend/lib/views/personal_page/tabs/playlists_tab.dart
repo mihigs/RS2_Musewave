@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/DTOs/UserPlaylistsDto.dart';
 import 'package:frontend/models/playlist.dart';
 import 'package:frontend/services/playlist_service.dart'; // Ensure this service is correctly imported
 import 'package:frontend/widgets/result_item_card.dart';
@@ -14,7 +15,7 @@ class PlaylistsTab extends StatefulWidget {
 
 class _PlaylistsTabState extends State<PlaylistsTab> {
   final PlaylistService _playlistService = GetIt.I<PlaylistService>();
-  Future<List<Playlist>>? _playlistsFuture;
+  Future<List<UserPlaylistsDto>>? _playlistsFuture;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -50,7 +51,7 @@ Widget build(BuildContext context) {
           ),
         ),
       ),
-      body: FutureBuilder<List<Playlist>>(
+      body: FutureBuilder<List<UserPlaylistsDto>>(
         future: _playlistsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -58,7 +59,7 @@ Widget build(BuildContext context) {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData) {
-            List<Playlist> playlists = snapshot.data!;
+            List<UserPlaylistsDto> playlists = snapshot.data!;
             // Filter playlists based on the search term
             playlists = playlists.where((playlist) =>
                 playlist.name.toLowerCase().contains(_searchController.text.toLowerCase())).toList();

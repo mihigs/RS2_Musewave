@@ -1,4 +1,5 @@
 ﻿using DataContext.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Models.Entities;
 
 namespace DataContext.Repositories
@@ -14,7 +15,12 @@ namespace DataContext.Repositories
 
         public async Task<IEnumerable<Like>> GetByUserAsync(string userId)
         {
-            return _dbContext.Set<Like>().Where(l => l.UserId == userId).ToList();
+            return _dbContext.Set<Like>()
+                .Where(l => l.UserId == userId)
+                .Include(l => l.Track)
+                .ThenInclude(t => t.Artist)
+                .ThenInclude(a => a.User)
+                .ToList();
         }
         public async Task<Like?> CheckIfTrackIsLikedByUser(int trackId, string userId)
         {

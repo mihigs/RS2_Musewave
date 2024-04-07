@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using Services.Responses;
 using Services.Interfaces;
+using DataContext.Repositories.Interfaces;
 
 namespace Services.Implementations
 {
@@ -18,16 +19,22 @@ namespace Services.Implementations
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
         private readonly ILogger<UsersService> _logger;
+        private readonly IPlaylistRepository _playlistRepository;
+        private readonly IJamendoService _jamendoService;
 
         public UsersService(
             UserManager<User> userManager,
             IConfiguration configuration,
-            ILogger<UsersService> logger
+            ILogger<UsersService> logger,
+            IPlaylistRepository playlistRepository,
+            IJamendoService jamendoService
             )
         {
             _userManager = userManager;
             _configuration = configuration;
             _logger = logger;
+            _playlistRepository = playlistRepository;
+            _jamendoService = jamendoService;
         }
 
         public List<User> GetAllUsers()
@@ -164,6 +171,36 @@ namespace Services.Implementations
         private DateTime GetExpirationTime()
         {
             return DateTime.Now.AddSeconds(Convert.ToDouble(_configuration["Jwt:AccessExpirationSeconds"]));
+        }
+
+        public async Task<HomepageDetailsDto> GetHomepageDetails(string userId)
+        {
+            try
+            {
+                // Get user details
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user is null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                // Get ExploreWeeklyPlaylistId
+                var exploreWeeklyPlaylistId = await _playlistRepository.GetExploreWeeklyPlaylistId(userId);
+
+                // Get PopularJamendoTracks
+                var popularJamendoTracks = await _jamendoService.GetPopularJamendoTracks();
+
+                return new HomepageDetailsDto
+                {
+                    ExploreWeeklyPlaylistId = exploreWeeklyPlaylistId,
+                    PopularJamendoTracks = popularJamendoTracks.ToList(),
+                };
+            }
+            catch (Exception ex)
+            {
+                // Log error
+                throw new Exception("Error getting homepage details", ex);
+            }
         }
     }
 }

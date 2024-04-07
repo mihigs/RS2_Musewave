@@ -28,6 +28,8 @@ StreamingContextType getStreamingContextTypeFromString(String typeString) {
     return StreamingContextType.PLAYLIST;
   } else if (typeString.toUpperCase() == 'JAMENDO' || typeString == "3") {
     return StreamingContextType.JAMENDO;
+  } else if (typeString.toUpperCase() == 'LIKED' || typeString == "4") {
+    return StreamingContextType.LIKED;
   } else {
     throw Exception('Unknown streaming context type: $typeString');
   }
@@ -43,6 +45,8 @@ String getStringFromStreamingContextType(StreamingContextType type) {
       return "PLAYLIST";
     case StreamingContextType.JAMENDO:
       return "JAMENDO";
+    case StreamingContextType.LIKED:
+      return "LIKED";
     default:
       throw Exception('Unknown streaming context type');
   }

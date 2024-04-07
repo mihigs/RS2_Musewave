@@ -137,7 +137,7 @@ namespace Services.Implementations
                 // If all tracks have been played, start over
                 nextTrack = await _trackRepository.GetRandomTrack(excluding: trackHistoryIds) ?? await _trackRepository.GetRandomTrack(excluding: []);
             }
-
+            nextTrack = await _trackRepository.GetById(nextTrack.Id);
             return nextTrack;
         }
 
@@ -214,6 +214,9 @@ namespace Services.Implementations
                 case StreamingContextType.JAMENDO:
                     nextTrack = await GetNextTrackAsync(getNextTrackDto.CurrentTrackId, userId, getNextTrackDto.TrackHistoryIds);
                     break;
+                case StreamingContextType.LIKED:
+                    nextTrack = await GetNextLikedTrackAsync(getNextTrackDto.CurrentTrackId, userId, getNextTrackDto.TrackHistoryIds);
+                    break;
                 default:
                     throw new ArgumentException("Invalid streaming context type");
             }
@@ -229,7 +232,14 @@ namespace Services.Implementations
                 nextTrack.SignedUrl = GenerateSignedTrackUrl(nextTrack.FilePath, nextTrack.ArtistId.ToString());
             }
             // Check if the track is liked by the user
-            nextTrack.IsLiked = await CheckIfTrackIsLikedByUser(nextTrack.Id, userId) != null;
+            if(getNextTrackDto.StreamingContextType == StreamingContextType.LIKED)
+            {
+                nextTrack.IsLiked = true;
+            }
+            else
+            {
+                nextTrack.IsLiked = await CheckIfTrackIsLikedByUser(nextTrack.Id, userId) != null;
+            }
             return nextTrack;
         }
 
@@ -264,6 +274,31 @@ namespace Services.Implementations
                 return [];
             }
             return await _trackRepository.GetTracksByArtistId(artist.Id);
+        }
+        public async Task<Track> GetNextLikedTrackAsync(int currentTrackId, string userId, List<int> trackHistoryIds)
+        {
+            var currentTrack = await _trackRepository.GetById(currentTrackId);
+            if (currentTrack is null)
+            {
+                throw new Exception("Current track not found");
+            }
+
+            Track nextTrack = null;
+            IEnumerable<Track> likedTracks = await _trackRepository.GetLikedTracksAsync(userId);
+            likedTracks = likedTracks.Where(x => !trackHistoryIds.Contains(x.Id))
+                .Where(x => x.Id != currentTrackId);
+            if (likedTracks.Count() > 0)
+            {
+                nextTrack = likedTracks.OrderBy(x => Guid.NewGuid()).FirstOrDefault(); // Random liked track
+            }
+
+            if (nextTrack is null)
+            {
+                // If there are no liked tracks, get a random track
+                // If all tracks have been played, start over
+                nextTrack = await _trackRepository.GetRandomTrack(excluding: trackHistoryIds) ?? await _trackRepository.GetRandomTrack(excluding: []);
+            }
+            return nextTrack;
         }
     }
 }

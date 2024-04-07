@@ -116,5 +116,144 @@ namespace API.Controllers
             }
             return apiResponse;
         }
+
+        [HttpGet("GetLikedTracksPlaylist")]
+        public async Task<ApiResponse> GetLikedTracksPlaylist()
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                apiResponse.Data = new PlaylistResponseDto(await _playlistService.GetLikedPlaylistAsync(userId));
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
+
+        [HttpPost("AddToPlaylist")]
+        public async Task<ApiResponse> AddToPlaylist(TogglePlaylistTrackDto addToPlaylistDto)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                await _playlistService.AddToPlaylistAsync(addToPlaylistDto, userId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
+
+        [HttpPost("CreatePlaylist")]
+        public async Task<ApiResponse> CreatePlaylist(Playlist playlist)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                playlist.UserId = userId;
+                await _playlistService.CreatePlaylistAsync(playlist);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
+
+        [HttpPost("CreateAndAddToPlaylist")]
+        public async Task<ApiResponse> CreateAndAddToPlaylist(CreateAndAddToPlaylistDto createAndAddToPlaylistDto)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                Playlist playlist = new Playlist
+                {
+                    Name = createAndAddToPlaylistDto.PlaylistName,
+                    UserId = userId,
+                    IsPublic = true,
+                    IsExploreWeekly = false,
+                    Tracks = new List<PlaylistTrack> { new PlaylistTrack { TrackId = createAndAddToPlaylistDto.TrackId } }
+                };
+                await _playlistService.CreatePlaylistAsync(playlist);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
+
+        [HttpPost("RemoveTrackFromPlaylist")]
+        public async Task<ApiResponse> RemoveTrackFromPlaylist(TogglePlaylistTrackDto addToPlaylistDto)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                await _playlistService.RemoveTrackFromPlaylistAsync(addToPlaylistDto.PlaylistId, addToPlaylistDto.TrackId, userId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
     }
 }

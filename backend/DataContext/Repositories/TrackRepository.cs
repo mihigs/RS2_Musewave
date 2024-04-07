@@ -23,9 +23,11 @@ namespace DataContext.Repositories
 
         public async Task<IEnumerable<Track>> GetLikedTracksAsync(string userId)
         {
-            return await _dbContext.Set<Like>()
-                .Where(l => l.UserId == userId)
-                .Select(l => l.Track)
+            return await _dbContext.Set<Track>()
+                .Where(t => t.Likes.Any(l => l.UserId == userId)) // Assuming Track has a collection of Likes
+                .Include(t => t.Artist) // Adjust if your navigation property is named differently
+                    .ThenInclude(a => a.User)
+                .Include(t => t.TrackGenres)
                 .ToListAsync();
         }
 

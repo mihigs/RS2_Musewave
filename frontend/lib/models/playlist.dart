@@ -11,6 +11,7 @@ class Playlist extends BaseEntity {
   String userId;
   User? user;
   bool isPublic;
+  bool isExploreWeekly;
   List<Track> tracks = [];
 
   Playlist({
@@ -21,6 +22,7 @@ class Playlist extends BaseEntity {
     required this.userId,
     this.user,
     required this.isPublic,
+    required this.isExploreWeekly,
     required this.tracks,
   });
 

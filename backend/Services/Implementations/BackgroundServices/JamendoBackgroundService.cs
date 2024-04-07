@@ -51,9 +51,8 @@ namespace Services.Implementations.BackgroundServices
 
                 foreach (var genre in genres)
                 {
-                    // Assuming GetJamendoTracksPerGenres expects an array or a list
-                    var tracks = await jamendoService.GetJamendoTracksPerGenres(new[] { genre.Name });
-                    // Process tracks as needed
+                    // Tracks are automatically processed by the Jamendo service (add or update to db)
+                    await jamendoService.GetJamendoTracksPerGenres(new[] { genre.Name });
                 }
             }
         }

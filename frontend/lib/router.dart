@@ -81,6 +81,14 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         },
       ),
       GoRoute(
+        path: Routes.liked,
+        builder: (context, state) {
+          return PersistentPlayerContainer(
+            child: PlaylistPage(),
+          );
+        },
+      ),
+      GoRoute(
         path: Routes.uploadMedia,
         builder: (_, __) => PersistentPlayerContainer(child: UploadMediaPage()),
       ),
@@ -99,4 +107,5 @@ abstract class Routes {
   static const album = '/album';
   static const artist = '/artist';
   static const playlist = '/playlist';
+  static const liked = '/liked';
 }

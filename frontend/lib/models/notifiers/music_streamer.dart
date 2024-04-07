@@ -80,7 +80,7 @@ class MusicStreamer extends ChangeNotifier {
   }
 
   Future<void> startTrack(StreamingContext streamingContext) async {
-    if (streamingContext.track.signedUrl != null ||
+    if (streamingContext.track.signedUrl != null &&
         streamingContext.track.signedUrl != "") {
       await stop();
       await clearTrackState();

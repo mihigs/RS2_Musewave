@@ -271,6 +271,40 @@ namespace Services.Implementations
             }
         }
 
+        public async Task<IEnumerable<Track>> GetPopularJamendoTracks()
+        {
+            try
+            {
+                using var client = new HttpClient();
+                client.BaseAddress = new Uri(_configuration["Jamendo:BaseUrl"]);
+                var response = client.GetAsync($"?client_id={_configuration["Jamendo:ClientId"]}&format=jsonpretty&limit=5&include=musicinfo&order=popularity_month").Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var serializedResponse = await response.Content.ReadAsStringAsync();
+                    var deserializedResponse = MapJamendoApiResponse(serializedResponse);
+                    var tracks = new List<Track>();
+                    foreach (var track in deserializedResponse.Results)
+                    {
+                        if (track != null)
+                        {
+                            tracks.Add(await MapJamendoResponseToTrack(track));
+                        }
+                    }
+
+                    return tracks;
+                }
+                else
+                {
+                    throw new Exception("Failed to query Jamendo");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception("Failed to get popular Jamendo tracks", e);
+            }
+        }
+
 
     }
 }

@@ -5,6 +5,7 @@
         RADIO,
         ALBUM,
         PLAYLIST,
-        JAMENDO
+        JAMENDO,
+        LIKED,
     }
 }

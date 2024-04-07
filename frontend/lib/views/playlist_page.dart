@@ -3,9 +3,11 @@ import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/widgets/collection/collection_list.dart';
 
 class PlaylistPage extends StatelessWidget {
-  int _playlistId;
+  int? _playlistId;
 
-  PlaylistPage({super.key, required int playlistId}) : _playlistId = playlistId;
+  get isLikedPlaylist => _playlistId == null;
+
+  PlaylistPage({super.key, int? playlistId}) : _playlistId = playlistId;
 
 
   @override
@@ -13,7 +15,7 @@ class PlaylistPage extends StatelessWidget {
     return Container(
       child: CollectionList(
         contextId: _playlistId,
-        streamingContextType: StreamingContextType.PLAYLIST,
+        streamingContextType: isLikedPlaylist ? StreamingContextType.LIKED : StreamingContextType.PLAYLIST,
       ),
     );
   }

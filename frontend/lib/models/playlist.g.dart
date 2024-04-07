@@ -16,6 +16,7 @@ Playlist _$PlaylistFromJson(Map<String, dynamic> json) => Playlist(
           ? null
           : User.fromJson(json['user'] as Map<String, dynamic>),
       isPublic: json['isPublic'] as bool,
+      isExploreWeekly: json['isExploreWeekly'] as bool,
       tracks: (json['tracks'] as List<dynamic>)
           .map((e) => Track.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -29,5 +30,6 @@ Map<String, dynamic> _$PlaylistToJson(Playlist instance) => <String, dynamic>{
       'userId': instance.userId,
       'user': instance.user,
       'isPublic': instance.isPublic,
+      'isExploreWeekly': instance.isExploreWeekly,
       'tracks': instance.tracks,
     };

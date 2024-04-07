@@ -5,6 +5,7 @@ import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/router.dart';
 import 'package:frontend/services/tracks_service.dart';
+import 'package:frontend/widgets/add_to_playlist.dart';
 import 'package:frontend/widgets/seek_bar.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -56,42 +57,18 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
         currentStreamingType = streamingTypeFromURL;
       }
 
-      if (currentStreamingType == StreamingContextType.JAMENDO) {
-        handleJamendoStreaming(trackLoaded);
+      if (!trackLoaded) {
+        initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
       } else {
-        handleOtherStreaming(trackLoaded);
+        updateCurrentTrack();
+        if (currentTrack?.id.toString() == widget.trackId) {
+          updateTrackData();
+        } else {
+          initializeTrackData(
+              widget.trackId, widget.contextId, widget.contextType);
+        }
       }
     });
-  }
-
-  void handleJamendoStreaming(bool trackLoaded) {
-    if (!trackLoaded) {
-      widget.tracksService.getJamendoTrack(widget.trackId).then((jamendoTrack) {
-        if (jamendoTrack != null) {
-          musicStreamer!.startTrack(StreamingContext(jamendoTrack,
-              int.parse(widget.contextId), StreamingContextType.JAMENDO));
-        } else {
-          GoRouter.of(context).go('/');
-        }
-      });
-    } else {
-      updateCurrentTrack();
-      updateTrackData();
-    }
-  }
-
-  void handleOtherStreaming(bool trackLoaded) {
-    if (!trackLoaded) {
-      initializeTrackData(widget.trackId, widget.contextId, widget.contextType);
-    } else {
-      updateCurrentTrack();
-      if (currentTrack?.id.toString() == widget.trackId) {
-        updateTrackData();
-      } else {
-        initializeTrackData(
-            widget.trackId, widget.contextId, widget.contextType);
-      }
-    }
   }
 
   void updateIsPlaying() {
@@ -191,6 +168,18 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
           },
         ),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.playlist_add, size: 32), // Playlist add icon
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  // This will pass the current trackId to the modal
+                  return AddToPlaylistModal(trackId: widget.trackId);
+                },
+              );
+            },
+          ),
           IconButton(
             icon: Icon(isLiked ? Icons.star : Icons.star_border, size: 32),
             onPressed: () async {
