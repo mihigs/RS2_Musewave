@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/helpers/helperFunctions.dart';
+import 'package:frontend/helpers/helper_functions.dart';
 import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/helpers/helperFunctions.dart';
+import 'package:frontend/helpers/helper_functions.dart';
 import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:frontend/models/track.dart';
@@ -234,17 +234,25 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
                         ),
                   SizedBox(height: 30),
                   // Displaying current track title
-                  Text(
-                    model.currentTrackTitle!,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  Container(
+                    width: double.infinity - 10,
+                    height: MediaQuery.of(context).size.height * 0.09,
+                    child: Text(
+                      model.currentTrackTitle!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
                   ),
                   SizedBox(height: 30),
                   // Displaying current track artist name
-                  Text(
-                    currentTrack!.artist!.user!.userName,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20),
+                  Container(
+                    width: double.infinity - 15,
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    child: Text(
+                      currentTrack!.artist!.user!.userName,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20),
+                    ),
                   ),
                   SizedBox(height: 40),
                   Row(

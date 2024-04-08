@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/helpers/helperFunctions.dart';
+import 'package:frontend/helpers/helper_functions.dart';
 import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:frontend/models/track.dart';
@@ -101,8 +101,8 @@ class _CollectionListItemState extends State<CollectionListItem> {
               updateIsPlaying();
             },
           ),
-          title: Text(widget.track.artist!.user!.userName),
-          subtitle: Text(widget.track.title),
+          title: Text(overflow: TextOverflow.clip, widget.track.artist!.user!.userName),
+          subtitle: Text(overflow: TextOverflow.clip, widget.track.title),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

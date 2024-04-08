@@ -4,10 +4,11 @@ import 'package:frontend/widgets/collection/collection_list.dart';
 
 class PlaylistPage extends StatelessWidget {
   int? _playlistId;
+  bool? isExploreWeekly = false;
 
   get isLikedPlaylist => _playlistId == null;
 
-  PlaylistPage({super.key, int? playlistId}) : _playlistId = playlistId;
+  PlaylistPage({super.key, int? playlistId, this.isExploreWeekly = false}) : _playlistId = playlistId;
 
 
   @override
@@ -16,6 +17,7 @@ class PlaylistPage extends StatelessWidget {
       child: CollectionList(
         contextId: _playlistId,
         streamingContextType: isLikedPlaylist ? StreamingContextType.LIKED : StreamingContextType.PLAYLIST,
+        isExploreWeekly: isExploreWeekly!
       ),
     );
   }

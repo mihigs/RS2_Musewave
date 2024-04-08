@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/helpers/helperFunctions.dart';
+import 'package:frontend/helpers/helper_functions.dart';
 import 'package:frontend/models/notifiers/music_streamer.dart';
 import 'package:frontend/router.dart';
 import 'package:go_router/go_router.dart';
@@ -87,19 +87,28 @@ class _PersistentPlayerState extends State<PersistentPlayer> {
                   color: Colors.grey,
                 ),
                 SizedBox(width: 10),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      model.currentTrackTitle ?? 'No track playing',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                    Text(
-                      model.currentTrackArtist ?? '',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                  ],
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        child: Text(
+                          overflow: TextOverflow.clip,
+                          model.currentTrackTitle ?? 'No track playing',
+                          style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Container(
+                        child: Text(
+                          overflow: TextOverflow.clip,
+                          model.currentTrackArtist ?? '',
+                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

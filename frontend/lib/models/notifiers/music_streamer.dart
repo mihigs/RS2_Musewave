@@ -133,6 +133,7 @@ class MusicStreamer extends ChangeNotifier {
     _lastPosition = null;
     _isPlaying = false;
     previousIndex = 0;
+    _trackHistory = [];
     // Remove the next track from just_audio playlist
     if(_playlist != null){
       _playlist!.removeAt(_playlist!.length - 1);

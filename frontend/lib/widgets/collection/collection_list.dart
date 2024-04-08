@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/helpers/helperFunctions.dart';
+import 'package:frontend/helpers/helper_functions.dart';
 import 'package:frontend/models/album.dart';
 import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/models/notifiers/music_streamer.dart';
@@ -15,6 +15,7 @@ import 'package:provider/provider.dart'; // Make sure you have provider package 
 class CollectionList extends StatefulWidget {
   int? contextId;
   StreamingContextType streamingContextType;
+  bool? isExploreWeekly = false;
 
   CollectionList({
     // required this.title,
@@ -22,6 +23,7 @@ class CollectionList extends StatefulWidget {
     // required this.tracks,
     this.contextId,
     required this.streamingContextType,
+    this.isExploreWeekly = false
   });
 
   @override
@@ -42,8 +44,11 @@ class _CollectionListState extends State<CollectionList> {
       if (widget.streamingContextType == StreamingContextType.ALBUM) {
         albumFuture = albumService.GetAlbumDetails(widget.contextId!);
       } else if (widget.streamingContextType == StreamingContextType.PLAYLIST) {
-        playlistFuture =
-            playlistService.GetPlaylistDetailsAsync(widget.contextId!);
+        if(widget.isExploreWeekly!){
+          playlistFuture = playlistService.GetExploreWeeklyPlaylist();
+        }else{
+          playlistFuture = playlistService.GetPlaylistDetailsAsync(widget.contextId!);
+        }
       } 
     }else{
       if (widget.streamingContextType == StreamingContextType.LIKED){

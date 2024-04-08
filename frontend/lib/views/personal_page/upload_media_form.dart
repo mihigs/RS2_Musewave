@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/helpers/permission_handler.dart';
 import 'package:frontend/models/DTOs/TrackUploadDto.dart';
 import 'package:frontend/services/authentication_service.dart';
 import 'package:frontend/services/signalr_service.dart';
@@ -27,6 +29,11 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
       "Select a track and give it a name to get started..."; // To display success or error messages
 
   Future<void> _uploadFile() async {
+    // Ask for permissions
+    if(!kIsWeb){
+      await requestStoragePermission();
+    }
+
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['mp3', 'wav', 'mid', 'midi'],
@@ -99,10 +106,15 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
       userId: userId,
     );
 
-    widget.tracksService.uploadTrack(
+    var result = await widget.tracksService.uploadTrack(
       trackMetaData,
       _selectedFile,
     );
+
+    if(!result){
+      _setUploadMessage(
+        "Track processing has unfortunately failed. Please try uploading again.");
+    }
   }
 
   bool _validate() {
@@ -188,6 +200,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                       child: Text('Select Media'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).primaryColor,
+                        foregroundColor: Colors.white,
                       ),
                       onPressed: _uploadFile,
                     ),

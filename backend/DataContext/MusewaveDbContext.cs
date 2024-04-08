@@ -26,6 +26,7 @@ namespace DataContext
 
             // Apply a global query filter for Track entity, to exclude tracks that have not been uploaded yet
             //modelBuilder.Entity<Track>().HasQueryFilter(t => t.FilePath != null);
+            modelBuilder.Entity<Track>().HasQueryFilter(t => t.SignedUrl != "");
 
             #region Relationship Configuration
             modelBuilder.Entity<TrackGenre>()

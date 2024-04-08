@@ -80,7 +80,7 @@ class _ForYouResultsState extends State<ForYouResults> {
                     children: <Widget>[
                       ResultItemCard(
                         onTap: () => GoRouter.of(context)
-                            .push('/playlist/${exploreWeeklyPlaylistId}'),
+                            .push('/playlist/${exploreWeeklyPlaylistId}/true'),
                         title: Names.EXPLORE_WEEKLY_PLAYLIST,
                       ),
                       ResultItemCard(

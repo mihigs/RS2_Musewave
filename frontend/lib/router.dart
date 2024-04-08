@@ -70,12 +70,14 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         builder: (_, __) => PersistentPlayerContainer(child: ArtistPage()),
       ),
       GoRoute(
-        path: '${Routes.playlist}/:playlistId',
+        path: '${Routes.playlist}/:playlistId/:isExploreWeekly',
         builder: (context, state) {
           final playlistId = state.pathParameters['playlistId'];
+          final isExploreWeekly = state.pathParameters['isExploreWeekly'] == 'true' ? true : false;
           return PersistentPlayerContainer(
             child: PlaylistPage(
               playlistId: int.parse(playlistId!),
+              isExploreWeekly: isExploreWeekly
             ),
           );
         },
