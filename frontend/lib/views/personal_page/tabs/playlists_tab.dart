@@ -90,7 +90,7 @@ Widget build(BuildContext context) {
                 itemBuilder: (context, index) {
                   var playlist = playlists[index];
                   return GestureDetector(
-                    onTap: () => GoRouter.of(context).push('/playlist/${playlist.id}'),
+                    onTap: () => GoRouter.of(context).push('/playlist/${playlist.id}/false'),
                     child: ResultItemCard(
                       title: playlist.name,
                       // Add any other relevant details you'd like to display

@@ -39,7 +39,7 @@ void main() async {
   // Register secure storage
   final secureStorage = getIt.registerSingleton(const FlutterSecureStorage());
 
-  // Initialize and register the SignalRService
+  // Initialize and register the SignalRServices
   final signalRService = getIt.registerSingleton<SignalRService>(SignalRService(signalrHubURL));
 
   // Register services
