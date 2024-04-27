@@ -4,11 +4,11 @@ using Models.Entities;
 
 namespace DataContext.Seeder
 {
-    internal class GenreSeeder : BaseSeeder
+    internal class GenreSeeder
     {
         private readonly IGenreRepository _genreRepository;
 
-        public GenreSeeder(IUnitOfWork unitOfWork, IGenreRepository genreRepository) : base(unitOfWork)
+        public GenreSeeder(IGenreRepository genreRepository) 
         {
             _genreRepository = genreRepository;
         }

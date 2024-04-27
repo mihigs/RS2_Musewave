@@ -11,6 +11,7 @@ using System.Text;
 using Services.Responses;
 using Services.Interfaces;
 using DataContext.Repositories.Interfaces;
+using Models.Enums;
 
 namespace Services.Implementations
 {
@@ -60,11 +61,14 @@ namespace Services.Implementations
                     return new UserLoginResponse { Error = LoginError.UserDoesNotExist };
                 }
 
+                // Get user roles
+                var userRoles = await _userManager.GetRolesAsync(user);
+
                 var result = await _userManager.CheckPasswordAsync(user, model.Password);
                 if (result)
                 {
                     // Return generated token
-                    return new UserLoginResponse { Token = GenerateJwtToken(user) };
+                    return new UserLoginResponse { Token = GenerateJwtToken(user, userRoles.ToList()) };
                 }
                 else
                 {
@@ -90,9 +94,10 @@ namespace Services.Implementations
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password); // Create user with password
+                var userRoles = await _userManager.AddToRoleAsync(user, Roles.User.ToString()); // Assign user role
                 if (result.Succeeded)
                 {
-                    var token = GenerateJwtToken(user); // Generate JWT token
+                    var token = GenerateJwtToken(user, [Roles.User.ToString()]); // Generate JWT token
                     return token;
                 }
                 else if (result.Errors.Any())
@@ -128,11 +133,11 @@ namespace Services.Implementations
             }
         }
 
-        private string GenerateJwtToken(User user)
+        private string GenerateJwtToken(User user, List<string> userRoles)
         {
             try
             {
-                var claims = GetClaims(user);
+                var claims = GetClaims(user, userRoles);
                 var signingCredentials = GetSigningCredentials();
                 var expires = GetExpirationTime();
 
@@ -153,13 +158,16 @@ namespace Services.Implementations
             }
         }
 
-        private IEnumerable<Claim> GetClaims(User user)
+        private IEnumerable<Claim> GetClaims(User user, List<string> userRoles)
         {
-            return new List<Claim>
+            var roleClaims = userRoles.Select(role => new Claim(ClaimTypes.Role, role));
+            var allClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
             };
+            allClaims.AddRange(roleClaims);
+            return allClaims;
         }
 
         private SigningCredentials GetSigningCredentials()

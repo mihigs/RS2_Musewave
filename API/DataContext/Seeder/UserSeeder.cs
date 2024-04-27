@@ -2,17 +2,20 @@
 using DataContext.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Models.Entities;
+using Models.Enums;
 using System.Collections.ObjectModel;
 
 namespace DataContext.Seeder
 {
-    internal class UserSeeder : BaseSeeder
+    internal class UserSeeder
     {
+        private readonly UserManager<User> _userManager;
         private readonly IUserRepository _userRepository;
         private readonly IArtistRepository _artistRepository;
 
-        public UserSeeder(IUnitOfWork unitOfWork, IUserRepository userRepository, IArtistRepository artistRepository): base(unitOfWork)
+        public UserSeeder(UserManager<User> userManager, IUserRepository userRepository, IArtistRepository artistRepository)
         {
+            _userManager = userManager;
             _userRepository = userRepository;
             _artistRepository = artistRepository;
         }
@@ -69,6 +72,17 @@ namespace DataContext.Seeder
 
                 Collection<User> users = [admin, ..casualUsers, ..artistUsers];
                 await _userRepository.AddRange(users);
+
+                // Assign roles to users
+                await _userManager.AddToRoleAsync(admin, Roles.Admin.ToString());
+                foreach (var user in casualUsers)
+                {
+                    await _userManager.AddToRoleAsync(user, Roles.User.ToString());
+                }
+                foreach (var user in artistUsers)
+                {
+                    await _userManager.AddToRoleAsync(user, Roles.Artist.ToString());
+                }
 
                 List<Artist> artists = new List<Artist>();
                 foreach (var artist in artistUsers)

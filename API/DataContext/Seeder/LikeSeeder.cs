@@ -4,13 +4,13 @@ using Models.Entities;
 
 namespace DataContext.Seeder
 {
-    internal class LikeSeeder : BaseSeeder
+    internal class LikeSeeder
     {
         private readonly IUserRepository _userRepository;
         private readonly ITrackRepository _trackRepository;
         private readonly ILikeRepository _likeRepository;
 
-        public LikeSeeder(IUnitOfWork unitOfWork, IUserRepository userRepository, ITrackRepository trackRepository, ILikeRepository likeRepository) : base(unitOfWork)
+        public LikeSeeder(IUserRepository userRepository, ITrackRepository trackRepository, ILikeRepository likeRepository) 
         {
             _userRepository = userRepository;
             _trackRepository = trackRepository;

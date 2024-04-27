@@ -4,18 +4,16 @@ using Models.Entities;
 
 namespace DataContext.Seeder
 {
-    internal class PlaylistSeeder : BaseSeeder
+    internal class PlaylistSeeder
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IGenreRepository _genreRepository;
         private readonly ITrackRepository _trackRepository;
         private readonly IPlaylistRepository _playlistRepository;
         private readonly IUserRepository _userRepository;
         private readonly IPlaylistTrackRepository _playlistTrackRepository;
 
-        public PlaylistSeeder(IUnitOfWork unitOfWork, IGenreRepository genreRepository, ITrackRepository trackRepository, IPlaylistRepository playlistRepository, IUserRepository userRepository, IPlaylistTrackRepository playlistTrackRepository) : base(unitOfWork)
+        public PlaylistSeeder(IGenreRepository genreRepository, ITrackRepository trackRepository, IPlaylistRepository playlistRepository, IUserRepository userRepository, IPlaylistTrackRepository playlistTrackRepository) 
         {
-            _unitOfWork = unitOfWork;
             _genreRepository = genreRepository;
             _trackRepository = trackRepository;
             _playlistRepository = playlistRepository;
@@ -52,7 +50,6 @@ namespace DataContext.Seeder
 
                         // Add the playlist to the database
                         await _playlistRepository.Add(playlist);
-                        await _unitOfWork.SaveChangesAsync();
 
                         // Get the first 5 tracks
                         var playlistTracks = tracks.Take(5).Select(track => new PlaylistTrack

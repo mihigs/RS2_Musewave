@@ -5,12 +5,12 @@ using Models.Entities;
 
 namespace DataContext.Seeder
 {
-    internal class AlbumSeeder : BaseSeeder
+    internal class AlbumSeeder
     {
         private readonly IArtistRepository _artistRepository;
         private readonly IAlbumRepository _albumRepository;
 
-        public AlbumSeeder(IUnitOfWork unitOfWork, IArtistRepository artistRepository, IAlbumRepository albumRepository) : base(unitOfWork)
+        public AlbumSeeder(IArtistRepository artistRepository, IAlbumRepository albumRepository) 
         {
             _artistRepository = artistRepository;
             _albumRepository = albumRepository;

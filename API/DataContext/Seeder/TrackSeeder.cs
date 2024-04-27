@@ -8,7 +8,7 @@ using System.Net.Http.Headers;
 
 namespace DataContext.Seeder
 {
-    internal class TrackSeeder : BaseSeeder
+    internal class TrackSeeder
     {
         private string sourceDir = Path.Combine(Directory.GetCurrentDirectory(), "Seeder", "Tracks");
         private readonly IAlbumRepository _albumRepository;
@@ -18,7 +18,7 @@ namespace DataContext.Seeder
         private readonly IConfiguration _configuration;
         private readonly IUserRepository _userRepository;
 
-        public TrackSeeder(IUnitOfWork unitOfWork, IAlbumRepository albumRepository, IGenreRepository genreRepository, ITrackRepository trackRepository, IArtistRepository artistRepository, IConfiguration configuration, IUserRepository userRepository) : base(unitOfWork)
+        public TrackSeeder(IAlbumRepository albumRepository, IGenreRepository genreRepository, ITrackRepository trackRepository, IArtistRepository artistRepository, IConfiguration configuration, IUserRepository userRepository) 
         {
             _albumRepository = albumRepository;
             _genreRepository = genreRepository;

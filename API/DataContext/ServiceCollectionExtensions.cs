@@ -3,6 +3,7 @@ using DataContext.Repositories;
 using DataContext.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Models.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace DataContext
 {
@@ -10,7 +11,6 @@ namespace DataContext
     {
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAlbumRepository, AlbumRepository>();
             services.AddScoped<IArtistRepository, ArtistRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
@@ -42,6 +42,9 @@ namespace DataContext
                 options.Password.RequireUppercase = true;
                 options.Password.RequireNonAlphanumeric = true;
             })
+            .AddUserManager<UserManager<User>>()
+            .AddRoles<IdentityRole>()
+            .AddRoleManager<RoleManager<IdentityRole>>()
             .AddEntityFrameworkStores<MusewaveDbContext>();
 
             return services;

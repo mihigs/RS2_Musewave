@@ -1,11 +1,14 @@
 ﻿using DataContext.Repositories;
 using DataContext.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Models.Entities;
 
 namespace DataContext.Seeder
 {
     public class MusewaveDbSeeder(MusewaveDbContext musewaveDbContext,
-            IUnitOfWork unitOfWork,
+            RoleManager<IdentityRole> roleManager,
+            UserManager<User> userManager,
             IUserRepository userRepository,
             IArtistRepository artistRepository,
             IPlaylistRepository playlistRepository,
@@ -18,7 +21,8 @@ namespace DataContext.Seeder
             )
     {
         public readonly MusewaveDbContext _musewaveDbContext = musewaveDbContext;
-        public readonly IUnitOfWork _unitOfWork = unitOfWork;
+        public readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        public readonly UserManager<User> _userManager = userManager;
         public readonly IUserRepository _userRepository = userRepository;
         public readonly IArtistRepository _artistRepository = artistRepository;
         public readonly IPlaylistRepository _playlistRepository = playlistRepository;
@@ -33,12 +37,13 @@ namespace DataContext.Seeder
         {
             try
             {
-                await new UserSeeder(_unitOfWork, _userRepository, _artistRepository).Seed();
-                await new AlbumSeeder(_unitOfWork, _artistRepository, _albumRepository).Seed();
-                await new GenreSeeder(_unitOfWork, _genreRepository).Seed();
-                await new TrackSeeder(_unitOfWork, _albumRepository, _genreRepository, _trackRepository, _artistRepository, _configuration, _userRepository).Seed();
-                await new PlaylistSeeder(_unitOfWork, _genreRepository, _trackRepository, _playlistRepository, _userRepository, _playlistTrackRepository).Seed();
-                await new LikeSeeder(_unitOfWork, _userRepository, _trackRepository, _likeRepository).Seed();
+                await new RoleSeeder(_roleManager).Seed();
+                await new UserSeeder(_userManager, _userRepository, _artistRepository).Seed();
+                await new AlbumSeeder(_artistRepository, _albumRepository).Seed();
+                await new GenreSeeder(_genreRepository).Seed();
+                await new TrackSeeder(_albumRepository, _genreRepository, _trackRepository, _artistRepository, _configuration, _userRepository).Seed();
+                await new PlaylistSeeder(_genreRepository, _trackRepository, _playlistRepository, _userRepository, _playlistTrackRepository).Seed();
+                await new LikeSeeder(_userRepository, _trackRepository, _likeRepository).Seed();
 
                 return;
             }

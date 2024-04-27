@@ -83,7 +83,6 @@ public class Program
                     .AddRepositories()
                     .RegisterIdentity();
             services.AddScoped<MusewaveDbSeeder>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
         });
         builder.UseConsoleLifetime();
 
@@ -118,7 +117,6 @@ public class Program
                         .AddRepositories()
                         .RegisterIdentity();
                 services.AddScoped<MusewaveDbSeeder>();
-                services.AddScoped<IUnitOfWork, UnitOfWork>();
             });
     }
 
