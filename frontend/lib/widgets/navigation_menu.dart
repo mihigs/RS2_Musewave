@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/router.dart';
-import 'package:frontend/widgets/shared/signalr_listener.dart';
 import 'package:go_router/go_router.dart';
 
 class NavigationMenu extends StatefulWidget {

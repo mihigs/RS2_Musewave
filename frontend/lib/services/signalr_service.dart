@@ -41,6 +41,7 @@ class SignalRService {
           return;
         }
       }
+
       await hubConnection!.start();
       signalRConnectionChange(true);
       print('SignalR Connection Started');

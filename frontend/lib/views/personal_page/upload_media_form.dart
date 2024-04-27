@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/helpers/permission_handler.dart';
 import 'package:frontend/models/DTOs/TrackUploadDto.dart';
 import 'package:frontend/services/authentication_service.dart';
 import 'package:frontend/services/signalr_service.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:frontend/helpers/permission_handler.dart';
 import 'package:file_picker/file_picker.dart';
 
 class UploadMediaPage extends StatefulWidget {
@@ -36,6 +36,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
 
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
+      withData: true,
       allowedExtensions: ['mp3', 'wav', 'mid', 'midi'],
     );
 
@@ -53,8 +54,6 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
       } else {
         _selectedFile = result.files.first;
         _fileReady = true;
-        // Simulate file upload process
-        await Future.delayed(Duration(seconds: 2)); // Simulate upload delay
         _setUploadMessage("Track uploaded successfully!");
       }
     }
@@ -98,7 +97,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
     }
 
     // connect to the SignalR service, so we can listen for when the track finished uploading
-    widget.signalrService.startConnection();
+    // widget.signalrService.startConnection();
 
     // create a new TrackUploadDto
     var trackMetaData = TrackUploadDto(

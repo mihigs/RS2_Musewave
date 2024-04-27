@@ -11,7 +11,7 @@ class MusicStreamer extends ChangeNotifier {
   final AudioPlayer _player = AudioPlayer();
   ConcatenatingAudioSource? _playlist;
   final String _listenerUrl = const String.fromEnvironment('LISTENER_URL');
-  final double initialVolume = 0.4;
+  final double initialVolume = 0.6;
 
   StreamingContext? currentStreamingContext;
 

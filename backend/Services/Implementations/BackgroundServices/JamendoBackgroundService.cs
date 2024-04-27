@@ -1,4 +1,5 @@
 ﻿using DataContext.Repositories.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Services.Interfaces;
@@ -9,10 +10,12 @@ namespace Services.Implementations.BackgroundServices
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly TimeSpan _runTime;
+        private readonly IConfiguration _configuration;
 
-        public JamendoBackgroundService(IServiceProvider serviceProvider)
+        public JamendoBackgroundService(IServiceProvider serviceProvider, IConfiguration configuration)
         {
             _serviceProvider = serviceProvider;
+            _configuration = configuration;
             _runTime = new TimeSpan(3, 0, 0); // Run daily at 03:00
         }
 
@@ -22,8 +25,12 @@ namespace Services.Implementations.BackgroundServices
             {
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    _serviceProvider.GetRequiredService<ServiceRunControl>().NotifyJamendoServiceDone(); // Skip run
-                    await Task.Delay(TimeSpan.FromDays(1), stoppingToken); // Initial delay
+                    if (_configuration["RunJamendoSeed"] is not "true")
+                    {
+                        Console.WriteLine("Skipped getting Jamendo Tracks because 'RunJamendoSeed' is not 'true'");
+                        _serviceProvider.GetRequiredService<ServiceRunControl>().NotifyJamendoServiceDone();
+                        return;
+                    }
 
                     Console.WriteLine("Getting Jamendo Tracks");
                     await LoadJamendoTracksPerGenres();

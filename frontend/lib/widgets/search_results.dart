@@ -125,7 +125,7 @@ class _SearchResultsState extends State<SearchResults> {
                             .map((track) => GestureDetector(
                               onTap:() => {
                                 model.startTrack(StreamingContext(track, 0, StreamingContextType.JAMENDO)),
-                                GoRouter.of(context).push('/track/${track.jamendoId}/0/3'),
+                                GoRouter.of(context).push('/track/${track.id}/0/3'),
                               },
                               child: ResultItemCard(
                                     title: track.title,
