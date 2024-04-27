@@ -5,10 +5,12 @@ import 'package:admin_app/widgets/navigation_menu.dart';
 
 class ContainerWithNavigation extends StatefulWidget {
   @override
-  _ContainerWithNavigationState createState() => _ContainerWithNavigationState();
+  _ContainerWithNavigationState createState() =>
+      _ContainerWithNavigationState();
 }
 
-class _ContainerWithNavigationState extends State<ContainerWithNavigation>  with AutomaticKeepAliveClientMixin  {
+class _ContainerWithNavigationState extends State<ContainerWithNavigation>
+    with AutomaticKeepAliveClientMixin {
   int _selectedIndex = 0;
   final _pageController = PageController();
 
@@ -16,7 +18,7 @@ class _ContainerWithNavigationState extends State<ContainerWithNavigation>  with
     changePage(index);
   }
 
-   void changePage(int index) {
+  void changePage(int index) {
     _pageController.jumpToPage(index);
   }
 
@@ -26,28 +28,37 @@ class _ContainerWithNavigationState extends State<ContainerWithNavigation>  with
   void initState() {
     super.initState();
     _children ??= [
-        HomePage(changePage: changePage),
-        PersonalPage(),
-        // Add more views here
-      ];
+      HomePage(changePage: changePage),
+      PersonalPage(),
+      PersonalPage(),
+      // Add more views here
+    ];
   }
+
   bool get wantKeepAlive => true;
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        children: _children!,
-        onPageChanged: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        physics: const NeverScrollableScrollPhysics(), // Prevents swiping to switch tabs
-      ),
-      bottomNavigationBar: NavigationMenu(
-        selectedIndex: _selectedIndex,
-        onTabTapped: onTabTapped,
+      body: Row(
+        children: [
+          NavigationMenu(
+            selectedIndex: _selectedIndex,
+            onTabTapped: onTabTapped,
+          ),
+          Expanded(
+            child: PageView(
+              controller: _pageController,
+              children: _children!,
+              onPageChanged: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+              physics:
+                  const NeverScrollableScrollPhysics(), // Prevents swiping to switch tabs
+            ),
+          ),
+        ],
       ),
     );
   }
