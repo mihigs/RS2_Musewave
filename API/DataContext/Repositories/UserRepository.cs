@@ -18,5 +18,10 @@ namespace DataContext.Repositories
             return await _dbContext.Set<User>()
                 .FirstOrDefaultAsync(u => u.Email == musewaveAdminEmail);
         }
+
+        public async Task<int> GetUserCount()
+        {
+            return await _dbContext.Set<User>().CountAsync();
+        }
     }
 }

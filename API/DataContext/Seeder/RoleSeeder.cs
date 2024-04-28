@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Models.Enums;
+using Models.Constants;
 
 namespace DataContext.Seeder
 {
@@ -16,7 +16,7 @@ namespace DataContext.Seeder
         {
             try
             {
-                foreach (var role in Enum.GetValues(typeof(Roles)))
+                foreach (var role in Role.GetAllRoles())
                 {
                     if (!await _roleManager.RoleExistsAsync(role.ToString()))
                     {

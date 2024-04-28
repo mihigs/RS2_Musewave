@@ -26,5 +26,10 @@ namespace DataContext.Repositories
                 .Include(a => a.User)
                 .FirstOrDefault(a => a.UserId == userId);
         }
+
+        public async Task<int> GetArtistCount()
+        {
+            return await _dbContext.Set<Artist>().CountAsync();
+        }
     }
 }

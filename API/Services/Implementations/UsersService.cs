@@ -11,7 +11,7 @@ using System.Text;
 using Services.Responses;
 using Services.Interfaces;
 using DataContext.Repositories.Interfaces;
-using Models.Enums;
+using Models.Constants;
 
 namespace Services.Implementations
 {
@@ -22,13 +22,15 @@ namespace Services.Implementations
         private readonly ILogger<UsersService> _logger;
         private readonly IPlaylistRepository _playlistRepository;
         private readonly IJamendoService _jamendoService;
+        private readonly ILoginActivityRepository _loginActivityRepository;
 
         public UsersService(
             UserManager<User> userManager,
             IConfiguration configuration,
             ILogger<UsersService> logger,
             IPlaylistRepository playlistRepository,
-            IJamendoService jamendoService
+            IJamendoService jamendoService,
+            ILoginActivityRepository loginActivityRepository
             )
         {
             _userManager = userManager;
@@ -36,6 +38,7 @@ namespace Services.Implementations
             _logger = logger;
             _playlistRepository = playlistRepository;
             _jamendoService = jamendoService;
+            _loginActivityRepository = loginActivityRepository;
         }
 
         public List<User> GetAllUsers()
@@ -67,11 +70,15 @@ namespace Services.Implementations
                 var result = await _userManager.CheckPasswordAsync(user, model.Password);
                 if (result)
                 {
+                    // Log successful login
+                    await _loginActivityRepository.AddLoginActivity(userId: user.Id, isSuccessful: true);
                     // Return generated token
                     return new UserLoginResponse { Token = GenerateJwtToken(user, userRoles.ToList()) };
                 }
                 else
                 {
+                    // Log unsuccessful login
+                    await _loginActivityRepository.AddLoginActivity(userId: user.Id, isSuccessful: false);
                     return new UserLoginResponse { Error = LoginError.InvalidLoginCredentials };
                 }
             }
@@ -94,10 +101,10 @@ namespace Services.Implementations
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password); // Create user with password
-                var userRoles = await _userManager.AddToRoleAsync(user, Roles.User.ToString()); // Assign user role
+                var userRoles = await _userManager.AddToRoleAsync(user, Role.USER); // Assign user role
                 if (result.Succeeded)
                 {
-                    var token = GenerateJwtToken(user, [Roles.User.ToString()]); // Generate JWT token
+                    var token = GenerateJwtToken(user, [Role.USER]); // Generate JWT token
                     return token;
                 }
                 else if (result.Errors.Any())

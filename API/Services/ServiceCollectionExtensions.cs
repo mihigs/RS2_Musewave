@@ -18,6 +18,7 @@ namespace Services.Implementations
             services.AddScoped<ITracksService, TracksService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IJamendoService, JamendoService>();
+            services.AddScoped<IAdminService, AdminService>();
 
             return services;
         }

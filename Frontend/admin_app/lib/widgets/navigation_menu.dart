@@ -49,7 +49,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
                 icon: Icon(Icons.dashboard_rounded),
                 color: widget.selectedIndex == 1 ? Colors.white : Colors.grey,
                 // onPressed: () => widget.onTabTapped(1),
-                onPressed: () => null,
+                onPressed: () => widget.onTabTapped(1),
                 hoverColor: Colors.white10,
               )),
           SizedBox(height: 20),

@@ -88,5 +88,19 @@ namespace DataContext.Repositories
                 .ThenInclude(Artist => Artist.User)
                 .FirstOrDefault(t => t.JamendoId.Equals(jamendoId));
         }
+
+        public async Task<int> GetMusewaveTrackCount()
+        {
+            return await _dbContext.Tracks
+                .Where(t => t.JamendoId == null)
+                .CountAsync();
+        }
+
+        public async Task<int> GetJamendoTrackCount()
+        {
+            return await _dbContext.Tracks
+                .Where(t => t.JamendoId != null)
+                .CountAsync();
+        }
     }
 }

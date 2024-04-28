@@ -13,7 +13,8 @@ namespace DataContext
         public override DbSet<User> Users { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<TrackGenre> TrackGenres { get; set; }
-
+        public DbSet<LoginActivity> LoginActivity { get; set; }
+        public DbSet<JamendoAPIActivity> JamendoAPIActivity { get; set; }
         public MusewaveDbContext(DbContextOptions<MusewaveDbContext> options)
             : base(options)
         {

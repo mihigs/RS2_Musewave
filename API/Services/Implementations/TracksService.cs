@@ -19,8 +19,17 @@ namespace Services.Implementations
         private readonly ILikeRepository _likeRepository;
         private readonly IArtistRepository _artistRepository;
         private readonly IJamendoService _jamendoService;
+        private readonly IRedisService _redisService;
 
-        public TracksService(ITrackRepository trackRespository, IAlbumRepository albumRepository, IPlaylistRepository playlistRepository, ILikeRepository likeRepository, IArtistRepository artistRepository, IJamendoService jamendoService)
+        public TracksService(
+            ITrackRepository trackRespository,
+            IAlbumRepository albumRepository,
+            IPlaylistRepository playlistRepository,
+            ILikeRepository likeRepository,
+            IArtistRepository artistRepository,
+            IJamendoService jamendoService,
+            IRedisService redisService
+        )
         {
             _trackRepository = trackRespository ?? throw new ArgumentNullException(nameof(trackRespository));
             _albumRepository = albumRepository;
@@ -28,6 +37,7 @@ namespace Services.Implementations
             _likeRepository = likeRepository;
             _artistRepository = artistRepository;
             _jamendoService = jamendoService;
+            _redisService = redisService;
         }
 
         public async Task<IEnumerable<Track>> GetLikedTracksAsync(string userId)
@@ -199,6 +209,9 @@ namespace Services.Implementations
 
         public async Task<Track> GetNextTrackAsync(GetNextTrackRequestDto getNextTrackDto, string userId)
         {
+            // Add time listened to redis
+            await _redisService.AddTotalTimeListened(userId, getNextTrackDto.TimeListened);
+
             var nextTrack = new Track();
             switch (getNextTrackDto.StreamingContextType)
             {

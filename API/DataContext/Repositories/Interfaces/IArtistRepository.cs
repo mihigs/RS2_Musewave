@@ -6,5 +6,6 @@ namespace DataContext.Repositories.Interfaces
     {
         Task<IEnumerable<Artist>> GetArtistsByNameAsync(string name);
         Task<Artist> GetArtistByUserId(string userId);
+        Task<int> GetArtistCount();
     }
 }

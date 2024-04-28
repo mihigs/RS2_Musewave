@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/models/track.dart';
@@ -11,11 +13,25 @@ class MusicStreamer extends ChangeNotifier {
   final AudioPlayer _player = AudioPlayer();
   ConcatenatingAudioSource? _playlist;
   final String _listenerUrl = const String.fromEnvironment('LISTENER_URL');
-  final double initialVolume = 0.6;
+  bool _isWeb = kIsWeb;
+  double initialVolume = 0.6;
+  Timer? _playTimer;
+
+  bool _isPlaying = false;
+  set isPlaying(bool value) {
+    if (_isPlaying != value) {
+      _isPlaying = value;
+      notifyListeners();
+      if (_isPlaying) {
+        _startTimer();
+      } else {
+        _stopTimer();
+      }
+    }
+  }
 
   StreamingContext? currentStreamingContext;
 
-  bool _isPlaying = false;
   bool _trackLoaded = false;
   Duration? _fullDuration;
   Duration? _lastPosition;
@@ -34,58 +50,24 @@ class MusicStreamer extends ChangeNotifier {
   String? get currentTrackTitle => _currentTrack?.title;
   String? get currentTrackArtist => _currentTrack?.artist?.user?.userName;
   Duration? get fullDuration => _fullDuration;
-  List<int> get trackHistoryIds => _trackHistory.map((track) => track.id).toList();
+  List<int> get trackHistoryIds =>
+      _trackHistory.map((track) => track.id).toList();
 
   MusicStreamer() {
+    if(kIsWeb) {
+      initialVolume = 0.4;
+    }
     _player.setVolume(initialVolume);
-    setupCurrentIndexListener();
-  }
-
-  Future<void> initializePlaylist(String initialTrackUrl) async {
-    String fullUrl = getFullUrl(initialTrackUrl);
-    _playlist = ConcatenatingAudioSource(
-      useLazyPreparation: true,
-      children: [AudioSource.uri(Uri.parse(fullUrl))],
-    );
-    await _player.stop();
-    await _player.setAudioSource(_playlist!,
-        preload: false, initialIndex: 0, initialPosition: Duration.zero);
-  }
-
-  void setupCurrentIndexListener() {
-    _player.currentIndexStream.listen((currentIndex) async {
-      if(_nextTrack != null && currentStreamingContext != null && currentIndex != null){
-        // Play next track
-        if(currentIndex >= previousIndex){
-          await setCurrentTrackState(_nextTrack!);
-          _trackHistory.add(_nextTrack!);
-          await _prepareNextTrack(currentStreamingContext!);
-        // Play previous track
-        }else if(currentIndex < previousIndex){
-          Track nextTrack = _trackHistory.removeLast();
-          await setNextTrackState(nextTrack);
-          await setCurrentTrackState(_trackHistory.last);
-        }
-
-        // // Update the streaming context type based on the current track
-        // if(currentTrack!.jamendoId != null){
-        //   currentStreamingContext!.type = StreamingContextType.JAMENDO;
-        // }else{
-        //   currentStreamingContext!.type = StreamingContextType.RADIO;
-        // }
-        previousIndex = currentIndex;
-        notifyListeners();
-      }
-    });
+    _setupCurrentIndexListener();
   }
 
   Future<void> startTrack(StreamingContext streamingContext) async {
     if (streamingContext.track.signedUrl != null &&
         streamingContext.track.signedUrl != "") {
       await stop();
-      await clearTrackState();
-      await initializePlaylist(streamingContext.track.signedUrl!);
-      await setCurrentTrackState(streamingContext.track);
+      await _clearTrackState();
+      await _initializePlaylist(streamingContext.track.signedUrl!);
+      await _setCurrentTrackState(streamingContext.track);
       currentStreamingContext = streamingContext;
       _trackHistory.add(streamingContext.track);
       play();
@@ -95,60 +77,12 @@ class MusicStreamer extends ChangeNotifier {
     }
   }
 
-  void addToPlaylist(String url) {
-    String fullUrl = getFullUrl(url);
-
-    if (_playlist != null) {
-      _playlist!.add(AudioSource.uri(Uri.parse(fullUrl)));
-    }
-  }
-
-  Future<void> setCurrentTrackState(Track currentTrack) async {
-    _currentTrack = currentTrack;
-    _trackLoaded = true;
-    notifyListeners();
-  }
-
-  Future<void> _prepareNextTrack(StreamingContext streamingContext) async {
-    // Fetch the next track based on the current streaming context
-    streamingContext.trackHistoryIds = trackHistoryIds;
-    if(_nextTrack != null){
-      streamingContext.track = _nextTrack!;
-    }
-    final nextTrack = await _tracksService.getNextTrack(streamingContext);
-    await setNextTrackState(nextTrack);
-    // Add the next track to the playlist
-    addToPlaylist(nextTrack.signedUrl!);
-  }
-
-  Future<void> setNextTrackState(Track nextTrack) async {
-    _nextTrack = nextTrack;
-    notifyListeners();
-  }
-
-  Future<void> clearTrackState() async {
-    _currentTrack = null;
-    _nextTrack = null;
-    _trackLoaded = false;
-    _lastPosition = null;
-    _isPlaying = false;
-    previousIndex = 0;
-    _trackHistory = [];
-    // Remove the next track from just_audio playlist
-    if(_playlist != null){
-      _playlist!.removeAt(_playlist!.length - 1);
-    }
-    notifyListeners();
-  }
-
   Future<void> playNextTrack({bool automatic = false}) async {
     try {
       if (!automatic) {
         await stop();
         await _player.seekToNext(); // Just Audio handles the track navigation
         await play();
-      } else {
-        // await seek(Duration.zero);
       }
     } catch (e) {
       // Handle any errors that might occur during seeking
@@ -161,7 +95,8 @@ class MusicStreamer extends ChangeNotifier {
     try {
       if (_player.hasPrevious) {
         await stop();
-        await _player.seekToPrevious(); // Just Audio handles the track navigation
+        await _player
+            .seekToPrevious(); // Just Audio handles the track navigation
         await play();
       } else {
         await _player.seek(Duration.zero);
@@ -175,9 +110,8 @@ class MusicStreamer extends ChangeNotifier {
 
   Future<void> play() async {
     try {
-      await _player.setVolume(initialVolume); // Ensure volume is back to initial before playing
       _player.play();
-      _isPlaying = true;
+      isPlaying = true;
       notifyListeners();
     } catch (e) {
       // Handle error
@@ -187,7 +121,6 @@ class MusicStreamer extends ChangeNotifier {
 
   Future<void> resume() async {
     try {
-      await _player.setVolume(initialVolume); // Ensure volume is back to initial before playing
       if (_lastPosition != null) {
         await seek(_lastPosition!);
       }
@@ -200,16 +133,7 @@ class MusicStreamer extends ChangeNotifier {
 
   Future<void> pause({bool gradually = true}) async {
     await _player.pause();
-    // if(gradually){ // currently disabled
-    //   // Gradually decrease the volume to almost 0 before pausing
-    //   double currentVolume = initialVolume;
-    //   while (currentVolume > 0.01) { // Stop decreasing when volume is very low but not 0
-    //     currentVolume = (currentVolume - 0.05).clamp(0.0, initialVolume); // Decrease volume and clamp to min 0
-    //     await _player.setVolume(currentVolume);
-    //     await Future.delayed(Duration(milliseconds: 30)); // Wait a bit before next decrease to create a smooth transition
-    //   }
-    // }
-    _isPlaying = false;
+    isPlaying = false;
     _lastPosition = _player.position;
     notifyListeners();
   }
@@ -217,15 +141,15 @@ class MusicStreamer extends ChangeNotifier {
   Future<void> stop() async {
     await _player.stop();
     _lastPosition = null;
-    _isPlaying = false;
+    isPlaying = false;
     notifyListeners();
   }
 
   void toggleIsLiked() {
     if (_currentTrack != null) {
-      if(_currentTrack!.isLiked == null){
+      if (_currentTrack!.isLiked == null) {
         _currentTrack!.isLiked = true;
-      }else{
+      } else {
         _currentTrack!.isLiked = !_currentTrack!.isLiked!;
       }
       notifyListeners();
@@ -261,11 +185,106 @@ class MusicStreamer extends ChangeNotifier {
     return _player.playerStateStream;
   }
 
-  String getFullUrl(String signedUrl) {
-    if (signedUrl.contains("jamendo")){
+  Future<void> _initializePlaylist(String initialTrackUrl) async {
+    String fullUrl = _getFullUrl(initialTrackUrl);
+    _playlist = ConcatenatingAudioSource(
+      useLazyPreparation: true,
+      children: [AudioSource.uri(Uri.parse(fullUrl))],
+    );
+    // await _player.stop();
+    await _player.setAudioSource(_playlist!,
+        preload: false, initialIndex: 0, initialPosition: Duration.zero);
+  }
+
+  void _setupCurrentIndexListener() {
+    _player.currentIndexStream.listen((currentIndex) async {
+      if (_nextTrack != null &&
+          currentStreamingContext != null &&
+          currentIndex != null) {
+        // Play next track
+        if (currentIndex >= previousIndex) {
+          await _setCurrentTrackState(_nextTrack!);
+          _trackHistory.add(_nextTrack!);
+          await _prepareNextTrack(currentStreamingContext!);
+          // Play previous track
+        } else if (currentIndex < previousIndex) {
+          Track nextTrack = _trackHistory.removeLast();
+          await _setNextTrackState(nextTrack);
+          await _setCurrentTrackState(_trackHistory.last);
+        }
+
+        previousIndex = currentIndex;
+        notifyListeners();
+      }
+    });
+  }
+
+  void _addToPlaylist(String url) {
+    String fullUrl = _getFullUrl(url);
+
+    if (_playlist != null) {
+      _playlist!.add(AudioSource.uri(Uri.parse(fullUrl)));
+    }
+  }
+
+  Future<void> _setCurrentTrackState(Track currentTrack) async {
+    _currentTrack = currentTrack;
+    _trackLoaded = true;
+    notifyListeners();
+  }
+
+  Future<void> _prepareNextTrack(StreamingContext streamingContext) async {
+    // Fetch the next track based on the current streaming context
+    streamingContext.trackHistoryIds = trackHistoryIds;
+    if (_nextTrack != null) {
+      streamingContext.track = _nextTrack!;
+    }
+    final nextTrack = await _tracksService.getNextTrack(streamingContext);
+    streamingContext.resetTimeListened();
+    await _setNextTrackState(nextTrack);
+    // Add the next track to the playlist
+    _addToPlaylist(nextTrack.signedUrl!);
+  }
+
+  Future<void> _setNextTrackState(Track nextTrack) async {
+    _nextTrack = nextTrack;
+    notifyListeners();
+  }
+
+  Future<void> _clearTrackState() async {
+    _currentTrack = null;
+    _nextTrack = null;
+    _trackLoaded = false;
+    _lastPosition = null;
+    isPlaying = false;
+    previousIndex = 0;
+    _trackHistory = [];
+    // Remove the next track from just_audio playlist
+    if (_playlist != null) {
+      _playlist!.removeAt(_playlist!.length - 1);
+    }
+    notifyListeners();
+  }
+
+  String _getFullUrl(String signedUrl) {
+    if (signedUrl.contains("jamendo")) {
       return signedUrl;
     }
     return '$_listenerUrl/Tracks/Stream/$signedUrl';
+  }
+
+  void _startTimer() {
+    _playTimer?.cancel(); // Ensure only one timer is running
+    _playTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      if (currentStreamingContext != null) {
+        currentStreamingContext!.addTimeListened(Duration(seconds: 1));
+      }
+    });
+  }
+
+  void _stopTimer() {
+    _playTimer?.cancel();
+    _playTimer = null;
   }
 
   @override

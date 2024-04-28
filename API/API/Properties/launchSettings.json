@@ -26,7 +26,7 @@
         "Redis__Host": "localhost",
         "Redis__Port": "6380",
         "Redis__AbortOnConnectFail": "false",
-        "RunJamendoSeed": "true"
+        "RunJamendoSeed": "false"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7074;http://localhost:5234"

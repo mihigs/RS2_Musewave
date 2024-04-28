@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Models.Entities;
+using Models.Enums;
 using Services.Interfaces;
 using System.Text.Json;
 using static Models.DTOs.JamendoApiDto;
@@ -18,14 +19,16 @@ namespace Services.Implementations
         private readonly IArtistRepository _artistRepository;
         private readonly IGenreRepository _genreRepository;
         private readonly ILikeRepository _likeRepository;
+        private readonly IJamendoApiActivityRepository _jamendoApiActivityRepository;
 
-        public JamendoService(IConfiguration configuration, ITrackRepository trackRepository, IArtistRepository artistRepository, IGenreRepository genreRepository, ILikeRepository likeRepository)
+        public JamendoService(IConfiguration configuration, ITrackRepository trackRepository, IArtistRepository artistRepository, IGenreRepository genreRepository, ILikeRepository likeRepository, IJamendoApiActivityRepository jamendoApiActivityRepository)
         {
             _configuration = configuration;
             _trackRepository = trackRepository;
             _artistRepository = artistRepository;
             _genreRepository = genreRepository;
             _likeRepository = likeRepository;
+            _jamendoApiActivityRepository = jamendoApiActivityRepository;
         }
 
         public async Task<IEnumerable<Track>> SearchJamendoByTrackName(string trackName, string userId)
@@ -37,6 +40,9 @@ namespace Services.Implementations
                 var response = client.GetAsync($"?client_id={_configuration["Jamendo:ClientId"]}&include=musicinfo&format=jsonpretty&name={trackName}").Result;
                 if (response.IsSuccessStatusCode)
                 {
+                    // Log the activity
+                    await _jamendoApiActivityRepository.AddJamendoApiActivity(JamendoAPIActivityType.SearchJamendoByTrackName, userId);
+
                     var serializedResponse = await response.Content.ReadAsStringAsync();
                     var deserializedResponse = MapJamendoApiResponse(serializedResponse);
                     var tracks = new List<Track>();
@@ -214,6 +220,9 @@ namespace Services.Implementations
                     var response = client.GetAsync($"?client_id={_configuration["Jamendo:ClientId"]}&include=musicinfo&format=jsonpretty&id={trackId}").Result;
                     if (response.IsSuccessStatusCode)
                     {
+                        // Log the activity
+                        await _jamendoApiActivityRepository.AddJamendoApiActivity(JamendoAPIActivityType.GetTrackById, userId);
+
                         var serializedResponse = response.Content.ReadAsStringAsync().Result;
                         var result = MapJamendoApiResponse(serializedResponse);
                         track = await MapJamendoResponseToTrack(result.Results.FirstOrDefault(), userId);
@@ -246,6 +255,9 @@ namespace Services.Implementations
                 var response = client.GetAsync($"?client_id={_configuration["Jamendo:ClientId"]}&format=jsonpretty&limit=5&include=musicinfo&tags={tags}").Result;
                 if (response.IsSuccessStatusCode)
                 {
+                    // Log the activity
+                    await _jamendoApiActivityRepository.AddJamendoApiActivity(JamendoAPIActivityType.GetJamendoTracksPerGenres);
+
                     var serializedResponse = await response.Content.ReadAsStringAsync();
                     var deserializedResponse = MapJamendoApiResponse(serializedResponse);
                     var tracks = new List<Track>();
@@ -280,6 +292,9 @@ namespace Services.Implementations
                 var response = client.GetAsync($"?client_id={_configuration["Jamendo:ClientId"]}&format=jsonpretty&limit=5&include=musicinfo&order=popularity_month").Result;
                 if (response.IsSuccessStatusCode)
                 {
+                    // Log the activity
+                    await _jamendoApiActivityRepository.AddJamendoApiActivity(JamendoAPIActivityType.GetPopularJamendoTracks);
+
                     var serializedResponse = await response.Content.ReadAsStringAsync();
                     var deserializedResponse = MapJamendoApiResponse(serializedResponse);
                     var tracks = new List<Track>();

@@ -20,6 +20,8 @@ namespace DataContext
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPlaylistTrackRepository, PlaylistTrackRepository>();
             services.AddScoped<ITrackGenreRepository, TrackGenreRepository>();
+            services.AddScoped<ILoginActivityRepository, LoginActivityRepository>();
+            services.AddScoped<IJamendoApiActivityRepository, JamendoApiActivityRepository>();
 
             return services;
         }
@@ -27,7 +29,7 @@ namespace DataContext
         {
             services.AddDbContext<MusewaveDbContext>(options =>
             {
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(connectionString, b => b.MigrationsAssembly("DataContext"));
             }, ServiceLifetime.Scoped);
 
             return services;

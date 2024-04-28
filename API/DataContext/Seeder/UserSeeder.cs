@@ -1,8 +1,8 @@
 ﻿using DataContext.Repositories;
 using DataContext.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Models.Constants;
 using Models.Entities;
-using Models.Enums;
 using System.Collections.ObjectModel;
 
 namespace DataContext.Seeder
@@ -74,14 +74,14 @@ namespace DataContext.Seeder
                 await _userRepository.AddRange(users);
 
                 // Assign roles to users
-                await _userManager.AddToRoleAsync(admin, Roles.Admin.ToString());
+                await _userManager.AddToRoleAsync(admin, Role.ADMIN);
                 foreach (var user in casualUsers)
                 {
-                    await _userManager.AddToRoleAsync(user, Roles.User.ToString());
+                    await _userManager.AddToRoleAsync(user, Role.USER);
                 }
                 foreach (var user in artistUsers)
                 {
-                    await _userManager.AddToRoleAsync(user, Roles.Artist.ToString());
+                    await _userManager.AddToRoleAsync(user, Role.ARTIST);
                 }
 
                 List<Artist> artists = new List<Artist>();

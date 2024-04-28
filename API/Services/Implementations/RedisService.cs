@@ -43,5 +43,34 @@ namespace Services.Implementations
             return JsonSerializer.Deserialize<Dictionary<string, double>>(serializedMatrix);
         }
 
+        public async Task AddTotalTimeListened(string userId, int timeListened)
+        {
+            var db = _redisConnection.GetDatabase();
+            await db.StringIncrementAsync($"musewave:user:{userId}:totalTimeListened", timeListened);
+        }
+
+        public async Task<int> GetTotalTimeListened(string userId)
+        {
+            var db = _redisConnection.GetDatabase();
+            var totalTimeListened = await db.StringGetAsync($"musewave:user:{userId}:totalTimeListened");
+            return totalTimeListened.HasValue ? (int)totalTimeListened : 0;
+        }
+
+        public async Task<int> GetAllUserTotalTimeListened()
+        {
+            var db = _redisConnection.GetDatabase();
+            var keys = _redisConnection.GetServer(_redisConnection.GetEndPoints().First()).Keys(pattern: "musewave:user:*:totalTimeListened");
+            int totalAllUsersTimeListened = 0;
+
+            foreach (var key in keys)
+            {
+                var timeListened = await db.StringGetAsync(key);
+                totalAllUsersTimeListened += timeListened.HasValue ? (int)timeListened : 0;
+            }
+
+            return totalAllUsersTimeListened;
+        }
+
+
     }
 }

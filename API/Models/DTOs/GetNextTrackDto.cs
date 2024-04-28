@@ -8,6 +8,7 @@ namespace Models.DTOs
         public int? ContextId { get; set; }
         public StreamingContextType StreamingContextType { get; set; }
         public List<int> TrackHistoryIds { get; set; }
+        public int TimeListened { get; set; }
 
         public GetNextTrackRequestDto()
         {

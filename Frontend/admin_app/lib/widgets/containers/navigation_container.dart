@@ -1,3 +1,4 @@
+import 'package:admin_app/views/dashboards_page.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_app/views/home_page.dart';
 import 'package:admin_app/views/personal_page/personal_page.dart';
@@ -29,7 +30,7 @@ class _ContainerWithNavigationState extends State<ContainerWithNavigation>
     super.initState();
     _children ??= [
       HomePage(changePage: changePage),
-      PersonalPage(),
+      DashboardsPage(),
       PersonalPage(),
       // Add more views here
     ];

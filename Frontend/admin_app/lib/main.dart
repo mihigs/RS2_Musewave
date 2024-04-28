@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:admin_app/services/admin_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:admin_app/router.dart';
@@ -40,6 +41,7 @@ void main() async {
   // Register services
   getIt.registerSingleton(ApiService(secureStorage: secureStorage));
   final authService = getIt.registerSingleton(AuthenticationService(secureStorage: secureStorage));
+  final adminService = getIt.registerSingleton(AdminService(secureStorage: secureStorage));
 
   // Get the token from secure storage
   final accessToken = await authService.checkLocalStorageForToken();

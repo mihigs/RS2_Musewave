@@ -166,6 +166,7 @@ class TracksService extends ApiService {
         'ContextId': streamingContext.contextId?.toString(),
         'StreamingContextType': getStringFromStreamingContextType(streamingContext.type),
         'TrackHistoryIds': streamingContext.trackHistoryIds,
+        'TimeListened': streamingContext.timeListened.inSeconds,
       };
       final response = await httpPost('Tracks/GetNextTrack', data);
       return _mapToTrack(response['data']);

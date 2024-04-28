@@ -11,6 +11,7 @@ namespace DataContext.Repositories.Interfaces
         Task<List<Track>> GetTracksByArtistId(int artistId);
         Task<Track> GetByJamendoId(string jamendoId);
         Task<Track> GetById(int id);
-
+        Task<int> GetMusewaveTrackCount();
+        Task<int> GetJamendoTrackCount();
     }
 }
