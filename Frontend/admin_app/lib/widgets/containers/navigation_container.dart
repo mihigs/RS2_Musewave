@@ -29,7 +29,6 @@ class _ContainerWithNavigationState extends State<ContainerWithNavigation>
   void initState() {
     super.initState();
     _children ??= [
-      HomePage(changePage: changePage),
       DashboardsPage(),
       PersonalPage(),
       // Add more views here

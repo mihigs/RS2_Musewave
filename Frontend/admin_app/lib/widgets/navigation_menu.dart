@@ -23,20 +23,20 @@ class _NavigationMenuState extends State<NavigationMenu> {
       color: Colors.black38,
       child: Column(
         children: [
+          SizedBox(height: 20),
           Container(
-            width: 60,
-            decoration: widget.selectedIndex == 0
-                ? const BoxDecoration(
-                    color: Colors.white10,
-                    borderRadius: BorderRadius.all(Radius.circular(20)))
-                : null,
-            child: IconButton(
-              icon: Icon(Icons.home_rounded),
-              color: widget.selectedIndex == 0 ? Colors.white : Colors.grey,
-              onPressed: () => widget.onTabTapped(0),
-              hoverColor: Colors.white10,
-            ),
-          ),
+              width: 60,
+              decoration: widget.selectedIndex == 0
+                  ? const BoxDecoration(
+                      color: Colors.white10,
+                      borderRadius: BorderRadius.all(Radius.circular(20)))
+                  : null,
+              child: IconButton(
+                icon: Icon(Icons.dashboard_rounded),
+                color: widget.selectedIndex == 0 ? Colors.white : Colors.grey,
+                onPressed: () => widget.onTabTapped(0),
+                hoverColor: Colors.white10,
+              )),
           SizedBox(height: 20),
           Container(
               width: 60,
@@ -46,24 +46,9 @@ class _NavigationMenuState extends State<NavigationMenu> {
                       borderRadius: BorderRadius.all(Radius.circular(20)))
                   : null,
               child: IconButton(
-                icon: Icon(Icons.dashboard_rounded),
-                color: widget.selectedIndex == 1 ? Colors.white : Colors.grey,
-                // onPressed: () => widget.onTabTapped(1),
-                onPressed: () => widget.onTabTapped(1),
-                hoverColor: Colors.white10,
-              )),
-          SizedBox(height: 20),
-          Container(
-              width: 60,
-              decoration: widget.selectedIndex == 2
-                  ? const BoxDecoration(
-                      color: Colors.white10,
-                      borderRadius: BorderRadius.all(Radius.circular(20)))
-                  : null,
-              child: IconButton(
                 icon: Icon(Icons.person),
-                color: widget.selectedIndex == 2 ? Colors.white : Colors.grey,
-                onPressed: () => widget.onTabTapped(2),
+                color: widget.selectedIndex == 1 ? Colors.white : Colors.grey,
+                onPressed: () => widget.onTabTapped(1),
                 hoverColor: Colors.white10,
               )),
         ],

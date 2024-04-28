@@ -42,21 +42,33 @@ class _DashboardsPageState extends State<DashboardsPage> {
       builder: (BuildContext context, BoxConstraints constraints) {
         return Container(
           padding: EdgeInsets.all(15),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  children: <Widget>[
-                    GeneralCard(data: data),
-                    SizedBox(height: constraints.maxHeight * 0.01),
-                    UsersCard(data: data),
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.only(bottom: 25, top: 10),
+                child: Row(
+                  children: [
+                    Text("Admin Dashboard", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                   ],
-                ),
+                )
               ),
-              SizedBox(width: constraints.maxWidth * 0.01),
-              Expanded(
-                child: RightSideCard(data: data),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      children: <Widget>[
+                        GeneralCard(data: data),
+                        SizedBox(height: constraints.maxHeight * 0.01),
+                        UsersCard(data: data),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: constraints.maxWidth * 0.01),
+                  Expanded(
+                    child: RightSideCard(data: data),
+                  ),
+                ],
               ),
             ],
           ),
@@ -136,7 +148,7 @@ class RightSideCard extends StatelessWidget {
           subtitle: Column(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * .59,
+                height: MediaQuery.of(context).size.height * .49,
                 child: ListTile(
                   title: Text('Tracks'),
                   subtitle: PieChartWidget(
@@ -146,7 +158,7 @@ class RightSideCard extends StatelessWidget {
                 ),
               ),
               Container(
-                height: MediaQuery.of(context).size.height * .29,
+                height: MediaQuery.of(context).size.height * .19,
                 child: ListTile(
                   title: Text('Jamendo API Usage'),
                   subtitle: Padding(
