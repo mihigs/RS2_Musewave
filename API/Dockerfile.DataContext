@@ -18,7 +18,7 @@ RUN dotnet publish "./DataContext.csproj" -c Release -o /app/publish
 
 # Final stage, copy published output
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
-ENV ConnectionString=Server=mssql;Database=MusewaveDbDev;User=sa;Password=Test_123;TrustServerCertificate=True
+ENV ConnectionString=Server=mssql,1433;Database=MusewaveDbDev;User=sa;Password=Test_123;TrustServerCertificate=True
 ENV ListenerApiUrl=http://listener:8082/api
 WORKDIR /app
 COPY --from=publish /app/publish .

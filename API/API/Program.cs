@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Services.Implementations;
 using Microsoft.Extensions.Options;
+using DataContext.Seeder;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -162,10 +163,11 @@ services.AddAuthorization(options =>
     options.AddPolicy("User", policy => policy.RequireRole("User"));
 });
 
-//builder.WebHost.ConfigureKestrel(serverOptions =>
-//{
-//    serverOptions.Limits.MaxRequestBodySize = 10 * 1024 * 1024; // Set the max request body size to 10 MB
-//});
+// Seeder
+services.AddTransient<MusewaveDbSeeder>();
+
+// Migrations Runner
+services.AddTransient<MigrationsRunner>();
 
 var app = builder.Build();
 
@@ -187,5 +189,13 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapHub<NotificationHub>("/notificationHub");
+
+// Apply migrations and seed the database
+using (var scope = app.Services.CreateScope())
+{
+    var runner = scope.ServiceProvider.GetRequiredService<MigrationsRunner>();
+    await runner.RunMigrations();
+    await runner.RunSeeder();
+}
 
 app.Run();

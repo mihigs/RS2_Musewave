@@ -19,7 +19,7 @@ ENV AzureAd:CallbackPath=/signin-oidc
 ENV AzureAd:Scopes=access_as_user
 ENV Logging:LogLevel:Default=Information
 ENV Logging:LogLevel:Microsoft.AspNetCore=Warning
-ENV ConnectionString=Server=mssql;Database=MusewaveDbDev;User=sa;Password=Test_123;TrustServerCertificate=True
+ENV ConnectionString=Server=mssql,1433;Database=MusewaveDbDev;User=sa;Password=Test_123;TrustServerCertificate=True
 ENV Jwt:Key=Efc5yLrV5QUntZef6PsdJuzfEnLGv+HVYhtBHEyo00A=
 ENV Jwt:Issuer=http://localhost:8080
 ENV Jwt:Audience=http://localhost:8080
@@ -27,6 +27,12 @@ ENV Jwt:AccessExpirationSeconds=999999
 ENV AllowedHosts=*
 ENV ListenerApiUrl=http://listener:8082/api
 ENV RabbitMqHost=rabbitmq
+ENV JamendoLClientId=edf55456
+ENV Jamendo:BaseUrl=https://api.jamendo.com/v3.0/tracks/
+ENV Redis:Host=redis
+ENV Redis:Port=6379
+ENV Redis:AbortOnConnectFail=false
+ENV RunJamendoSeed=false
 
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build

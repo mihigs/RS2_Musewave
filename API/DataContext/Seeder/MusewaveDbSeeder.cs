@@ -53,6 +53,7 @@ namespace DataContext.Seeder
                 throw new Exception(ex.Message);
             }
         }
+
     }
 
 }
