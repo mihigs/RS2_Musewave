@@ -8,6 +8,7 @@ using System.Text;
 using Services.Implementations;
 using Microsoft.Extensions.Options;
 using DataContext.Seeder;
+using TagLib.Ape;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +39,7 @@ Console.WriteLine("Redis connection string: " + redisConnectionString);
 var services = builder.Services;
 
 // Log the configuration entries
+Console.WriteLine("API: Logging environment variables");
 foreach (var item in configuration.AsEnumerable())
 {
     Console.Write(item.Key + ":");
@@ -121,9 +123,11 @@ services.RegisterDbContext(dbConnectionString)
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        Console.WriteLine("API: Authentication > Logging environment variables");
         foreach (var item in configuration.AsEnumerable())
         {
             Console.WriteLine(item.Key);
+            Console.WriteLine(item.Value);
         }
         var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]);
         options.RequireHttpsMetadata = false;

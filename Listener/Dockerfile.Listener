@@ -6,6 +6,10 @@ RUN apt-get update \
     && apt-get install -y curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Create the directory and set permissions before switching to user 'app'
+RUN mkdir -p /tmp/musewave_tracks \
+    && chown -R app:app /tmp/musewave_tracks
+
 USER app
 WORKDIR /app
 EXPOSE 8080

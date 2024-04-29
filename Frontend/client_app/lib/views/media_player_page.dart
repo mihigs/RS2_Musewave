@@ -35,6 +35,13 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
   bool isPlaying = false;
 
   @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
 

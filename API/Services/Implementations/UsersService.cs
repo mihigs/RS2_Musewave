@@ -50,6 +50,7 @@ namespace Services.Implementations
             catch (Exception ex)
             {
                 //Log error
+                Console.WriteLine($"Error getting all users: {ex.Message}");
                 throw;
             }
         }
@@ -136,6 +137,7 @@ namespace Services.Implementations
             catch (Exception ex)
             {
                 //Log error
+                Console.WriteLine($"Error getting user details: {ex.Message}");
                 throw new Exception("Error getting user details", ex);
             }
         }

@@ -55,8 +55,8 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-    # volumes:
-    #   - listener-data:/path/to/listener/data
+    volumes:
+      - listener-data:/tmp/musewave_tracks
     networks:
       - app-network
     healthcheck:
