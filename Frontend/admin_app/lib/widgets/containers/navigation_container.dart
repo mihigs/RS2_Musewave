@@ -1,6 +1,6 @@
 import 'package:admin_app/views/dashboards_page.dart';
+import 'package:admin_app/views/genre_tracker_page.dart';
 import 'package:flutter/material.dart';
-import 'package:admin_app/views/home_page.dart';
 import 'package:admin_app/views/personal_page/personal_page.dart';
 import 'package:admin_app/widgets/navigation_menu.dart';
 
@@ -30,6 +30,7 @@ class _ContainerWithNavigationState extends State<ContainerWithNavigation>
     super.initState();
     _children ??= [
       DashboardsPage(),
+      GenreTracker(),
       PersonalPage(),
       // Add more views here
     ];

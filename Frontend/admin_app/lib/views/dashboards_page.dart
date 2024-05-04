@@ -134,6 +134,8 @@ class UsersCard extends StatelessWidget {
 }
 
 class RightSideCard extends StatelessWidget {
+  final jamendoAPILimit = 50000;
+
   final AdminDashboardDetailsDto data;
 
   const RightSideCard({Key? key, required this.data}) : super(key: key);
@@ -160,19 +162,19 @@ class RightSideCard extends StatelessWidget {
               Container(
                 height: MediaQuery.of(context).size.height * .19,
                 child: ListTile(
-                  title: Text('Jamendo API Usage'),
+                  title: Text('Jamendo API requests used'),
                   subtitle: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Column(
                       children: [
                         LinearProgressIndicator(
-                          value: data.jamendoApiActivity / 50000,
+                          value: data.jamendoApiActivity / jamendoAPILimit,
                           backgroundColor: Colors.grey,
-                          valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
                         ),
                         Container(
                           child: Text(
-                            "${data.jamendoApiActivity} / 50000"
+                            "${data.jamendoApiActivity} / ${jamendoAPILimit}"
                           )
                         )
                       ],
@@ -238,119 +240,3 @@ class DashboardItem extends StatelessWidget {
     );
   }
 }
-
-
-// Continue with the rest of the widgets (DashboardItem, etc.) from the previous code snippet.
-
-
-// import 'package:admin_app/models/DTOs/admin_dashboard_details_dto.dart';
-// import 'package:admin_app/services/admin_service.dart';
-// import 'package:flutter/material.dart';
-// import 'package:admin_app/router.dart';
-// import 'package:admin_app/widgets/navigation_menu.dart';
-// import 'package:get_it/get_it.dart';
-// import 'package:go_router/go_router.dart';
-
-// class DashboardsPage extends StatefulWidget {
-//   DashboardsPage({super.key});
-
-//   @override
-//   State<DashboardsPage> createState() => _DashboardsPageState();
-// }
-
-// class _DashboardsPageState extends State<DashboardsPage> {
-//   late Future<AdminDashboardDetailsDto> dashboardDetails;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     dashboardDetails = GetIt.I<AdminService>().GetDashboardDetails();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return FutureBuilder<AdminDashboardDetailsDto>(
-//       future: dashboardDetails,
-//       builder: (context, snapshot) {
-//         if (snapshot.connectionState == ConnectionState.done) {
-//           if (snapshot.hasError) {
-//             return Text('Error: ${snapshot.error}');
-//           } else if (snapshot.hasData) {
-//             return buildDashboard(snapshot.data!);
-//           }
-//         }
-//         return CircularProgressIndicator();
-//       },
-//     );
-//   }
-
-//   Widget buildDashboard(AdminDashboardDetailsDto data) {
-//     return SingleChildScrollView(
-//       child: Column(
-//         children: <Widget>[
-//           DashboardSection(title: 'General', children: [
-//             DashboardItem(title: 'Songs available', value: '${data.musewaveTrackCount + data.jamendoTrackCount}'),
-//             DashboardItem(title: 'Minutes listened:', value: '${data.totalTimeListened / 60}'),
-//           ]),
-//           DashboardSection(title: 'Users', children: [
-//             DashboardItem(title: 'Daily logins:', value: '${data.dailyLoginCount}'),
-//             DashboardItem(title: 'Artists:', value: '${data.artistCount}'),
-//             DashboardItem(title: 'Users:', value: '${data.userCount}'),
-//           ]),
-//           DashboardSection(title: 'Tracks', children: [
-//             // You can add the PieChart here
-//           ]),
-//           DashboardSection(title: 'Jamendo API Usage', children: [
-//             // You can use a LinearProgressIndicator for the API usage bar
-//             LinearProgressIndicator(value: data.jamendoApiActivity / 50000),
-//           ]),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// class DashboardSection extends StatelessWidget {
-//   final String title;
-//   final List<Widget> children;
-
-//   const DashboardSection({Key? key, required this.title, required this.children}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: EdgeInsets.all(16),
-//       child: Card(
-//         child: Padding(
-//           padding: EdgeInsets.all(16),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-//               SizedBox(height: 10),
-//               ...children,
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class DashboardItem extends StatelessWidget {
-//   final String title;
-//   final String value;
-
-//   const DashboardItem({Key? key, required this.title, required this.value}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Text(title),
-//         Text(value),
-//       ],
-//     );
-//   }
-// }

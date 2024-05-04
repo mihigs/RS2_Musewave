@@ -45,6 +45,7 @@ dependencies:
   json_serializable: ^6.7.1
   json_annotation: ^4.8.1
   fl_chart: ^0.67.0
+  syncfusion_flutter_datagrid: ^25.1.42
 
 dev_dependencies:
   flutter_test:

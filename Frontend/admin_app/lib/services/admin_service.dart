@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:admin_app/models/DTOs/admin_dashboard_details_dto.dart';
+import 'package:admin_app/models/DTOs/similarity_matrix_dto.dart';
 import 'package:admin_app/models/base/logged_in_state_info.dart';
 import 'package:admin_app/models/user.dart';
 import 'package:admin_app/services/base/api_service.dart';
@@ -18,14 +19,35 @@ class AdminService extends ApiService {
   Future<AdminDashboardDetailsDto> GetDashboardDetails() async {
    AdminDashboardDetailsDto result;
     try {
-      final response = await httpGet('Admin/getDashboardDetails');
+      final response = await httpGet('Admin/GetDashboardDetails');
       result = AdminDashboardDetailsDto.fromJson(response['data']);
     } on Exception {
       rethrow;
     }
     return result;
 
-  }    
+  }
 
-  
+  Future<SimilarityMatrixDto> GetSimilarityMatrix() async {
+    SimilarityMatrixDto result;
+    try {
+      final response = await httpGet('Admin/GetSimilarityMatrix');
+      result = SimilarityMatrixDto.fromJson(response['data']);
+    } on Exception {
+      rethrow;
+    }
+    return result;
+  }  
+
+  Future<SimilarityMatrixDto> UpdateSimilarityMatrix() async {
+    SimilarityMatrixDto result;
+    try {
+      final response = await httpGet('Admin/UpdateSimilarityMatrix');
+      result = SimilarityMatrixDto.fromJson(response['data']);
+    } on Exception {
+      rethrow;
+    }
+    return result;
+  }
+
 }

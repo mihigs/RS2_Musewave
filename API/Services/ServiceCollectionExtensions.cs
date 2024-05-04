@@ -19,6 +19,7 @@ namespace Services.Implementations
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IJamendoService, JamendoService>();
             services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IGenreSimilarityTrackerService, GenreSimilarityTrackerService>();
 
             return services;
         }

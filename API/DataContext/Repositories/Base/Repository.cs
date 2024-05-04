@@ -78,5 +78,6 @@ namespace DataContext.Repositories
             }
             return await query.ToListAsync();
         }
+
     }
 }

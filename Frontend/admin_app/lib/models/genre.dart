@@ -1,4 +1,4 @@
-import 'package:frontend/models/base/base_entity.dart';
+import 'package:admin_app/models/base/base_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'genre.g.dart';

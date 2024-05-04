@@ -10,7 +10,7 @@ namespace DataContext.Seeder
 {
     internal class TrackSeeder
     {
-        private string sourceDir = Path.Combine(Directory.GetCurrentDirectory(), "Seeder", "Tracks");
+        private string sourceDir = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "DataContext", "Seeder", "Tracks");
         private readonly IAlbumRepository _albumRepository;
         private readonly IGenreRepository _genreRepository;
         private readonly ITrackRepository _trackRepository;
