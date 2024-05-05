@@ -1,0 +1,53 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Flutter Android",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "--dart-define=BASE_URL=https://10.0.2.2:7074/api",
+                "--dart-define=LISTENER_URL=http://10.0.2.2:7151/api",
+                "--dart-define=SIGNALR_HUB_URL=https://10.0.2.2:7074/notificationHub",
+            ],
+            // "preLaunchTask": "Build Runner"
+        },
+        {
+            "name": "Flutter Web",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "--dart-define=BASE_URL=https://localhost:7074/api",
+                "--dart-define=LISTENER_URL=http://localhost:7151/api",
+                "--dart-define=SIGNALR_HUB_URL=https://localhost:7074/notificationHub",
+            ],
+            // "preLaunchTask": "Build Runner"
+        },
+        {
+            "name": "Flutter Web Docker",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "--dart-define=BASE_URL=http://localhost:8080/api",
+                "--dart-define=LISTENER_URL=http://localhost:8082/api",
+                "--dart-define=SIGNALR_HUB_URL=http://localhost:8080/notificationHub",
+            ],
+            // "preLaunchTask": "Build Runner"
+        },
+        {
+            "name": "Flutter Android Docker",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "--dart-define=BASE_URL=http://10.0.2.2:8080/api",
+                "--dart-define=LISTENER_URL=http://10.0.2.2:8082/api",
+                "--dart-define=SIGNALR_HUB_URL=http://10.0.2.2:8080/notificationHub",
+            ],
+            // "preLaunchTask": "Build Runner"
+        },
+    ]
+}
