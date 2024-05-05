@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/models/DTOs/ArtistDetailsDto.dart';
 import 'package:frontend/models/artist.dart';
 import 'package:frontend/services/base/api_service.dart';
 
@@ -21,6 +22,15 @@ class ArtistService extends ApiService {
       }
 
       return result;
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<ArtistDetailsDto> getArtistDetails(int artistId, bool isJamendoArtist) async {
+    try {
+      final response = await httpGet('Artist/GetArtistDetails?artistId=$artistId&isJamendoArtist=$isJamendoArtist');
+      return ArtistDetailsDto.fromJson(response['data']);
     } on Exception {
       rethrow;
     }

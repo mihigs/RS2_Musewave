@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:frontend/helpers/helper_functions.dart';
 import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/models/notifiers/music_streamer.dart';
@@ -161,6 +162,10 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
   @override
   Widget build(BuildContext context) {
     final MusicStreamer model = musicStreamer!;
+    final isJamendoArtist = model.currentTrack!.jamendoId != null;
+    final artistId = isJamendoArtist
+        ? model.currentTrack!.artist!.jamendoArtistId
+        : model.currentTrack!.artist!.id;
 
     return Scaffold(
       appBar: AppBar(
@@ -205,9 +210,7 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
           ? Center(child: CircularProgressIndicator())
           : Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                // space-around
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   // Track cover art
                   model.currentTrack!.imageUrl != null
@@ -239,7 +242,6 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
                             ),
                           ),
                         ),
-                  SizedBox(height: 30),
                   // Displaying current track title
                   Container(
                     width: double.infinity - 10,
@@ -250,18 +252,22 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  SizedBox(height: 30),
                   // Displaying current track artist name
-                  Container(
-                    width: double.infinity - 15,
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    child: Text(
-                      currentTrack!.artist!.user!.userName,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20),
+                  GestureDetector(
+                    onTap: () => {
+                      GoRouter.of(context).push('/artist/$artistId/${isJamendoArtist ? "true" : "false"}',
+                      )
+                    },
+                    child: Container(
+                      width: double.infinity - 15,
+                      height: MediaQuery.of(context).size.height * 0.05,
+                      child: Text(
+                        currentTrack!.artist!.user!.userName,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 20),
+                      ),
                     ),
                   ),
-                  SizedBox(height: 40),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -290,8 +296,7 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
-                  Expanded(
+                  Container(
                     child: SeekBar(),
                   ),
                 ],

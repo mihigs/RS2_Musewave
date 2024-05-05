@@ -35,7 +35,7 @@ namespace DataContext.Repositories
         {
             return await _dbContext.Set<Track>()
                 .Where(t => t.Title.Contains(name))
-                //.Where(t => t.JamendoId is null) // Exclude Jamendo tracks from platfrom search
+                .Where(t => t.JamendoId == null) // Exclude Jamendo tracks from platfrom search
                 .Include(t => t.Artist)
                 .ThenInclude(Artist => Artist.User)
                 .ToListAsync();

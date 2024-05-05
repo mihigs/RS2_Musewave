@@ -101,8 +101,8 @@ class _CollectionListItemState extends State<CollectionListItem> {
               updateIsPlaying();
             },
           ),
-          title: Text(overflow: TextOverflow.clip, widget.track.artist!.user!.userName),
-          subtitle: Text(overflow: TextOverflow.clip, widget.track.title),
+          title: Text(overflow: TextOverflow.clip, widget.track.title),
+          subtitle: Text(overflow: TextOverflow.clip, widget.track.artist!.user!.userName),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

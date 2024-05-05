@@ -7,5 +7,7 @@
         PLAYLIST,
         JAMENDO,
         LIKED,
+        WEEKLY,
+        ARTIST,
     }
 }

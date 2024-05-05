@@ -31,5 +31,18 @@ namespace DataContext.Repositories
         {
             return await _dbContext.Set<Artist>().CountAsync();
         }
+
+        public async Task<Artist?> GetArtistByJamendoId(string jamendoArtistId)
+        {
+            return await _dbContext.Set<Artist>()
+                .FirstOrDefaultAsync(a => a.JamendoArtistId == jamendoArtistId);
+        }
+
+        public async Task<Artist> GetArtistDetailsAsync(int artistId)
+        {
+            return await _dbContext.Set<Artist>()
+                .Include(a => a.User)
+                .FirstOrDefaultAsync(a => a.Id == artistId);
+        }
     }
 }

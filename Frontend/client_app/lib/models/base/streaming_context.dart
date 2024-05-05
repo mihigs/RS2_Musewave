@@ -1,6 +1,6 @@
 import 'package:frontend/models/track.dart';
 
-enum StreamingContextType { RADIO, ALBUM, PLAYLIST, JAMENDO, LIKED, WEEKLY }
+enum StreamingContextType { RADIO, ALBUM, PLAYLIST, JAMENDO, LIKED, WEEKLY, ARTIST }
 
 class StreamingContext {
   Track track;

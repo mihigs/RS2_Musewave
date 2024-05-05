@@ -23,8 +23,6 @@ namespace DataContext.Repositories
             };
 
             await _dbContext.Set<JamendoAPIActivity>().AddAsync(loginActivity);
-
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<int> GetJamendoAPIRequestCountPerMonth()

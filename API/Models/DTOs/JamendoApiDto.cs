@@ -4,12 +4,12 @@ namespace Models.DTOs
 {
     public class JamendoApiDto
     {
-        public class JamendoApiResponse
+        public class JamendoApiResponse<T>
         {
             [JsonPropertyName("headers")]
             public JamendoHeader Headers { get; set; }
             [JsonPropertyName("results")]
-            public List<JamendoResult> Results { get; set; }
+            public List<T> Results { get; set; }
         }
 
 
@@ -35,7 +35,7 @@ namespace Models.DTOs
         }
 
 
-        public class JamendoResult
+        public class JamendoTrackResult
         {
             [JsonPropertyName("id")]
             public string Id { get; set; }
@@ -44,7 +44,7 @@ namespace Models.DTOs
             public string Name { get; set; }
 
             [JsonPropertyName("duration")]
-            public int Duration { get; set; }
+            public dynamic Duration { get; set; }
 
             [JsonPropertyName("artist_id")]
             public string ArtistId { get; set; }
@@ -131,5 +131,27 @@ namespace Models.DTOs
             [JsonPropertyName("vartags")]
             public List<string> VarTags { get; set; }
         }
+
+        public class JamendoArtistDetailsResult
+        {
+            [JsonPropertyName("id")]
+            public string Id { get; set; }
+
+            [JsonPropertyName("name")]
+            public string Name { get; set; }
+
+            [JsonPropertyName("website")]
+            public string Website { get; set; }
+
+            [JsonPropertyName("joindate")]
+            public string JoinDate { get; set; }
+
+            [JsonPropertyName("image")]
+            public string Image { get; set; }
+
+            [JsonPropertyName("tracks")]
+            public List<JamendoTrackResult> Tracks { get; set; }
+        }
+
     }
 }

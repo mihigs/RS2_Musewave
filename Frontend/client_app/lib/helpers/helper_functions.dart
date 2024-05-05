@@ -32,6 +32,8 @@ StreamingContextType getStreamingContextTypeFromString(String typeString) {
     return StreamingContextType.LIKED;
   } else if (typeString.toUpperCase() == 'WEEKLY' || typeString == "5") {
     return StreamingContextType.WEEKLY;
+  } else if (typeString.toUpperCase() == 'ARTIST' || typeString == "6") {
+    return StreamingContextType.ARTIST;
   } else {
     throw Exception('Unknown streaming context type: $typeString');
   }
@@ -51,6 +53,8 @@ String getStringFromStreamingContextType(StreamingContextType type) {
       return "LIKED";
     case StreamingContextType.WEEKLY:
       return "WEEKLY";
+    case StreamingContextType.ARTIST:
+      return "ARTIST";
     default:
       throw Exception('Unknown streaming context type');
   }

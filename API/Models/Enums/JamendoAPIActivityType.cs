@@ -8,6 +8,7 @@ namespace Models.Enums
         SearchJamendoByTrackName = 1,
         GetTrackById = 2,
         GetJamendoTracksPerGenres = 3,
-        GetPopularJamendoTracks = 4
+        GetPopularJamendoTracks = 4,
+        GetJamendoArtistDetails = 5,
     }
 }

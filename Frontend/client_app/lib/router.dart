@@ -66,8 +66,17 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         },
       ),
       GoRoute(
-        path: Routes.artist,
-        builder: (_, __) => PersistentPlayerContainer(child: ArtistPage()),
+        path: '${Routes.artist}/:artistId/:isJamendoArtist',
+        builder: (context, state) {
+          final artistId = state.pathParameters['artistId'];
+          final isJamendoArtist = state.pathParameters['isJamendoArtist'] == 'true' ? true : false;
+          return PersistentPlayerContainer(
+            child: ArtistPage(
+              artistId: int.parse(artistId!),
+              isJamendoArtist: isJamendoArtist
+            ),
+          );
+        },
       ),
       GoRoute(
         path: '${Routes.playlist}/:playlistId/:isExploreWeekly',

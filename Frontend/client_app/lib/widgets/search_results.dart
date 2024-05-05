@@ -44,7 +44,8 @@ class _SearchResultsState extends State<SearchResults> {
 
   @override
   Widget build(BuildContext context) {
-    final MusicStreamer model = Provider.of<MusicStreamer>(context, listen: false);
+    final MusicStreamer model =
+        Provider.of<MusicStreamer>(context, listen: false);
 
     return FutureBuilder<List<dynamic>>(
       future: Future.wait([
@@ -61,11 +62,18 @@ class _SearchResultsState extends State<SearchResults> {
           return Text('Error: ${snapshot.error}');
         } else {
           var results = snapshot.data!;
-          var tracks = results[0] != _errorTrackList ? results[0] as List<Track> : [];
-          var jamendoTracks = results[1] != _errorJamendoTrackList ? results[1] as List<Track> : [];
-          var albums = results[2] != _errorAlbumList ? results[2] as List<Album> : [];
-          var artists = results[3] != _errorArtistList ? results[3] as List<Artist> : [];
-          var playlists = results[4] != _errorPlaylistList ? results[4] as List<Playlist> : [];
+          var tracks =
+              results[0] != _errorTrackList ? results[0] as List<Track> : [];
+          var jamendoTracks = results[1] != _errorJamendoTrackList
+              ? results[1] as List<Track>
+              : [];
+          var albums =
+              results[2] != _errorAlbumList ? results[2] as List<Album> : [];
+          var artists =
+              results[3] != _errorArtistList ? results[3] as List<Artist> : [];
+          var playlists = results[4] != _errorPlaylistList
+              ? results[4] as List<Playlist>
+              : [];
 
           return SingleChildScrollView(
             child: Padding(
@@ -89,12 +97,13 @@ class _SearchResultsState extends State<SearchResults> {
                         ...tracks
                             .take(_tracksToShow)
                             .map((track) => GestureDetector(
-                              onTap:() => GoRouter.of(context).push('/track/${track.id}/0/0'),
-                              child: ResultItemCard(
+                                  onTap: () => GoRouter.of(context)
+                                      .push('/track/${track.id}/0/0'),
+                                  child: ResultItemCard(
                                     title: track.title,
                                     subtitle: track.artist?.user?.userName,
                                   ),
-                            )),
+                                )),
                       ],
                     ),
                     if (_tracksToShow < tracks.length)
@@ -123,15 +132,17 @@ class _SearchResultsState extends State<SearchResults> {
                         ...jamendoTracks
                             .take(_jamendoTracksToShow)
                             .map((track) => GestureDetector(
-                              onTap:() => {
-                                model.startTrack(StreamingContext(track, 0, StreamingContextType.JAMENDO)),
-                                GoRouter.of(context).push('/track/${track.id}/0/3'),
-                              },
-                              child: ResultItemCard(
+                                  onTap: () => {
+                                    model.startTrack(StreamingContext(track, 0,
+                                        StreamingContextType.JAMENDO)),
+                                    GoRouter.of(context)
+                                        .push('/track/${track.id}/0/3'),
+                                  },
+                                  child: ResultItemCard(
                                     title: track.title,
                                     subtitle: track.artist?.user?.userName,
                                   ),
-                            )),
+                                )),
                       ],
                     ),
                     if (_jamendoTracksToShow < jamendoTracks.length)
@@ -160,12 +171,13 @@ class _SearchResultsState extends State<SearchResults> {
                         ...albums
                             .take(_albumsToShow)
                             .map((album) => GestureDetector(
-                              onTap:() => GoRouter.of(context).push('/album/${album.id}'),
-                              child: ResultItemCard(
+                                  onTap: () => GoRouter.of(context)
+                                      .push('/album/${album.id}'),
+                                  child: ResultItemCard(
                                     title: album.title,
                                     subtitle: album.artist?.user?.userName,
                                   ),
-                            )),
+                                )),
                       ],
                     ),
                     if (_albumsToShow < albums.length)
@@ -191,14 +203,22 @@ class _SearchResultsState extends State<SearchResults> {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       children: <Widget>[
-                        ...artists
-                            .take(_artistsToShow)
-                            .map((artist) => GestureDetector(
-                              onTap:() => GoRouter.of(context).push('/artist/${artist.id}'),
-                              child: ResultItemCard(
-                                    title: artist.user!.userName,
-                                  ),
-                            )),
+                        ...artists.take(_artistsToShow).map((artist) {
+                          final artistId = artist.jamendoArtistId != null &&
+                                  artist.jamendoArtistId.isNotEmpty
+                              ? artist.jamendoArtistId
+                              : artist.id;
+                          final hasJamendoId = artist.jamendoArtistId != null &&
+                              artist.jamendoArtistId.isNotEmpty;
+
+                          return GestureDetector(
+                            onTap: () => GoRouter.of(context)
+                                .push('/artist/$artistId/$hasJamendoId'),
+                            child: ResultItemCard(
+                              title: artist.user!.userName,
+                            ),
+                          );
+                        }),
                       ],
                     ),
                     if (_artistsToShow < artists.length)
@@ -227,11 +247,12 @@ class _SearchResultsState extends State<SearchResults> {
                         ...playlists
                             .take(_playlistsToShow)
                             .map((playlist) => GestureDetector(
-                              onTap:() => GoRouter.of(context).push('/playlist/${playlist.id}'),
-                              child: ResultItemCard(
+                                  onTap: () => GoRouter.of(context)
+                                      .push('/playlist/${playlist.id}'),
+                                  child: ResultItemCard(
                                     title: playlist.name,
                                   ),
-                            )),
+                                )),
                       ],
                     ),
                     if (_playlistsToShow < playlists.length)

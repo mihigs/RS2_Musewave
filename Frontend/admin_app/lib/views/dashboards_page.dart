@@ -134,7 +134,7 @@ class UsersCard extends StatelessWidget {
 }
 
 class RightSideCard extends StatelessWidget {
-  final jamendoAPILimit = 50000;
+  final jamendoAPILimit = 25000;
 
   final AdminDashboardDetailsDto data;
 

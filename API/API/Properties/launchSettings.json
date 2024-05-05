@@ -22,7 +22,7 @@
         "ListenerApiUrl": "http://localhost:7151/api",
         "RabbitMqHost": "localhost",
         "Jamendo__ClientId": "edf55456",
-        "Jamendo__BaseUrl": "https://api.jamendo.com/v3.0/tracks/",
+        "Jamendo__BaseUrl": "https://api.jamendo.com/v3.0/",
         "Redis__Host": "localhost",
         "Redis__Port": "6380",
         "Redis__AbortOnConnectFail": "false",

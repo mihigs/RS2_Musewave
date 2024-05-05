@@ -230,6 +230,9 @@ namespace Services.Implementations
                 case StreamingContextType.LIKED:
                     nextTrack = await GetNextLikedTrackAsync(getNextTrackDto.CurrentTrackId, userId, getNextTrackDto.TrackHistoryIds);
                     break;
+                case StreamingContextType.ARTIST:
+                    nextTrack = await GetNextArtistTrackAsync(getNextTrackDto.CurrentTrackId, getNextTrackDto.ContextId.Value);
+                    break;
                 default:
                     throw new ArgumentException("Invalid streaming context type");
             }
@@ -310,6 +313,31 @@ namespace Services.Implementations
                 // If there are no liked tracks, get a random track
                 // If all tracks have been played, start over
                 nextTrack = await _trackRepository.GetRandomTrack(excluding: trackHistoryIds) ?? await _trackRepository.GetRandomTrack(excluding: []);
+            }
+            return nextTrack;
+        }
+
+        public async Task<Track> GetNextArtistTrackAsync(int currentTrackId, int artistId)
+        {
+            var currentTrack = await _trackRepository.GetById(currentTrackId);
+            if (currentTrack is null)
+            {
+                throw new Exception("Current track not found");
+            }
+
+            Track nextTrack = null;
+            IEnumerable<Track> artistTracks = await _trackRepository.GetTracksByArtistId(currentTrack.ArtistId);
+            artistTracks = artistTracks.Where(x => x.Id != currentTrackId);
+            if (artistTracks.Count() > 0)
+            {
+                nextTrack = artistTracks.OrderBy(x => Guid.NewGuid()).FirstOrDefault(); // Random artist track
+            }
+
+            if (nextTrack is null)
+            {
+                // If there are no artist tracks, get a random track
+                // If all tracks have been played, start over
+                nextTrack = await _trackRepository.GetRandomTrack(excluding: []);
             }
             return nextTrack;
         }
