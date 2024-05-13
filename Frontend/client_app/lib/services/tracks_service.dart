@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/helpers/helper_functions.dart';
 import 'package:frontend/models/DTOs/TrackUploadDto.dart';
 import 'package:frontend/models/base/streaming_context.dart';
-import 'package:frontend/models/like.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/services/base/api_service.dart';
 import 'package:http/http.dart' as http;

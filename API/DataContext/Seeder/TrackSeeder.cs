@@ -1,7 +1,6 @@
 ﻿using DataContext.Repositories;
 using DataContext.Repositories.Interfaces;
 using Microsoft.Extensions.Configuration;
-using Models.DTOs;
 using Models.Entities;
 using System.Globalization;
 using System.Net.Http.Headers;
@@ -98,7 +97,6 @@ namespace DataContext.Seeder
             }
             catch (Exception ex)
             {
-                // Log error
                 Console.WriteLine($"TrackSeeder failed: {ex.Message}");
                 throw ex;
             }

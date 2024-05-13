@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/helpers/helper_functions.dart';
-import 'package:frontend/models/notifiers/music_streamer.dart';
-import 'package:frontend/router.dart';
+import 'package:frontend/streaming/music_streamer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 

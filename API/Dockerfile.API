@@ -32,7 +32,7 @@ ENV Jamendo:BaseUrl=https://api.jamendo.com/v3.0/
 ENV Redis:Host=redis
 ENV Redis:Port=6379
 ENV Redis:AbortOnConnectFail=false
-ENV RunJamendoSeed=false
+ENV RunJamendoSeed=true
 
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
@@ -51,4 +51,6 @@ RUN dotnet publish "./API.csproj" -c $BUILD_CONFIGURATION -o /app/publish/api
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish/api .
+# Copy the Tracks directory into the Docker image
+COPY ["DataContext/Seeder/Tracks", "/DataContext/Seeder/Tracks"]
 ENTRYPOINT ["dotnet", "API.dll"]

@@ -73,21 +73,7 @@ namespace Services.Implementations
             // Check if the track is liked by the user
             trackResult.IsLiked = await CheckIfTrackIsLikedByUser(trackResult.Id, userId) != null;
             return trackResult;
-        }
-
-        //GetJamendoTrackById
-        public async Task<Track> GetJamendoTrackByIdAsync(int trackId, string userId)
-        {
-            var trackResult = await _jamendoService.GetTrackById(trackId, userId);
-            if (trackResult is null)
-            {
-                throw new Exception("Jamendo Track not found");
-            }
-
-            // Check if the track is liked by the user
-            //trackResult.IsLiked = await CheckIfTrackIsLikedByUser(trackResult.Id, userId) != null;
-            return trackResult;
-        }
+        } 
 
         private string GenerateToken(string trackId, string artistId)
         {
@@ -111,7 +97,6 @@ namespace Services.Implementations
 
         public string GenerateSignedTrackUrl(string listenerTrackId, string artistId)
         {
-            // Generate the signed URL
             var token = GenerateToken(listenerTrackId, artistId);
             var url = $"{listenerTrackId}?token={token}";
             return url;

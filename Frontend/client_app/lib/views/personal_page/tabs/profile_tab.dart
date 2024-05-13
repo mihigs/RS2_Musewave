@@ -7,9 +7,10 @@ import 'package:go_router/go_router.dart';
 class ProfileTab extends StatelessWidget {
   final AuthenticationService authService = GetIt.I<AuthenticationService>();
 
+  ProfileTab({super.key});
+
   @override
   Widget build(BuildContext context) {
-    // Implement your ProfileTab widget here
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -17,13 +18,13 @@ class ProfileTab extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             child: ElevatedButton(
-              onPressed: () async {
-                await authService.logout();
+              onPressed: () {
+                authService.logout();
                 GoRouter.of(context).go(Routes.login);
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(
-                    double.infinity, 50), // this makes the button full width.
+                    double.infinity, 50),
               ),
               child: const Text('Logout'),
             ),

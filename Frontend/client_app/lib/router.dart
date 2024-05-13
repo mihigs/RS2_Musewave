@@ -2,16 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/base/logged_in_state_info.dart';
 import 'package:frontend/views/album_page.dart';
 import 'package:frontend/views/artist_page.dart';
-import 'package:frontend/views/home_page.dart';
 import 'package:frontend/views/login_page.dart';
 import 'package:frontend/views/media_player_page.dart';
-import 'package:frontend/views/personal_page/personal_page.dart';
 import 'package:frontend/views/personal_page/upload_media_form.dart';
 import 'package:frontend/views/playlist_page.dart';
-import 'package:frontend/views/search_view.dart';
-import 'package:frontend/views/track_page.dart';
 import 'package:frontend/widgets/containers/persistent_player_container.dart';
-import 'package:frontend/widgets/tracks_collection.dart';
 import 'package:frontend/widgets/containers/navigation_container.dart';
 import 'package:go_router/go_router.dart';
 

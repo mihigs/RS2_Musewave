@@ -1,4 +1,3 @@
-import 'package:frontend/models/playlist.dart';
 import 'package:frontend/models/like.dart';
 import 'package:frontend/models/artist.dart';
 import 'package:json_annotation/json_annotation.dart';

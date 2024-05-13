@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/album.dart';
 import 'package:frontend/models/artist.dart';
 import 'package:frontend/models/base/streaming_context.dart';
-import 'package:frontend/models/notifiers/music_streamer.dart';
+import 'package:frontend/streaming/music_streamer.dart';
 import 'package:frontend/models/playlist.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/widgets/result_item_card.dart';

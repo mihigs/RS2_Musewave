@@ -5,7 +5,6 @@ import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:get_it/get_it.dart';
-import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
 class MusicStreamer extends ChangeNotifier {
@@ -13,7 +12,7 @@ class MusicStreamer extends ChangeNotifier {
   final AudioPlayer _player = AudioPlayer();
   ConcatenatingAudioSource? _playlist;
   final String _listenerUrl = const String.fromEnvironment('LISTENER_URL');
-  bool _isWeb = kIsWeb;
+  final bool _isWeb = kIsWeb;
   double initialVolume = 0.6;
   Timer? _playTimer;
 
@@ -54,7 +53,7 @@ class MusicStreamer extends ChangeNotifier {
       _trackHistory.map((track) => track.id).toList();
 
   MusicStreamer() {
-    if(kIsWeb) {
+    if(_isWeb) {
       initialVolume = 0.4;
     }
     _player.setVolume(initialVolume);

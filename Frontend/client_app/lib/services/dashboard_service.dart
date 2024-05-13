@@ -1,6 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/models/DTOs/HomepageDetailsDto.dart';
-import 'package:frontend/models/playlist.dart';
 import 'package:frontend/services/base/api_service.dart';
 
 class DashboardService extends ApiService {

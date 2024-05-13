@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:frontend/helpers/helper_functions.dart';
 import 'package:frontend/models/base/streaming_context.dart';
-import 'package:frontend/models/notifiers/music_streamer.dart';
+import 'package:frontend/streaming/music_streamer.dart';
 import 'package:frontend/models/track.dart';
-import 'package:frontend/router.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:frontend/widgets/add_to_playlist.dart';
 import 'package:frontend/widgets/seek_bar.dart';
@@ -25,10 +23,10 @@ class MediaPlayerPage extends StatefulWidget {
   });
 
   @override
-  _MediaPlayerPageState createState() => _MediaPlayerPageState();
+  MediaPlayerPageState createState() => MediaPlayerPageState();
 }
 
-class _MediaPlayerPageState extends State<MediaPlayerPage> {
+class MediaPlayerPageState extends State<MediaPlayerPage> {
   MusicStreamer? musicStreamer;
   bool trackLoaded = false;
   Track? currentTrack;
@@ -56,14 +54,8 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
     setState(() {
       if (musicStreamer == null) return;
       bool trackLoaded = musicStreamer!.trackLoaded;
-      var currentStreamingType = musicStreamer!.currentStreamingContext?.type ??
-          getStreamingContextTypeFromString(widget.contextType);
       var streamingTypeFromURL =
           getStreamingContextTypeFromString(widget.contextType);
-
-      if (streamingTypeFromURL != StreamingContextType.JAMENDO) {
-        currentStreamingType = streamingTypeFromURL;
-      }
 
       if (!trackLoaded) {
         initializeTrackData(widget.trackId, widget.contextId, widget.contextType);

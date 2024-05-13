@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/notifiers/music_streamer.dart';
+import 'package:frontend/streaming/music_streamer.dart';
 import 'package:frontend/widgets/persistent_player.dart';
 import 'package:provider/provider.dart';
 

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:frontend/services/signalr_service.dart';
@@ -9,13 +7,13 @@ class SignalRListenerWidget extends StatefulWidget {
   final Widget router;
   final GoRouter goRouter = GetIt.I<GoRouter>();
   
-  SignalRListenerWidget({required this.router});
+  SignalRListenerWidget({super.key, required this.router});
 
   @override
-  _SignalRListenerWidgetState createState() => _SignalRListenerWidgetState();
+  SignalRListenerWidgetState createState() => SignalRListenerWidgetState();
 }
 
-class _SignalRListenerWidgetState extends State<SignalRListenerWidget> {
+class SignalRListenerWidgetState extends State<SignalRListenerWidget> {
   late final SignalRService _signalRService;
 
   @override
@@ -27,9 +25,6 @@ class _SignalRListenerWidgetState extends State<SignalRListenerWidget> {
 
     _signalRService.setOnConnectionEstablishedCallback(() {
       _signalRService.registerOnTrackReady((data) {
-        //print data
-        print(data);
-        // Passing context directly might not work if initState() hasn't completed, so consider using another approach if necessary
         _showSnackBar(
           context,
           "Your track is ready!",
@@ -42,9 +37,6 @@ class _SignalRListenerWidgetState extends State<SignalRListenerWidget> {
         );
       });
       _signalRService.registerTrackUploadFailed((data) {
-        //print data
-        print(data);
-        // Passing context directly might not work if initState() hasn't completed, so consider using another approach if necessary
         _showSnackBar(
           context,
           "Track processing failed! Please try again."
