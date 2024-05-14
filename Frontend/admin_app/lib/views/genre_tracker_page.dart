@@ -2,11 +2,6 @@ import 'package:admin_app/models/DTOs/similarity_matrix_dto.dart';
 import 'package:admin_app/models/genre.dart';
 import 'package:admin_app/services/admin_service.dart';
 import 'package:flutter/material.dart';
-import 'package:admin_app/router.dart';
-import 'package:admin_app/widgets/navigation_menu.dart';
-import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
-import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -53,7 +48,7 @@ class _GenreTrackerState extends State<GenreTracker> {
                             fontWeight: FontWeight.bold, fontSize: 20)),
                     ElevatedButton.icon(
                       onPressed: updateSimilarityMatrix,
-                      icon: Icon(Icons.update), // Change the icon as needed
+                      icon: Icon(Icons.update),
                       label: Text("Recreate and update matrix"),
                     ),
                   ],
@@ -98,7 +93,7 @@ List<GridColumn> _buildColumns(SimilarityMatrixDto data) {
             padding: EdgeInsets.all(8.0),
             alignment: Alignment.center,
             child: Text(
-              'Genre'.substring(0, 1).toUpperCase() + 'Genre'.substring(1), // Capitalize the first letter
+              'Genre'.substring(0, 1).toUpperCase() + 'Genre'.substring(1),
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -112,7 +107,7 @@ List<GridColumn> _buildColumns(SimilarityMatrixDto data) {
             padding: EdgeInsets.all(8.0),
             alignment: Alignment.center,
             child: Text(
-              genre.name.substring(0, 1).toUpperCase() + genre.name.substring(1), // Capitalize the first letter
+              genre.name.substring(0, 1).toUpperCase() + genre.name.substring(1),
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),

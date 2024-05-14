@@ -1,8 +1,6 @@
 import 'package:admin_app/services/authentication_service.dart';
 import 'package:flutter/material.dart';
-import 'package:admin_app/router.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 
 class NavigationMenu extends StatefulWidget {
   final AuthenticationService authService = GetIt.I<AuthenticationService>();
@@ -54,7 +52,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
                 onPressed: () => widget.onTabTapped(1),
                 hoverColor: Colors.white10,
               )),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.8),
+          Spacer(),
           Container(
               width: 60,
               decoration: widget.selectedIndex == 2
@@ -68,8 +66,10 @@ class _NavigationMenuState extends State<NavigationMenu> {
                 onPressed: () async => await widget.authService.logout(),
                 hoverColor: Colors.white10,
               )),
+          SizedBox(height: 20),
         ],
       ),
     );
   }
 }
+

@@ -6,12 +6,6 @@ import 'package:admin_app/services/authentication_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-// void main() {
-//   runApp(MaterialApp(
-//     home: LoginPage(),
-//   ));
-// }
-
 class LoginPage extends StatefulWidget {
   final AuthenticationService authService = GetIt.I<AuthenticationService>();
   
@@ -160,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                               style: OutlinedButton.styleFrom(
                                 side: BorderSide.none,
                                 minimumSize: Size(double.infinity,
-                                    50), // this makes the button full width.
+                                    50),
                               ),
                               onPressed: () async {
                                 this._emailController.value =
@@ -181,11 +175,10 @@ class _LoginPageState extends State<LoginPage> {
                             width: double.infinity,
                             child: OutlinedButton(
                               onPressed: () {},
-                              // remove the outline
                               style: OutlinedButton.styleFrom(
                                 side: BorderSide.none,
                                 minimumSize: Size(double.infinity,
-                                    50), // this makes the button full width.
+                                    50),
                               ),
                               child: Text('Sign up'),
                             ),

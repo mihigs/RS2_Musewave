@@ -9,7 +9,8 @@
             "args": [
                 "--dart-define=BASE_URL=https://localhost:7074/api",
                 "--dart-define=SIGNALR_HUB_URL=https://localhost:7074/notificationHub",
-            ]
+            ],
+            "preLaunchTask": "Build Runner"
         },
         {
             "name": "Flutter Admin Desktop Docker",
@@ -19,7 +20,8 @@
             "args": [
                 "--dart-define=BASE_URL=http://localhost:8080/api",
                 "--dart-define=SIGNALR_HUB_URL=http://localhost:8080/notificationHub",
-            ]
+            ],
+            "preLaunchTask": "Build Runner"
         }
     ]
 }

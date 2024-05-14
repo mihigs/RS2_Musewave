@@ -9,7 +9,6 @@ class PersonalPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Implement your PersonalPage widget here
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -23,7 +22,7 @@ class PersonalPage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(
-                    double.infinity, 50), // this makes the button full width.
+                    double.infinity, 50),
               ),
               child: const Text('Logout'),
             ),
