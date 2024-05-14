@@ -1,14 +1,15 @@
-version: '2.4'
 services:
   mssql:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       ACCEPT_EULA: 'Y'
       SA_PASSWORD: 'Test_123'
     ports:
       - '1433:1433'
     volumes:
-      - mssql-data:/var/opt/mssql
+      - type: volume
+        source: mssql-data
+        target: /var/opt/mssql
     networks:
       - app-network
     healthcheck:
@@ -31,6 +32,19 @@ services:
       interval: 10s
       timeout: 6s
       retries: 6
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   listener:
     build:
       context: ./Listener
@@ -41,8 +55,8 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-    # volumes:
-    #   - listener-data:/path/to/listener/data
+    volumes:
+      - listener-data:/tmp/musewave_tracks
     networks:
       - app-network
     healthcheck:
@@ -52,7 +66,7 @@ services:
       retries: 5
   api:
     build:
-      context: ./backend
+      context: ./API
       dockerfile: Dockerfile.API
     ports:
       - '8080:8080'
@@ -62,6 +76,8 @@ services:
         condition: service_healthy
       mssql:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - app-network
     healthcheck:
@@ -69,19 +85,11 @@ services:
       interval: 14s
       timeout: 5s
       retries: 6
-  seeder:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.DataContext
-    depends_on:
-      api:
-        condition: service_healthy
-    networks:
-      - app-network
 
 networks:
   app-network:
 
 volumes:
   mssql-data:
+  redis-data:
   listener-data:
