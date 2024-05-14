@@ -190,7 +190,6 @@ class MusicStreamer extends ChangeNotifier {
       useLazyPreparation: true,
       children: [AudioSource.uri(Uri.parse(fullUrl))],
     );
-    // await _player.stop();
     await _player.setAudioSource(_playlist!,
         preload: false, initialIndex: 0, initialPosition: Duration.zero);
   }

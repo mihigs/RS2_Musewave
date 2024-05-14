@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace Models.DTOs
+﻿namespace Models.DTOs
 {
     public class AdminDashboardDetailsDto
     {

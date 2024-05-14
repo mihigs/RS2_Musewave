@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/helpers/helper_functions.dart';
 import 'package:frontend/models/album.dart';
 import 'package:frontend/models/base/streaming_context.dart';
-import 'package:frontend/streaming/music_streamer.dart';
 import 'package:frontend/models/playlist.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/services/album_service.dart';
@@ -10,7 +8,6 @@ import 'package:frontend/services/playlist_service.dart';
 import 'package:frontend/widgets/collection/collection_list_item.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart'; // Make sure you have provider package imported
 
 class CollectionList extends StatefulWidget {
   int? contextId;
@@ -18,9 +15,6 @@ class CollectionList extends StatefulWidget {
   bool? isExploreWeekly = false;
 
   CollectionList({
-    // required this.title,
-    // required this.artistName,
-    // required this.tracks,
     this.contextId,
     required this.streamingContextType,
     this.isExploreWeekly = false
@@ -156,7 +150,7 @@ class _CollectionListState extends State<CollectionList> {
                               );
                             } else {
                               // Handle null or out-of-bounds index
-                              return SizedBox(); // Or return an empty widget, depending on your UI design
+                              return SizedBox();
                             }
                           },
                         ),

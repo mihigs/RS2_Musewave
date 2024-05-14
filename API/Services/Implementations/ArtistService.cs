@@ -1,5 +1,4 @@
-﻿using DataContext.Repositories;
-using DataContext.Repositories.Interfaces;
+﻿using DataContext.Repositories.Interfaces;
 using Models.DTOs;
 using Models.Entities;
 using Services.Interfaces;
@@ -30,7 +29,8 @@ namespace Services.Implementations
             if (isJamendoArtist)
             {
                 result = await _jamendoService.GetJamendoArtistDetails(artistId.ToString());
-            } else
+            }
+            else
             {
                 result.Artist = await _artistRepository.GetArtistDetailsAsync(artistId);
                 result.Tracks = await _trackRepository.GetTracksByArtistId(artistId);

@@ -1,14 +1,10 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Services;
 using DataContext;
-using Microsoft.OpenApi.Models;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Services.Implementations;
-using Microsoft.Extensions.Options;
 using DataContext.Seeder;
-using TagLib.Ape;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Services.Implementations;
+using System.Text;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 configuration.AddEnvironmentVariables();
 var dbConnectionString = configuration["ConnectionString"];
-if(string.IsNullOrEmpty(dbConnectionString))
+if (string.IsNullOrEmpty(dbConnectionString))
 {
     throw new ArgumentNullException("ConnectionString", "API: Connection string is required.");
 }
@@ -34,19 +30,9 @@ if (redisAbortOnConnectFail == "false")
 {
     redisConnectionString += ",abortConnect=false";
 }
-Console.WriteLine("Redis connection string: " + redisConnectionString);
 
 var services = builder.Services;
 
-// Log the configuration entries
-Console.WriteLine("API: Logging environment variables");
-foreach (var item in configuration.AsEnumerable())
-{
-    Console.Write(item.Key + ":");
-    Console.WriteLine(item.Value);
-}
-
-Console.WriteLine("Connection string: " + dbConnectionString);
 // Check if the connection string is set
 if (string.IsNullOrEmpty(dbConnectionString))
 {
@@ -123,12 +109,6 @@ services.RegisterDbContext(dbConnectionString)
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        Console.WriteLine("API: Authentication > Logging environment variables");
-        foreach (var item in configuration.AsEnumerable())
-        {
-            Console.WriteLine(item.Key);
-            Console.WriteLine(item.Value);
-        }
         var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]);
         options.RequireHttpsMetadata = false;
         options.TokenValidationParameters = new TokenValidationParameters

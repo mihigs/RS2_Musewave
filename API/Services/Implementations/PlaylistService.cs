@@ -1,5 +1,4 @@
-﻿using DataContext.Repositories;
-using DataContext.Repositories.Interfaces;
+﻿using DataContext.Repositories.Interfaces;
 using Models.DTOs;
 using Models.Entities;
 using Services.Interfaces;
@@ -64,7 +63,7 @@ namespace Services.Implementations
                 Tracks = likedTracks.Select(l =>
                 {
                     l.Track.IsLiked = true; // Set the IsLiked property to true directly on the Track entity
-                    if(l.Track.JamendoId == null)
+                    if (l.Track.JamendoId == null)
                     {
                         l.Track.SignedUrl = _tracksService.GenerateSignedTrackUrl(l.Track.FilePath, l.Track.ArtistId.ToString());
                     }
@@ -104,7 +103,8 @@ namespace Services.Implementations
             if (playlist == null)
             {
                 throw new KeyNotFoundException("Playlist not found");
-            }else if (playlist.UserId != userId)
+            }
+            else if (playlist.UserId != userId)
             {
                 throw new UnauthorizedAccessException("You are not the owner of the playlist");
             }

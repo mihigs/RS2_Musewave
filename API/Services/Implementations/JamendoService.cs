@@ -1,7 +1,4 @@
-﻿using Azure;
-using DataContext.Repositories;
-using DataContext.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using DataContext.Repositories.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Models.DTOs;
@@ -83,9 +80,9 @@ namespace Services.Implementations
                         existingTrack.IsLiked = await CheckIfTrackIsLikedByUser(existingTrack.Id, userId) != null;
                     }
                     // Update the url if it has changed
-                    if(response.Audio != null && response.Audio != "")
+                    if (response.Audio != null && response.Audio != "")
                     {
-                        if(existingTrack.SignedUrl == null || existingTrack.SignedUrl != "")
+                        if (existingTrack.SignedUrl == null || existingTrack.SignedUrl != "")
                         {
                             existingTrack.SignedUrl = response.Audio;
                             await _trackRepository.Update(existingTrack);

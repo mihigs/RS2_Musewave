@@ -1,4 +1,3 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/router.dart';
@@ -8,8 +7,6 @@ import 'package:frontend/views/personal_page/tabs/playlists_tab.dart';
 import 'package:frontend/views/personal_page/tabs/profile_tab.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 
 class PersonalPage extends StatelessWidget {
   final AuthenticationService authService = GetIt.I<AuthenticationService>();

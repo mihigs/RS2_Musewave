@@ -1,5 +1,4 @@
-﻿using DataContext.Repositories;
-using DataContext.Repositories.Interfaces;
+﻿using DataContext.Repositories.Interfaces;
 using Models.Entities;
 
 namespace DataContext.Seeder
@@ -8,7 +7,7 @@ namespace DataContext.Seeder
     {
         private readonly IGenreRepository _genreRepository;
 
-        public GenreSeeder(IGenreRepository genreRepository) 
+        public GenreSeeder(IGenreRepository genreRepository)
         {
             _genreRepository = genreRepository;
         }

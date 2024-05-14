@@ -66,7 +66,7 @@ class _SearchPageState extends State<SearchPage> {
     return Column(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.fromLTRB(10, 35, 10, 10), // left, top, right, bottom
+            margin: EdgeInsets.fromLTRB(10, 35, 10, 10),
             child: SearchBarWidget(
               focusNode: _focusNode,
               key: null,

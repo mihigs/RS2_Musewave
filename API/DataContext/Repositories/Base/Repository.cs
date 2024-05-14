@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 namespace DataContext.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class

@@ -1,17 +1,17 @@
 ﻿
+using DataContext.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Models.Entities;
+using Models.Constants;
 using Models.DTOs;
+using Models.Entities;
+using Services.Interfaces;
+using Services.Responses;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Services.Responses;
-using Services.Interfaces;
-using DataContext.Repositories.Interfaces;
-using Models.Constants;
 
 namespace Services.Implementations
 {
@@ -49,7 +49,6 @@ namespace Services.Implementations
             }
             catch (Exception ex)
             {
-                //Log error
                 Console.WriteLine($"Error getting all users: {ex.Message}");
                 throw;
             }
@@ -117,7 +116,6 @@ namespace Services.Implementations
             }
             catch (Exception ex)
             {
-                //Log error
                 _logger.LogError(ex, "Error adding user");
                 return null;
             }
@@ -136,7 +134,6 @@ namespace Services.Implementations
             }
             catch (Exception ex)
             {
-                //Log error
                 Console.WriteLine($"Error getting user details: {ex.Message}");
                 throw new Exception("Error getting user details", ex);
             }

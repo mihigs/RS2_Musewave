@@ -154,10 +154,10 @@ class MediaPlayerPageState extends State<MediaPlayerPage> {
   @override
   Widget build(BuildContext context) {
     final MusicStreamer model = musicStreamer!;
-    final isJamendoArtist = model.currentTrack!.jamendoId != null;
+    final isJamendoArtist = model.currentTrack?.jamendoId != null;
     final artistId = isJamendoArtist
-        ? model.currentTrack!.artist!.jamendoArtistId
-        : model.currentTrack!.artist!.id;
+        ? model.currentTrack?.artist?.jamendoArtistId
+        : model.currentTrack?.artist?.id;
 
     return Scaffold(
       appBar: AppBar(
@@ -212,7 +212,7 @@ class MediaPlayerPageState extends State<MediaPlayerPage> {
                           child: Image.network(
                             model.currentTrack!.imageUrl!,
                             fit: BoxFit
-                                .cover, // Adjust the image's fit as needed
+                                .cover, // Adjust the images fit as needed
                             loadingBuilder: (BuildContext context, Widget child,
                                 ImageChunkEvent? loadingProgress) {
                               if (loadingProgress == null)

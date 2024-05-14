@@ -1,5 +1,3 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 RUN apt-get update \
     && apt-get install -y curl \
@@ -19,7 +17,7 @@ ENV AzureAd:CallbackPath=/signin-oidc
 ENV AzureAd:Scopes=access_as_user
 ENV Logging:LogLevel:Default=Information
 ENV Logging:LogLevel:Microsoft.AspNetCore=Warning
-ENV ConnectionString=Server=mssql,1433;Database=MusewaveDbDev;User=sa;Password=Test_123;TrustServerCertificate=True
+ENV ConnectionString=Server=mssql,1433;Database=210340;User=sa;Password=Test_123;TrustServerCertificate=True
 ENV Jwt:Key=Efc5yLrV5QUntZef6PsdJuzfEnLGv+HVYhtBHEyo00A=
 ENV Jwt:Issuer=http://localhost:8080
 ENV Jwt:Audience=http://localhost:8080

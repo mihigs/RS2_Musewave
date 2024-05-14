@@ -17,7 +17,7 @@ namespace DataContext.Seeder
         private readonly IConfiguration _configuration;
         private readonly IUserRepository _userRepository;
 
-        public TrackSeeder(IAlbumRepository albumRepository, IGenreRepository genreRepository, ITrackRepository trackRepository, IArtistRepository artistRepository, IConfiguration configuration, IUserRepository userRepository) 
+        public TrackSeeder(IAlbumRepository albumRepository, IGenreRepository genreRepository, ITrackRepository trackRepository, IArtistRepository artistRepository, IConfiguration configuration, IUserRepository userRepository)
         {
             _albumRepository = albumRepository;
             _genreRepository = genreRepository;

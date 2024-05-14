@@ -1,5 +1,4 @@
 ﻿using Models.Entities;
-using System.Net;
 
 namespace Models.DTOs
 {

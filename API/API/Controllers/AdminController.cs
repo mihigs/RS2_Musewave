@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Models.Constants;
 using Models.DTOs;
-using Models.Entities;
 using Services.Interfaces;
 
 namespace API.Controllers

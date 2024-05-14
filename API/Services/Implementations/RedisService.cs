@@ -1,7 +1,5 @@
-﻿using Azure;
-using Services.Interfaces;
+﻿using Services.Interfaces;
 using StackExchange.Redis;
-using static Models.DTOs.JamendoApiDto;
 using System.Text.Json;
 
 namespace Services.Implementations

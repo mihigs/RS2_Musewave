@@ -1,5 +1,4 @@
-﻿using DataContext.Repositories;
-using DataContext.Repositories.Interfaces;
+﻿using DataContext.Repositories.Interfaces;
 using Models.Entities;
 
 namespace DataContext.Seeder
@@ -12,7 +11,7 @@ namespace DataContext.Seeder
         private readonly IUserRepository _userRepository;
         private readonly IPlaylistTrackRepository _playlistTrackRepository;
 
-        public PlaylistSeeder(IGenreRepository genreRepository, ITrackRepository trackRepository, IPlaylistRepository playlistRepository, IUserRepository userRepository, IPlaylistTrackRepository playlistTrackRepository) 
+        public PlaylistSeeder(IGenreRepository genreRepository, ITrackRepository trackRepository, IPlaylistRepository playlistRepository, IUserRepository userRepository, IPlaylistTrackRepository playlistTrackRepository)
         {
             _genreRepository = genreRepository;
             _trackRepository = trackRepository;
@@ -37,6 +36,12 @@ namespace DataContext.Seeder
                 {
                     // Get tracks of the same genre
                     var tracks = await _trackRepository.GetTracksByGenreAsync(genre.Id);
+
+                    // Check if there are any tracks for this genre
+                    if (tracks.Count() == 0)
+                    {
+                        continue;
+                    }
 
                     // For each user, create a playlist with a few tracks of the same genre
                     foreach (var user in users)

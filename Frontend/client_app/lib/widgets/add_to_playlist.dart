@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/DTOs/UserPlaylistsDto.dart';
-import 'package:frontend/models/playlist.dart'; // Assuming you have a Playlist model
 import 'package:frontend/services/playlist_service.dart';
 import 'package:get_it/get_it.dart';
 
@@ -103,13 +102,6 @@ class _AddToPlaylistModalState extends State<AddToPlaylistModal> {
                         value: isTrackInPlaylist,
                         onChanged: (bool? checked) {
                           toggleTrackInPlaylist(playlist.id, checked ?? false);
-                          // setState(() {
-                          //   if (checked ?? false) {
-                          //     playlistService.AddToPlaylist(playlist.id, int.parse(widget.trackId));
-                          //   } else {
-                          //     playlistService.RemoveTrackFromPlaylist(playlist.id, int.parse(widget.trackId));
-                          //   }
-                          // });
                         },
                       ),
                     );

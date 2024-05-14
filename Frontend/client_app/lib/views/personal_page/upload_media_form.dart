@@ -96,10 +96,6 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
       return;
     }
 
-    // connect to the SignalR service, so we can listen for when the track finished uploading
-    // widget.signalrService.startConnection();
-
-    // create a new TrackUploadDto
     var trackMetaData = TrackUploadDto(
       trackName: _trackName,
       userId: userId,
@@ -155,7 +151,6 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
         child: Form(
           key: _formKey,
           child: Column(
-            // mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               TextFormField(
@@ -175,7 +170,6 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                   });
                 },
               ),
-              SizedBox(height: 20),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -185,12 +179,11 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                       SizedBox(height: 10),
                       Text("Uploading track..."),
                     ],
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     Text(_uploadMessage, textAlign: TextAlign.center),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
               Column(
                 children: [
                   Container(

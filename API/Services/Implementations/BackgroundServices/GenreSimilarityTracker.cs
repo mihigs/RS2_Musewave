@@ -1,11 +1,6 @@
-﻿using DataContext.Repositories;
-using DataContext.Repositories.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Models.Entities;
 using Services.Interfaces;
-using System;
-using System.Text.Json;
 
 namespace Services.Implementations.BackgroundServices
 {

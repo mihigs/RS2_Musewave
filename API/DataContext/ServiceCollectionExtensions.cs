@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using DataContext.Repositories;
+﻿using DataContext.Repositories;
 using DataContext.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Models.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Models.Entities;
 
 namespace DataContext
 {

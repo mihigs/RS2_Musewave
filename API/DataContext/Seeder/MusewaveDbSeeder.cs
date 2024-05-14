@@ -42,8 +42,8 @@ namespace DataContext.Seeder
                 await new AlbumSeeder(_artistRepository, _albumRepository).Seed();
                 await new GenreSeeder(_genreRepository).Seed();
                 await new TrackSeeder(_albumRepository, _genreRepository, _trackRepository, _artistRepository, _configuration, _userRepository).Seed();
-                await new PlaylistSeeder(_genreRepository, _trackRepository, _playlistRepository, _userRepository, _playlistTrackRepository).Seed();
                 await new LikeSeeder(_userRepository, _trackRepository, _likeRepository).Seed();
+                await new PlaylistSeeder(_genreRepository, _trackRepository, _playlistRepository, _userRepository, _playlistTrackRepository).Seed();
 
                 return;
             }

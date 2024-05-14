@@ -1,6 +1,5 @@
 ﻿using DataContext.Repositories;
 using DataContext.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Models.Entities;
 
 namespace DataContext.Seeder
@@ -10,7 +9,7 @@ namespace DataContext.Seeder
         private readonly IArtistRepository _artistRepository;
         private readonly IAlbumRepository _albumRepository;
 
-        public AlbumSeeder(IArtistRepository artistRepository, IAlbumRepository albumRepository) 
+        public AlbumSeeder(IArtistRepository artistRepository, IAlbumRepository albumRepository)
         {
             _artistRepository = artistRepository;
             _albumRepository = albumRepository;

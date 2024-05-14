@@ -25,16 +25,4 @@ class Like extends BaseEntity {
   factory Like.fromJson(Map<String, dynamic> json) => _$LikeFromJson(json);
 
   Map<String, dynamic> toJson() => _$LikeToJson(this);
-
-  // static fromJson(like) {
-  //   if (like is! Map<String, dynamic>) {
-  //     return null;
-  //   }
-  //   return Like(
-  //     userId: like['userId'],
-  //     user: like['user'],
-  //     trackId: like['trackId'],
-  //     track: like['track'],
-  //   );
-  // }
 }

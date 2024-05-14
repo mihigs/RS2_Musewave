@@ -38,7 +38,6 @@ public class RabbitMqService : IRabbitMqService
     {
         { "origin", "Listener" },
     };
-        // convert the rabbitMqMessage to json, without using newtonsoft.json
         var rabbitMqMessageParsed = JsonSerializer.Serialize(rabbitMqMessage);
         var body = Encoding.UTF8.GetBytes(rabbitMqMessageParsed);
 

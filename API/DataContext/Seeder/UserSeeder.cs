@@ -1,5 +1,4 @@
-﻿using DataContext.Repositories;
-using DataContext.Repositories.Interfaces;
+﻿using DataContext.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Models.Constants;
 using Models.Entities;
@@ -70,7 +69,7 @@ namespace DataContext.Seeder
                     }
                 };
 
-                Collection<User> users = [admin, ..casualUsers, ..artistUsers];
+                Collection<User> users = [admin, .. casualUsers, .. artistUsers];
                 await _userRepository.AddRange(users);
 
                 // Assign roles to users

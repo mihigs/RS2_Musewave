@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using RabbitMQ.Client;
 using Services.Implementations.BackgroundServices;
 using Services.Interfaces;
 using StackExchange.Redis;

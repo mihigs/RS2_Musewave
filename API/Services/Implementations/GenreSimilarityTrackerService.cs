@@ -1,5 +1,4 @@
 ﻿using DataContext.Repositories.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using Models.DTOs;
 using Models.Entities;
 using Services.Interfaces;
@@ -66,7 +65,7 @@ namespace Services.Implementations
                 {
                     foreach (var genre2 in genres)
                     {
-                        // Ensure we're not comparing a genre with itself.
+                        // Ensure we are not comparing a genre with itself.
                         if (genre1 != genre2)
                         {
                             // Create a string key representing the genre pair, ensuring the lower ID

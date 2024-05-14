@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Models.Entities;
-using Models.DTOs;
-using Services.Responses;
 using Microsoft.IdentityModel.Tokens;
+using Models.DTOs;
+using Models.Entities;
 using Services.Interfaces;
-using Services.Implementations;
+using Services.Responses;
 using System.Security.Claims;
 
 namespace API.Controllers
@@ -71,7 +70,6 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                // Log error
                 _logger.LogError(ex, "Error logging in user");
                 return BadRequest();
             }
@@ -115,7 +113,6 @@ namespace API.Controllers
             return apiResponse;
         }
 
-        // GetHomepageDetails
         [HttpGet("getHomepageDetails")]
         public async Task<ApiResponse> GetHomepageDetails()
         {

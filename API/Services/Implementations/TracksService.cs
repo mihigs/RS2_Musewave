@@ -1,13 +1,13 @@
-﻿using DataContext.Repositories.Interfaces;
+﻿using DataContext.Repositories;
+using DataContext.Repositories.Interfaces;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using Models.DTOs;
 using Models.Entities;
+using Models.Enums;
 using Services.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using DataContext.Repositories;
-using Models.Enums;
 
 namespace Services.Implementations
 {
@@ -61,11 +61,11 @@ namespace Services.Implementations
             {
                 throw new Exception("Track not found");
             }
-            if(trackResult.FilePath is null && trackResult.JamendoId is null)
+            if (trackResult.FilePath is null && trackResult.JamendoId is null)
             {
                 throw new Exception("Track is not processed yet");
             }
-            if(trackResult.JamendoId is null)
+            if (trackResult.JamendoId is null)
             {
                 var signedUrl = GenerateSignedTrackUrl(trackResult.FilePath, trackResult.ArtistId.ToString());
                 trackResult.SignedUrl = signedUrl;
@@ -73,7 +73,7 @@ namespace Services.Implementations
             // Check if the track is liked by the user
             trackResult.IsLiked = await CheckIfTrackIsLikedByUser(trackResult.Id, userId) != null;
             return trackResult;
-        } 
+        }
 
         private string GenerateToken(string trackId, string artistId)
         {
@@ -120,7 +120,7 @@ namespace Services.Implementations
                 // remove tracks that are in the track history
                 tracksSameGenre = tracksSameGenre.Where(x => !trackHistoryIds.Contains(x.Id));
                 tracksSameGenre = tracksSameGenre.Where(x => x.Id != currentTrackId);
-                if(tracksSameGenre.Count() > 0)
+                if (tracksSameGenre.Count() > 0)
                 {
                     nextTrack = tracksSameGenre.OrderBy(x => Guid.NewGuid()).FirstOrDefault(); // Random track with same genre
                 }
@@ -222,18 +222,18 @@ namespace Services.Implementations
                     throw new ArgumentException("Invalid streaming context type");
             }
 
-            if(nextTrack is null)
+            if (nextTrack is null)
             {
                 throw new Exception("Next track not found");
             }
 
             // Generate the signed URL for Musewave tracks
-            if(nextTrack.JamendoId is null)
+            if (nextTrack.JamendoId is null)
             {
                 nextTrack.SignedUrl = GenerateSignedTrackUrl(nextTrack.FilePath, nextTrack.ArtistId.ToString());
             }
             // Check if the track is liked by the user
-            if(getNextTrackDto.StreamingContextType == StreamingContextType.LIKED)
+            if (getNextTrackDto.StreamingContextType == StreamingContextType.LIKED)
             {
                 nextTrack.IsLiked = true;
             }
@@ -256,7 +256,7 @@ namespace Services.Implementations
                 return await _likeRepository.Add(new Like { TrackId = trackId, UserId = userId });
             }
         }
-        
+
         public async Task<Like?> CheckIfTrackIsLikedByUser(int trackId, string userId)
         {
             return await _likeRepository.CheckIfTrackIsLikedByUser(trackId, userId);

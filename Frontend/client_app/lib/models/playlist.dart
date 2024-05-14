@@ -29,16 +29,6 @@ class Playlist extends BaseEntity {
   factory Playlist.fromJson(Map<String, dynamic> json) => _$PlaylistFromJson(json);
 
   Map<String, dynamic> toJson() => _$PlaylistToJson(this);
-
-  // static fromJson(playlist) {
-  //   return Playlist(
-  //     id: playlist['id'],
-  //     name: playlist['name'],
-  //     userId: playlist['userId'],
-  //     user: playlist['user'] != null ? User.fromJson(playlist['user']) : null,
-  //     playlistTracks: List<Track>.from(playlist['playlistTracks'].map((track) => Track.fromJson(track))),
-  //   );
-  // }
 }
 
 class PlaylistTrack {

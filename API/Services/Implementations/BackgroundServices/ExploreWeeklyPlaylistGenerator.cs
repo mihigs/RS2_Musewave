@@ -1,11 +1,9 @@
-﻿using DataContext.Repositories;
-using DataContext.Repositories.Interfaces;
+﻿using DataContext.Repositories.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Models.Entities;
 using Services.Interfaces;
-using System;
 
 namespace Services.Implementations.BackgroundServices
 {
@@ -168,18 +166,6 @@ namespace Services.Implementations.BackgroundServices
                         if (similarTracks.Count == previousCount) break; // Break if no new tracks were added
                     }
 
-                    //foreach (var genreId in similarGenres.Keys)
-                    //{
-                    //    var tracksInGenre = await trackRepository.GetTracksByGenreAsync(genreId);
-                    //    foreach (var track in tracksInGenre)
-                    //    {
-                    //        if (!likedTracks.Any(t => t.Id == track.Id))
-                    //        {
-                    //            similarTracks.Add(track);
-                    //        }
-                    //    }
-                    //}
-
 
                     // 7. Create a new playlist called "Explore Weekly" for each user and add the similar tracks to this playlist
                     var exploreWeeklyPlaylist = new Playlist
@@ -195,7 +181,6 @@ namespace Services.Implementations.BackgroundServices
                     }
 
                     await playlistRepository.Add(exploreWeeklyPlaylist);
-                    //await playlistTrackRepository.AddTracksToPlaylist(exploreWeeklyPlaylist.Id, similarTracks);
                     Console.WriteLine($"Explore Weekly playlist created for user {user.Id}.");
                 }
             }

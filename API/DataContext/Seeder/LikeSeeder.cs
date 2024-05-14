@@ -1,5 +1,4 @@
-﻿using DataContext.Repositories;
-using DataContext.Repositories.Interfaces;
+﻿using DataContext.Repositories.Interfaces;
 using Models.Entities;
 
 namespace DataContext.Seeder
@@ -10,7 +9,7 @@ namespace DataContext.Seeder
         private readonly ITrackRepository _trackRepository;
         private readonly ILikeRepository _likeRepository;
 
-        public LikeSeeder(IUserRepository userRepository, ITrackRepository trackRepository, ILikeRepository likeRepository) 
+        public LikeSeeder(IUserRepository userRepository, ITrackRepository trackRepository, ILikeRepository likeRepository)
         {
             _userRepository = userRepository;
             _trackRepository = trackRepository;
@@ -64,6 +63,23 @@ namespace DataContext.Seeder
                                 TrackId = track.Id
                             });
                         }
+                    }
+                }
+
+
+                // Make sure the Admin user has liked tracks
+                var admin = users.FirstOrDefault(x => x.Email == "admin@musewave.com");
+                if (admin != null)
+                {
+                    var likedTracks = tracks.OrderBy(x => Guid.NewGuid()).Take(tracks.Count() / 2);
+
+                    foreach (var track in likedTracks)
+                    {
+                        likes.Add(new Like
+                        {
+                            UserId = admin.Id,
+                            TrackId = track.Id
+                        });
                     }
                 }
 

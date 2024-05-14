@@ -1,8 +1,5 @@
-﻿using DataContext.Repositories.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
-using Models.DTOs;
+﻿using Models.DTOs;
 using Models.Entities;
-using Services.Implementations;
 
 namespace Services.Interfaces
 {

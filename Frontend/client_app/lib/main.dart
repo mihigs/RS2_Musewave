@@ -88,7 +88,6 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       builder: (context, router) {
-        // Wrap the router with the SignalRListenerWidget
         return SignalRListenerWidget(
           router: router!
         );

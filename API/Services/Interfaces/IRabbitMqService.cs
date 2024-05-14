@@ -1,6 +1,4 @@
-﻿using Models.Entities;
-
-namespace Services.Interfaces
+﻿namespace Services.Interfaces
 {
     public interface IRabbitMqService
     {

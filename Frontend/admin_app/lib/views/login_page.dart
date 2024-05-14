@@ -86,7 +86,6 @@ class _LoginPageState extends State<LoginPage> {
             child: Container(
               padding: EdgeInsets.fromLTRB(30, 0, 30, 70),
               child: Form(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
@@ -157,13 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                                     50),
                               ),
                               onPressed: () async {
-                                this._emailController.value =
-                                    new TextEditingValue(
-                                        text: "admin@musewave.com");
-                                this._passwordController.value =
-                                    new TextEditingValue(text: "Test_123");
-                                if (_formKey.currentState?.validate() ??
-                                    false) {
+                                if (_formKey.currentState?.validate() ?? false) {
                                   await _login();
                                 }
                               },

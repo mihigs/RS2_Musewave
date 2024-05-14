@@ -7,12 +7,15 @@ import 'package:frontend/models/DTOs/TrackUploadDto.dart';
 import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/services/base/api_service.dart';
+import 'package:frontend/services/signalr_service.dart';
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 
 class TracksService extends ApiService {
   final FlutterSecureStorage secureStorage;
+  final SignalRService signalrService = GetIt.I<SignalRService>();
 
   TracksService(this.secureStorage) : super(secureStorage: secureStorage);
 
@@ -109,6 +112,11 @@ class TracksService extends ApiService {
       request.fields['albumId'] = trackUploadDto.albumId!;
     }
 
+    // Check the signalR connection, and reestablish if needed
+    if (!signalrService.isConnected) {
+      await signalrService.startConnection();
+    }
+
     var response = await request.send();
 
     if (response.statusCode == 201) {
@@ -158,7 +166,6 @@ class TracksService extends ApiService {
 
   Future<Track> getNextTrack(StreamingContext streamingContext) async {
     try {
-      //streamingContext.trackHistoryIds is a List<String>
       var data = {
         'CurrentTrackId': streamingContext.track.id.toString(),
         'ContextId': streamingContext.contextId?.toString(),
@@ -191,8 +198,6 @@ class TracksService extends ApiService {
     }
   }
 
-  // a method to like a track
-  // should hit the Tracks/LikeTrack/{trackId} endpoint
   Future<bool> toggleLikeTrack(int trackId) async {
     try {
       final response = await httpPost('Tracks/ToggleLikeTrack/$trackId', null);
