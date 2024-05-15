@@ -53,7 +53,7 @@ class MusicStreamer extends ChangeNotifier {
       _trackHistory.map((track) => track.id).toList();
 
   MusicStreamer() {
-    if(_isWeb) {
+    if (_isWeb) {
       initialVolume = 0.4;
     }
     _player.setVolume(initialVolume);
@@ -61,18 +61,22 @@ class MusicStreamer extends ChangeNotifier {
   }
 
   Future<void> startTrack(StreamingContext streamingContext) async {
-    if (streamingContext.track.signedUrl != null &&
-        streamingContext.track.signedUrl != "") {
-      await stop();
-      await _clearTrackState();
-      await _initializePlaylist(streamingContext.track.signedUrl!);
-      await _setCurrentTrackState(streamingContext.track);
-      currentStreamingContext = streamingContext;
-      _trackHistory.add(streamingContext.track);
-      play();
-      _prepareNextTrack(streamingContext);
-    } else {
-      throw Exception('Invalid track URL');
+    try {
+      if (streamingContext.track.signedUrl != null &&
+          streamingContext.track.signedUrl != "") {
+        await stop();
+        await _clearTrackState();
+        await _initializePlaylist(streamingContext.track.signedUrl!);
+        await _setCurrentTrackState(streamingContext.track);
+        currentStreamingContext = streamingContext;
+        _trackHistory.add(streamingContext.track);
+        play();
+        _prepareNextTrack(streamingContext);
+      } else {
+        print('INVALID TRACK URL');
+      }
+    } catch (e) {
+      print("Error starting track: $e");
     }
   }
 

@@ -1,4 +1,5 @@
 ﻿using DataContext.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Models.DTOs;
@@ -18,8 +19,17 @@ namespace Services.Implementations
         private readonly IGenreRepository _genreRepository;
         private readonly ILikeRepository _likeRepository;
         private readonly IJamendoApiActivityRepository _jamendoApiActivityRepository;
+        private readonly IUserRepository _userRepository;
 
-        public JamendoService(IConfiguration configuration, ITrackRepository trackRepository, IArtistRepository artistRepository, IGenreRepository genreRepository, ILikeRepository likeRepository, IJamendoApiActivityRepository jamendoApiActivityRepository)
+        public JamendoService(
+            IConfiguration configuration,
+            ITrackRepository trackRepository,
+            IArtistRepository artistRepository,
+            IGenreRepository genreRepository,
+            ILikeRepository likeRepository,
+            IJamendoApiActivityRepository jamendoApiActivityRepository,
+            IUserRepository userRepository
+            )
         {
             _configuration = configuration;
             _trackRepository = trackRepository;
@@ -27,6 +37,7 @@ namespace Services.Implementations
             _genreRepository = genreRepository;
             _likeRepository = likeRepository;
             _jamendoApiActivityRepository = jamendoApiActivityRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<IEnumerable<Track>> SearchJamendoByTrackName(string trackName, string userId)
@@ -106,10 +117,10 @@ namespace Services.Implementations
                 else if (response.ArtistId != null)
                 {
                     // Check if artist already exists in the database
-                    var existingArtist = await _artistRepository.GetArtistsByNameAsync(response.ArtistName);
-                    if (existingArtist.Count() > 0)
+                    var existingArtist = await _artistRepository.GetArtistByJamendoId(response.ArtistId);
+                    if (existingArtist != null)
                     {
-                        track.ArtistId = existingArtist.First().Id;
+                        track.ArtistId = existingArtist.Id;
                     }
                     else
                     {
@@ -117,7 +128,17 @@ namespace Services.Implementations
                         {
                             JamendoArtistId = response.ArtistId,
                             ArtistImageUrl = response.Image,
-                            User = new User
+                        };
+
+                        // Check if the User already exists in the database
+                        var existingUser = await _userRepository.GetUserByName(response.ArtistName);
+                        if (existingUser != null)
+                        {
+                            track.Artist.User = existingUser;
+                        }
+                        else
+                        {
+                            track.Artist.User = new User
                             {
                                 UserName = response.ArtistName,
                                 NormalizedUserName = response.ArtistName.ToUpper(),
@@ -126,8 +147,8 @@ namespace Services.Implementations
                                 TwoFactorEnabled = false,
                                 LockoutEnabled = false,
                                 AccessFailedCount = 0
-                            }
-                        };
+                            };
+                        }
                     };
                 }
                 if (response?.MusicInfo?.Tags?.Genres != null)

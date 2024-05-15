@@ -8,14 +8,22 @@ class DashboardService extends ApiService {
   DashboardService(this.secureStorage) : super(secureStorage: secureStorage);
 
   Future<HomepageDetailsDto> GetHomepageDetails() async {
-    try {
-      final response = await httpGet('User/GetHomepageDetails');
+    const int maxRetries = 3;
+    int retryCount = 0;
 
-      HomepageDetailsDto result = HomepageDetailsDto.fromJson(response['data']);
-
-      return result;
-    } on Exception {
-      rethrow;
+    while (retryCount < maxRetries) {
+      try {
+        final response = await httpGet('User/GetHomepageDetails');
+        HomepageDetailsDto result = HomepageDetailsDto.fromJson(response['data']);
+        return result;
+      } catch (e) {
+        retryCount++;
+        if (retryCount == maxRetries) {
+          rethrow;
+        }
+        await Future.delayed(Duration(seconds: 2)); // Wait before retrying
+      }
     }
+    throw Exception('Failed to fetch homepage details after $maxRetries attempts');
   }
 }

@@ -72,7 +72,7 @@ Widget build(BuildContext context) {
                   child: Text(
                     'Start by creating your first playlist',
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
               );

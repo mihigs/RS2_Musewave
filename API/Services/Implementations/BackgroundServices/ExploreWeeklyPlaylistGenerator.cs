@@ -41,7 +41,6 @@ namespace Services.Implementations.BackgroundServices
             }
         }
 
-
         private async Task GenerateExploreWeeklyPlaylists()
         {
             var similarityMatrix = await _redisService.GetSimilarityMatrixAsync();

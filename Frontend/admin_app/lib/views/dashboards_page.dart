@@ -233,8 +233,8 @@ class DashboardItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.grey)),
-          Text(value, style: Theme.of(context).textTheme.bodyText2),
+          Text(title, style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.grey)),
+          Text(value, style: Theme.of(context).textTheme.bodyMedium),
         ],
       ),
     );

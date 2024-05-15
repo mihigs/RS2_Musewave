@@ -6,5 +6,7 @@ namespace DataContext.Repositories.Interfaces
     {
         Task<User> GetAdminUser();
         Task<int> GetUserCount();
+        Task<User> GetUserByName(string name);
+        Task<User> GetUserById(string id);
     }
 }
