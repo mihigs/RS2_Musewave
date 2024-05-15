@@ -163,20 +163,20 @@ class _LoginPageState extends State<LoginPage> {
                               child: Text('Log in'),
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.only(top: 20),
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              onPressed: () {},
-                              // remove the outline
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide.none,
-                                minimumSize: Size(double.infinity,
-                                    50),
-                              ),
-                              child: Text('Sign up'),
-                            ),
-                          ),
+                          // Container(
+                          //   margin: EdgeInsets.only(top: 20),
+                          //   width: double.infinity,
+                          //   child: OutlinedButton(
+                          //     onPressed: () {},
+                          //     // remove the outline
+                          //     style: OutlinedButton.styleFrom(
+                          //       side: BorderSide.none,
+                          //       minimumSize: Size(double.infinity,
+                          //           50),
+                          //     ),
+                          //     child: Text('Sign up'),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

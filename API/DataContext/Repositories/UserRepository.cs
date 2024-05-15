@@ -19,6 +19,18 @@ namespace DataContext.Repositories
                 .FirstOrDefaultAsync(u => u.Email == musewaveAdminEmail);
         }
 
+        public async Task<User> GetUserById(string id)
+        {
+            return await _dbContext.Set<User>()
+                .FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<User> GetUserByName(string name)
+        {
+            return await _dbContext.Set<User>()
+                .FirstOrDefaultAsync(u => u.UserName == name);
+        }
+
         public async Task<int> GetUserCount()
         {
             return await _dbContext.Set<User>().CountAsync();

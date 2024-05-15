@@ -65,7 +65,6 @@ namespace DataContext.Repositories
                 .OrderByDescending(p => p.CreatedAt)
                 .FirstOrDefaultAsync();
 
-
             if (exploreWeeklyPlaylist is null)
             {
                 return null;

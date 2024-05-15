@@ -85,7 +85,7 @@ class _SearchResultsState extends State<SearchResults> {
                     Container(
                         padding: const EdgeInsets.all(12.0),
                         child: Text('Tracks',
-                            style: Theme.of(context).textTheme.headline4)),
+                            style: Theme.of(context).textTheme.headlineMedium)),
                     GridView.count(
                       crossAxisCount: 3,
                       crossAxisSpacing: 5,
@@ -120,7 +120,7 @@ class _SearchResultsState extends State<SearchResults> {
                     Container(
                         padding: const EdgeInsets.all(12.0),
                         child: Text('Jamendo Tracks',
-                            style: Theme.of(context).textTheme.headline4)),
+                            style: Theme.of(context).textTheme.headlineMedium)),
                     GridView.count(
                       crossAxisCount: 3,
                       crossAxisSpacing: 5,
@@ -133,8 +133,6 @@ class _SearchResultsState extends State<SearchResults> {
                             .take(_jamendoTracksToShow)
                             .map((track) => GestureDetector(
                                   onTap: () => {
-                                    model.startTrack(StreamingContext(track, 0,
-                                        StreamingContextType.JAMENDO)),
                                     GoRouter.of(context)
                                         .push('/track/${track.id}/0/3'),
                                   },
@@ -159,7 +157,7 @@ class _SearchResultsState extends State<SearchResults> {
                     Container(
                         padding: const EdgeInsets.all(12.0),
                         child: Text('Albums',
-                            style: Theme.of(context).textTheme.headline4)),
+                            style: Theme.of(context).textTheme.headlineMedium)),
                     GridView.count(
                       crossAxisCount: 3,
                       crossAxisSpacing: 5,
@@ -194,7 +192,7 @@ class _SearchResultsState extends State<SearchResults> {
                     Container(
                         padding: const EdgeInsets.all(12.0),
                         child: Text('Artists',
-                            style: Theme.of(context).textTheme.headline4)),
+                            style: Theme.of(context).textTheme.headlineMedium)),
                     GridView.count(
                       crossAxisCount: 3,
                       crossAxisSpacing: 5,
@@ -235,7 +233,7 @@ class _SearchResultsState extends State<SearchResults> {
                     Container(
                         padding: const EdgeInsets.all(12.0),
                         child: Text('Playlists',
-                            style: Theme.of(context).textTheme.headline4)),
+                            style: Theme.of(context).textTheme.headlineMedium)),
                     GridView.count(
                       crossAxisCount: 3,
                       crossAxisSpacing: 5,

@@ -10,12 +10,14 @@ namespace Services.Implementations
         private readonly IPlaylistRepository _playlistRepository;
         private readonly ITracksService _tracksService;
         private readonly ILikeRepository _likeRepository;
+        private readonly IExploreWeeklyGenerator _exploreWeeklyGenerator;
 
-        public PlaylistService(IPlaylistRepository playlistRepository, ITracksService tracksService, ILikeRepository likeRepository)
+        public PlaylistService(IPlaylistRepository playlistRepository, ITracksService tracksService, ILikeRepository likeRepository, IExploreWeeklyGenerator exploreWeeklyGenerator)
         {
             _playlistRepository = playlistRepository ?? throw new ArgumentNullException(nameof(playlistRepository));
             _tracksService = tracksService ?? throw new ArgumentNullException(nameof(tracksService));
             _likeRepository = likeRepository;
+            _exploreWeeklyGenerator = exploreWeeklyGenerator;
         }
 
         public async Task<IEnumerable<Playlist>> GetPlaylistsByNameAsync(string name, bool arePublic = true)
@@ -50,7 +52,12 @@ namespace Services.Implementations
 
         public async Task<Playlist> GetExploreWeeklyPlaylistAsync(string userId)
         {
-            return await _playlistRepository.GetExploreWeeklyPlaylistAsync(userId);
+            var exploreWeeklyPlaylist = await _playlistRepository.GetExploreWeeklyPlaylistAsync(userId);
+            if (exploreWeeklyPlaylist == null)
+            {
+                exploreWeeklyPlaylist = await _exploreWeeklyGenerator.GenerateExploreWeeklyPlaylistForUser(userId);
+            }
+            return exploreWeeklyPlaylist;
         }
 
         public async Task<Playlist> GetLikedPlaylistAsync(string userId)
