@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Models.DTOs;
+using Models.DTOs.Queries;
 using Models.Entities;
 using Models.Enums;
 using Services.Interfaces;
@@ -38,6 +39,19 @@ namespace Services.Implementations
             _likeRepository = likeRepository;
             _jamendoApiActivityRepository = jamendoApiActivityRepository;
             _userRepository = userRepository;
+        }
+        public async Task<IEnumerable<Track>> GetJamendoTracksAsync(JamendoTrackQuery query, string userId)
+        {
+            var results = new List<Track>();
+
+            if (!string.IsNullOrEmpty(query.Name))
+            {
+                var artistsByName = await SearchJamendoByTrackName(query.Name, userId);
+                results.AddRange(artistsByName);
+            }
+
+            // Remove duplicates if any
+            return results.Distinct().ToList();
         }
 
         public async Task<IEnumerable<Track>> SearchJamendoByTrackName(string trackName, string userId)

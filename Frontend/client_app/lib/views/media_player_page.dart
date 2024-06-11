@@ -6,6 +6,7 @@ import 'package:frontend/models/track.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:frontend/widgets/add_to_playlist.dart';
 import 'package:frontend/widgets/seek_bar.dart';
+import 'package:frontend/widgets/track_comments.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -173,12 +174,23 @@ class MediaPlayerPageState extends State<MediaPlayerPage> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.playlist_add, size: 32), // Playlist add icon
+            icon: Icon(Icons.comment, size: 31),
+            onPressed: () {
+              showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                builder: (BuildContext context) {
+                  return FractionallySizedBox(heightFactor: 0.9, child: TrackCommentsModal(trackId: widget.trackId));
+                },
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.playlist_add, size: 32),
             onPressed: () {
               showModalBottomSheet(
                 context: context,
                 builder: (BuildContext context) {
-                  // This will pass the current trackId to the modal
                   return AddToPlaylistModal(trackId: widget.trackId);
                 },
               );

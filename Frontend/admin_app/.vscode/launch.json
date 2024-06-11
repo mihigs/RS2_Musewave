@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Admin Desktop Docker",
+            "name": "Windows (Docker)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
@@ -13,7 +13,7 @@
             "preLaunchTask": "Build Runner",
         },
         {
-            "name": "Admin Desktop Development",
+            "name": "Windows",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",

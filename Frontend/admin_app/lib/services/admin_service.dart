@@ -33,10 +33,10 @@ class AdminService extends ApiService {
     return result;
   }  
 
-  Future<SimilarityMatrixDto> UpdateSimilarityMatrix() async {
+  Future<SimilarityMatrixDto> RefreshSimilarityMatrix() async {
     SimilarityMatrixDto result;
     try {
-      final response = await httpGet('Admin/UpdateSimilarityMatrix');
+      final response = await httpGet('Admin/RefreshSimilarityMatrix');
       result = SimilarityMatrixDto.fromJson(response['data']);
     } on Exception {
       rethrow;

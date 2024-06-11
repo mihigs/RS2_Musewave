@@ -1,4 +1,5 @@
 ﻿using DataContext.Repositories;
+using Models.DTOs.Queries;
 using Models.Entities;
 using Services.Interfaces;
 
@@ -14,6 +15,20 @@ namespace Services.Implementations
             _albumRepository = albumRepository ?? throw new ArgumentNullException(nameof(albumRepository));
             _tracksService = tracksService ?? throw new ArgumentNullException(nameof(tracksService));
         }
+        public async Task<IEnumerable<Album>> GetAlbumsAsync(AlbumQuery query)
+        {
+            var results = new List<Album>();
+
+            if (!string.IsNullOrEmpty(query.Title))
+            {
+                var artistsByTitle = await GetAlbumsByTitleAsync(query.Title);
+                results.AddRange(artistsByTitle);
+            }
+
+            // Remove duplicates if any
+            return results.Distinct().ToList();
+        }
+
         public async Task<IEnumerable<Album>> GetAllAlbumsAsync()
         {
             return await _albumRepository.GetAll().ConfigureAwait(false);

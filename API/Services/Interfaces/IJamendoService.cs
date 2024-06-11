@@ -1,4 +1,5 @@
 ﻿using Models.DTOs;
+using Models.DTOs.Queries;
 using Models.Entities;
 using static Models.DTOs.JamendoApiDto;
 
@@ -6,6 +7,7 @@ namespace Services.Interfaces
 {
     public interface IJamendoService
     {
+        Task<IEnumerable<Track>> GetJamendoTracksAsync(JamendoTrackQuery query, string userId);
         Task<IEnumerable<Track>> SearchJamendoByTrackName(string trackName, string userId);
         Task<Track> GetTrackById(int trackId, string userId);
 

@@ -2,6 +2,7 @@
 using DataContext.Repositories.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Models.DTOs;
+using Models.DTOs.Queries;
 using Models.Entities;
 using Models.Enums;
 using Services.Interfaces;
@@ -20,6 +21,8 @@ namespace Services.Implementations
         private readonly IArtistRepository _artistRepository;
         private readonly IJamendoService _jamendoService;
         private readonly IRedisService _redisService;
+        private readonly ICommentRepository _commentRepository;
+        private readonly IUserRepository _userRepository;
 
         public TracksService(
             ITrackRepository trackRespository,
@@ -28,7 +31,9 @@ namespace Services.Implementations
             ILikeRepository likeRepository,
             IArtistRepository artistRepository,
             IJamendoService jamendoService,
-            IRedisService redisService
+            IRedisService redisService,
+            ICommentRepository commentRepository,
+            IUserRepository userRepository
         )
         {
             _trackRepository = trackRespository ?? throw new ArgumentNullException(nameof(trackRespository));
@@ -38,6 +43,8 @@ namespace Services.Implementations
             _artistRepository = artistRepository;
             _jamendoService = jamendoService;
             _redisService = redisService;
+            _commentRepository = commentRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<IEnumerable<Track>> GetLikedTracksAsync(string userId)
@@ -325,6 +332,45 @@ namespace Services.Implementations
                 nextTrack = await _trackRepository.GetRandomTrack(excluding: []);
             }
             return nextTrack;
+        }
+
+        public async Task<IEnumerable<Track>> GetTracksAsync(TrackQuery query)
+        {
+            var results = new List<Track>();
+
+            if (!string.IsNullOrEmpty(query.Name))
+            {
+                var tracksByName = await GetTracksByNameAsync(query.Name);
+                results.AddRange(tracksByName);
+            }
+
+            if (query.ArtistId.HasValue)
+            {
+                var tracksByArtist = await GetTracksByArtistId(query.ArtistId.Value);
+                results.AddRange(tracksByArtist);
+            }
+
+            // Remove duplicates if any
+            return results.Distinct().ToList();
+        }
+
+        public async Task<IEnumerable<Comment>> GetTrackComments(int trackId)
+        {
+            return await _commentRepository.GetTrackComments(trackId);
+        }
+
+        public async Task<Comment> AddCommentToTrack(int trackId, string text, string userId)
+        {
+            // get user, convert string userId to int userId
+            var user = await _userRepository.GetUserById(userId);
+            var comment = new Comment
+            {
+                TrackId = trackId,
+                Text = text,
+                UserId = userId,
+                User = user
+            };
+            return await _commentRepository.Add(comment);
         }
     }
 }

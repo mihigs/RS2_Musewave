@@ -27,4 +27,12 @@ namespace Models.Entities
         public virtual Genre Genre { get; set; }
     }
 
+    public class TrackComment
+    {
+        public int TrackId { get; set; }
+        public virtual Track Track { get; set; }
+        public int CommentId { get; set; }
+        public virtual Comment Comment { get; set; }
+    }
+
 }

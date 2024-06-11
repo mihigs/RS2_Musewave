@@ -25,9 +25,9 @@ class _GenreTrackerState extends State<GenreTracker> {
     return GetIt.I<AdminService>().GetSimilarityMatrix();
   }
 
-  void updateSimilarityMatrix() {
+  void refreshSimilarityMatrix() {
     setState(() {
-      similarityMatrix = GetIt.I<AdminService>().UpdateSimilarityMatrix();
+      similarityMatrix = GetIt.I<AdminService>().RefreshSimilarityMatrix();
     });
   }
 
@@ -47,7 +47,7 @@ class _GenreTrackerState extends State<GenreTracker> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20)),
                     ElevatedButton.icon(
-                      onPressed: updateSimilarityMatrix,
+                      onPressed: refreshSimilarityMatrix,
                       icon: Icon(Icons.update),
                       label: Text("Recreate and update matrix"),
                     ),

@@ -58,8 +58,8 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Route("UpdateSimilarityMatrix")]
-        public async Task<ApiResponse> UpdateSimilarityMatrix()
+        [Route("RefreshSimilarityMatrix")]
+        public async Task<ApiResponse> RefreshSimilarityMatrix()
         {
             ApiResponse apiResponse = new ApiResponse();
             try

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTOs;
+using Models.DTOs.Queries;
 using Models.Entities;
+using Services.Implementations;
 using Services.Interfaces;
 using System.Security.Claims;
 
@@ -19,8 +21,35 @@ namespace API.Controllers
             _playlistService = playlistService ?? throw new ArgumentNullException(nameof(playlistService));
         }
 
-        [HttpGet("GetPlaylistDetailsAsync/{playlistId}")]
-        public async Task<ApiResponse> GetPlaylistDetailsAsync(int playlistId)
+        [HttpGet("GetPlaylists")]
+        public async Task<IActionResult> GetPlaylists([FromQuery] PlaylistQuery query)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var results = await _playlistService.GetPlaylistsAsync(query);
+
+                if (results == null || !results.Any())
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("No playlists found");
+                    return Ok(apiResponse);
+                }
+
+                apiResponse.Data = results;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
+
+        [HttpGet("GetPlaylistDetails")]
+        public async Task<ApiResponse> GetPlaylistDetails(int playlistId)
         {
             ApiResponse apiResponse = new ApiResponse();
             try
@@ -46,8 +75,8 @@ namespace API.Controllers
             return apiResponse;
         }
 
-        [HttpGet("GetUserPlaylists")]
-        public async Task<ApiResponse> GetUserPlaylists()
+        [HttpGet("GetMyPlaylists")]
+        public async Task<ApiResponse> GetMyPlaylists()
         {
             ApiResponse apiResponse = new ApiResponse();
             try
@@ -73,26 +102,8 @@ namespace API.Controllers
             return apiResponse;
         }
 
-        [HttpGet("GetPlaylistsByName")]
-        public async Task<ApiResponse> GetPlaylistsByName(string name)
-        {
-            ApiResponse apiResponse = new ApiResponse();
-            try
-            {
-                apiResponse.Data = await _playlistService.GetPlaylistsByNameAsync(name);
-                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
-            }
-            catch (Exception ex)
-            {
-                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
-                apiResponse.Errors.Add(ex.Message);
-                throw;
-            }
-            return apiResponse;
-        }
-
-        [HttpGet("GetExploreWeeklyPlaylist")]
-        public async Task<ApiResponse> GetExploreWeeklyPlaylist()
+        [HttpGet("GetMyExploreWeeklyPlaylist")]
+        public async Task<ApiResponse> GetMyExploreWeeklyPlaylist()
         {
             ApiResponse apiResponse = new ApiResponse();
             try
@@ -117,8 +128,8 @@ namespace API.Controllers
             return apiResponse;
         }
 
-        [HttpGet("GetLikedTracksPlaylist")]
-        public async Task<ApiResponse> GetLikedTracksPlaylist()
+        [HttpGet("GetMyLikedTracksPlaylist")]
+        public async Task<ApiResponse> GetMyLikedTracksPlaylist()
         {
             ApiResponse apiResponse = new ApiResponse();
             try
@@ -143,61 +154,8 @@ namespace API.Controllers
             return apiResponse;
         }
 
-        [HttpPost("AddToPlaylist")]
-        public async Task<ApiResponse> AddToPlaylist(TogglePlaylistTrackDto addToPlaylistDto)
-        {
-            ApiResponse apiResponse = new ApiResponse();
-            try
-            {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim is null)
-                {
-                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                    apiResponse.Errors.Add("User not found");
-                    return apiResponse;
-                }
-                string userId = userIdClaim.Value;
-                await _playlistService.AddToPlaylistAsync(addToPlaylistDto, userId);
-                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
-            }
-            catch (Exception ex)
-            {
-                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
-                apiResponse.Errors.Add(ex.Message);
-                throw;
-            }
-            return apiResponse;
-        }
-
         [HttpPost("CreatePlaylist")]
-        public async Task<ApiResponse> CreatePlaylist(Playlist playlist)
-        {
-            ApiResponse apiResponse = new ApiResponse();
-            try
-            {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim is null)
-                {
-                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                    apiResponse.Errors.Add("User not found");
-                    return apiResponse;
-                }
-                string userId = userIdClaim.Value;
-                playlist.UserId = userId;
-                await _playlistService.CreatePlaylistAsync(playlist);
-                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
-            }
-            catch (Exception ex)
-            {
-                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
-                apiResponse.Errors.Add(ex.Message);
-                throw;
-            }
-            return apiResponse;
-        }
-
-        [HttpPost("CreateAndAddToPlaylist")]
-        public async Task<ApiResponse> CreateAndAddToPlaylist(CreateAndAddToPlaylistDto createAndAddToPlaylistDto)
+        public async Task<ApiResponse> CreatePlaylist(CreateAndAddToPlaylistDto createAndAddToPlaylistDto)
         {
             ApiResponse apiResponse = new ApiResponse();
             try
@@ -219,6 +177,32 @@ namespace API.Controllers
                     Tracks = new List<PlaylistTrack> { new PlaylistTrack { TrackId = createAndAddToPlaylistDto.TrackId } }
                 };
                 await _playlistService.CreatePlaylistAsync(playlist);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
+
+        [HttpPost("AddTrackToPlaylist")]
+        public async Task<ApiResponse> AddTrackToPlaylist(TogglePlaylistTrackDto addToPlaylistDto)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                await _playlistService.AddToPlaylistAsync(addToPlaylistDto, userId);
                 apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
             }
             catch (Exception ex)

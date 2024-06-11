@@ -1,5 +1,6 @@
 ﻿using DataContext.Repositories.Interfaces;
 using Models.DTOs;
+using Models.DTOs.Queries;
 using Models.Entities;
 using Services.Interfaces;
 
@@ -18,6 +19,20 @@ namespace Services.Implementations
             _tracksService = tracksService ?? throw new ArgumentNullException(nameof(tracksService));
             _likeRepository = likeRepository;
             _exploreWeeklyGenerator = exploreWeeklyGenerator;
+        }
+
+        public async Task<IEnumerable<Playlist>> GetPlaylistsAsync(PlaylistQuery query)
+        {
+            var results = new List<Playlist>();
+
+            if (!string.IsNullOrEmpty(query.Name))
+            {
+                var playlistsByName = await GetPlaylistsByNameAsync(query.Name, query.ArePublic.GetValueOrDefault(true));
+                results.AddRange(playlistsByName);
+            }
+
+            // Remove duplicates if any
+            return results.Distinct().ToList();
         }
 
         public async Task<IEnumerable<Playlist>> GetPlaylistsByNameAsync(string name, bool arePublic = true)

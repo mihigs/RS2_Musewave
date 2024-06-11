@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTOs;
+using Models.DTOs.Queries;
+using Services.Implementations;
 using Services.Interfaces;
 
 namespace API.Controllers
@@ -17,14 +19,24 @@ namespace API.Controllers
             _artistService = artistService ?? throw new ArgumentNullException(nameof(artistService));
         }
 
-        [HttpGet("GetArtistsByName")]
-        public async Task<ApiResponse> GetArtistsByName(string name)
+        [HttpGet("GetArtists")]
+        public async Task<IActionResult> GetArtists([FromQuery] ArtistQuery query)
         {
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                apiResponse.Data = await _artistService.GetArtistsByNameAsync(name);
+                var results = await _artistService.GetArtistsAsync(query);
+
+                if (results == null || !results.Any())
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("No artists found");
+                    return Ok(apiResponse);
+                }
+
+                apiResponse.Data = results;
                 apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
             }
             catch (Exception ex)
             {
@@ -32,7 +44,6 @@ namespace API.Controllers
                 apiResponse.Errors.Add(ex.Message);
                 throw;
             }
-            return apiResponse;
         }
 
         [HttpGet("GetArtistDetails")]

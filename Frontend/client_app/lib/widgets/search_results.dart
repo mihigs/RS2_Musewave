@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/album.dart';
 import 'package:frontend/models/artist.dart';
-import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/streaming/music_streamer.dart';
 import 'package:frontend/models/playlist.dart';
 import 'package:frontend/models/track.dart';
@@ -49,11 +48,26 @@ class _SearchResultsState extends State<SearchResults> {
 
     return FutureBuilder<List<dynamic>>(
       future: Future.wait([
-        widget.tracksFuture.catchError((_) => _errorTrackList),
-        widget.jamendoTracksFuture.catchError((_) => _errorJamendoTrackList),
-        widget.albumsFuture.catchError((_) => _errorAlbumList),
-        widget.artistsFuture.catchError((_) => _errorArtistList),
-        widget.playlistsFuture.catchError((_) => _errorPlaylistList)
+        widget.tracksFuture.catchError((_) {
+          print("Error fetching tracks");
+          return _errorTrackList;
+        }),
+        widget.jamendoTracksFuture.catchError((_) {
+          print("Error fetching jamendo tracks");
+          return _errorJamendoTrackList;
+        }),
+        widget.albumsFuture.catchError((_) {
+          print("Error fetching albums");
+          return _errorAlbumList;
+        }),
+        widget.artistsFuture.catchError((_) {
+          print("Error fetching artists");
+          return _errorArtistList;
+        }),
+        widget.playlistsFuture.catchError((_) {
+          print("Error fetching playlists");
+          return _errorPlaylistList;
+        })
       ]),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -61,6 +75,7 @@ class _SearchResultsState extends State<SearchResults> {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
+          print("Snapshot data: ${snapshot.data}");
           var results = snapshot.data!;
           var tracks =
               results[0] != _errorTrackList ? results[0] as List<Track> : [];
@@ -74,6 +89,12 @@ class _SearchResultsState extends State<SearchResults> {
           var playlists = results[4] != _errorPlaylistList
               ? results[4] as List<Playlist>
               : [];
+
+          print("Tracks: $tracks");
+          print("Jamendo Tracks: $jamendoTracks");
+          print("Albums: $albums");
+          print("Artists: $artists");
+          print("Playlists: $playlists");
 
           return SingleChildScrollView(
             child: Padding(
@@ -246,7 +267,7 @@ class _SearchResultsState extends State<SearchResults> {
                             .take(_playlistsToShow)
                             .map((playlist) => GestureDetector(
                                   onTap: () => GoRouter.of(context)
-                                      .push('/playlist/${playlist.id}'),
+                                      .push('/playlist/${playlist.id}/false'),
                                   child: ResultItemCard(
                                     title: playlist.name,
                                   ),

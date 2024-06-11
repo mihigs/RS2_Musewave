@@ -1,4 +1,5 @@
 ﻿using Models.DTOs;
+using Models.DTOs.Queries;
 using Models.Entities;
 
 namespace Services.Interfaces
@@ -15,5 +16,8 @@ namespace Services.Interfaces
         Task<Like?> CheckIfTrackIsLikedByUser(int trackId, string userId);
         Task<List<Track>> GetTracksByArtistId(int artistId);
         Task<List<Track>> GetTracksByUserId(string userId);
+        Task<IEnumerable<Track>> GetTracksAsync(TrackQuery query);
+        Task<IEnumerable<Comment>> GetTrackComments(int trackId);
+        Task<Comment> AddCommentToTrack(int trackId, string text, string userId);
     }
 }
