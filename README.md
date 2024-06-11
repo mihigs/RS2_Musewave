@@ -84,8 +84,17 @@ Before running the project, ensure you have the following installed:
 
 Use the following credentials to log in:
 
-- **Username**: admin@musewave.com
-- **Password**: Test_123
+- **Admin**
+  - **Username**: admin@musewave.com
+  - **Password**: Test_123
+
+- **Artist**
+  - **Username**: artist@musewave.com
+  - **Password**: Test_123
+
+- **User**
+  - **Username**: user1@musewave.com
+  - **Password**: Test_123
 
 ## Future Plans and TODOs
 

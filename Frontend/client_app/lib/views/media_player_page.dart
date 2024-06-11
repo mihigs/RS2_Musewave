@@ -174,12 +174,13 @@ class MediaPlayerPageState extends State<MediaPlayerPage> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.comment, size: 32),
+            icon: Icon(Icons.comment, size: 31),
             onPressed: () {
               showModalBottomSheet(
+                isScrollControlled: true,
                 context: context,
                 builder: (BuildContext context) {
-                  return TrackCommentsModal(trackId: widget.trackId);
+                  return FractionallySizedBox(heightFactor: 0.9, child: TrackCommentsModal(trackId: widget.trackId));
                 },
               );
             },
