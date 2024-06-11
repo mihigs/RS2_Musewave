@@ -318,5 +318,63 @@ namespace API.Controllers
                 throw;
             }
         }
+
+        [HttpGet("GetTrackComments")]
+        public async Task<IActionResult> GetTrackComments(int trackId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var comments = await _tracksService.GetTrackComments(trackId);
+                if (comments is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("Comments not found");
+                    return NotFound(apiResponse);
+                }
+                apiResponse.Data = comments;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
+
+        [HttpPost("AddTrackComment")]
+        public async Task<IActionResult> AddTrackComment(CommentDto commentDto)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return BadRequest(apiResponse);
+                }
+                var userId = userIdClaim.Value;
+                var newComment = await _tracksService.AddCommentToTrack(commentDto.TrackId, commentDto.Comment, userId);
+                if (newComment is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("Comment not added");
+                    return BadRequest(apiResponse);
+                }
+                apiResponse.Data = newComment;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.Created;
+                return CreatedAtAction(nameof(AddTrackComment), apiResponse);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
     }
 }

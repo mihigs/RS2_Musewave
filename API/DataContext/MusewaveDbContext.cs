@@ -14,6 +14,7 @@ namespace DataContext
         public DbSet<TrackGenre> TrackGenres { get; set; }
         public DbSet<LoginActivity> LoginActivity { get; set; }
         public DbSet<JamendoAPIActivity> JamendoAPIActivity { get; set; }
+        public DbSet<Comment> Comment { get; set; }
         public MusewaveDbContext(DbContextOptions<MusewaveDbContext> options)
             : base(options)
         {

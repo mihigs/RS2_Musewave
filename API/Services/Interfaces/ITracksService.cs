@@ -17,5 +17,7 @@ namespace Services.Interfaces
         Task<List<Track>> GetTracksByArtistId(int artistId);
         Task<List<Track>> GetTracksByUserId(string userId);
         Task<IEnumerable<Track>> GetTracksAsync(TrackQuery query);
+        Task<IEnumerable<Comment>> GetTrackComments(int trackId);
+        Task<Comment> AddCommentToTrack(int trackId, string text, string userId);
     }
 }

@@ -7,6 +7,7 @@ import 'package:frontend/models/DTOs/Queries/JamendoTrackQuery.dart';
 import 'package:frontend/models/DTOs/Queries/TrackQuery.dart';
 import 'package:frontend/models/DTOs/TrackUploadDto.dart';
 import 'package:frontend/models/base/streaming_context.dart';
+import 'package:frontend/models/comment.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/services/base/api_service.dart';
 import 'package:frontend/services/signalr_service.dart';
@@ -233,7 +234,36 @@ class TracksService extends ApiService {
     }
   }
 
+  Future<List<Comment>> getTrackComments(int trackId) async {
+    try {
+      final response = await httpGet('Tracks/GetTrackComments?trackId=$trackId');
 
+      List<dynamic> data = List<dynamic>.from(response['data']);
+
+      // Convert each Map to a Track
+      final List<Comment> result = List.empty(growable: true);
+      for (var item in data) {
+        result.add(Comment.fromJson(item));
+      }
+      return result;
+    } on Exception {
+      rethrow;
+    }
+  }
+
+Future<Comment?> addTrackComment(int trackId, String comment) async {
+  try {
+    final response = await httpPost('Tracks/AddTrackComment', {'trackId': trackId, 'comment': comment});
+
+    Comment newComment = Comment.fromJson(response['data']);
+    return newComment;
+
+  } on Exception catch (e) {
+    // Handle exceptions
+    print(e);
+    return null;
+  }
+}
   Track _mapToTrack(dynamic item) {
     if (item is Map<String, dynamic>) {
       return Track.fromJson(item);
