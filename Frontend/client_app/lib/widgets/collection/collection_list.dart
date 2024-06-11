@@ -39,14 +39,14 @@ class _CollectionListState extends State<CollectionList> {
         albumFuture = albumService.GetAlbumDetails(widget.contextId!);
       } else if (widget.streamingContextType == StreamingContextType.PLAYLIST) {
         if(widget.isExploreWeekly!){
-          playlistFuture = playlistService.GetExploreWeeklyPlaylist();
+          playlistFuture = playlistService.GetMyExploreWeeklyPlaylist();
         }else{
-          playlistFuture = playlistService.GetPlaylistDetailsAsync(widget.contextId!);
+          playlistFuture = playlistService.GetPlaylistDetails(widget.contextId!);
         }
       } 
     }else{
       if (widget.streamingContextType == StreamingContextType.LIKED){
-        playlistFuture = playlistService.GetLikedTracksPlaylist();
+        playlistFuture = playlistService.GetMyLikedTracksPlaylist();
       }
     }
   }

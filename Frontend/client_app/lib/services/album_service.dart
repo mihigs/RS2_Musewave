@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/models/DTOs/Queries/AlbumQuery.dart';
 import 'package:frontend/models/album.dart';
 import 'package:frontend/services/base/api_service.dart';
 
@@ -9,7 +10,9 @@ class AlbumService extends ApiService {
 
   Future<List<Album>> getAlbumsByTitle(String title) async {
     try {
-      final response = await httpGet('Album/GetAlbumsByTitle?title=$title');
+      AlbumQuery query = AlbumQuery(title: title);
+      final queryParams = query.toQueryParameters();
+      final response = await httpGet('Album/GetAlbums', queryParams: queryParams);
 
       List<dynamic> data = List<dynamic>.from(response['data']);
 

@@ -71,14 +71,14 @@ Before running the project, ensure you have the following installed:
 ### Premade Launch Configurations
 
 - **User App**:
-  - Client Android Docker
-  - Client Web Docker
-  - Client Android
-  - Client Web
+  - Android (Docker)
+  - Web (Docker)
+  - Android
+  - Web
 
 - **Admin App**:
-  - Admin Desktop Docker
-  - Admin Desktop Development
+  - Windows (Docker)
+  - Windows
 
 ## Login Credentials
 

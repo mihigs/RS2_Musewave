@@ -20,7 +20,7 @@ class AuthenticationService extends ApiService {
 
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/User/login'),
+        Uri.parse('$baseUrl/User/Login'),
         body: jsonEncode({'Email': email, 'Password': password}),
         headers: {'Content-Type': 'application/json'},
       );
@@ -71,7 +71,7 @@ class AuthenticationService extends ApiService {
 
   Future<User> getUserDetails() async {
     try {
-      final response = await httpGet('User/getUserDetails');
+      final response = await httpGet('User/GetUserDetails');
       return User.fromJson(response['data']);
     } on Exception {
       loggedInState.logout();

@@ -27,24 +27,8 @@ namespace API.Controllers
             _logger = logger;
         }
 
-        [HttpGet("allUsers")]
-        public async Task<ActionResult> GetAllUsers()
-        {
-            try
-            {
-                var users = _userManager.Users.ToList();
-
-                return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-                throw;
-            }
-        }
-
         [AllowAnonymous]
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(UserLogin model)
         {
             if (model.Email.IsNullOrEmpty() || model.Password.IsNullOrEmpty())
@@ -76,7 +60,7 @@ namespace API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("newUser")]
+        [HttpPost("NewUser")]
         public async Task<IActionResult> AddUser(UserLogin model)
         {
             var token = await _usersService.AddUser(model);
@@ -87,7 +71,7 @@ namespace API.Controllers
             return BadRequest();
         }
 
-        [HttpGet("getUserDetails")]
+        [HttpGet("GetUserDetails")]
         public async Task<ApiResponse> GetUserDetails()
         {
             ApiResponse apiResponse = new ApiResponse();
@@ -113,7 +97,7 @@ namespace API.Controllers
             return apiResponse;
         }
 
-        [HttpGet("getHomepageDetails")]
+        [HttpGet("GetHomepageDetails")]
         public async Task<ApiResponse> GetHomepageDetails()
         {
             ApiResponse apiResponse = new ApiResponse();

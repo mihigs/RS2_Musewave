@@ -21,7 +21,7 @@ class _AddToPlaylistModalState extends State<AddToPlaylistModal> {
   @override
   void initState() {
     super.initState();
-    playlistsFuture = playlistService.GetUserPlaylists().then((playlists) {
+    playlistsFuture = playlistService.GetMyPlaylists().then((playlists) {
       // Initialize the map based on whether each playlist contains the track
       playlistTrackStatus = {
         for (var playlist in playlists)
@@ -65,7 +65,7 @@ class _AddToPlaylistModalState extends State<AddToPlaylistModal> {
                     : IconButton(
                         icon: Icon(Icons.arrow_forward),
                         onPressed: () async {
-                          await playlistService.CreateAndAddToPlaylist(
+                          await playlistService.CreatePlaylist(
                               _newPlaylistController.text, int.parse(widget.trackId));
                           Navigator.of(context).pop();
                         },

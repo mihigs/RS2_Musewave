@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/models/DTOs/Queries/PlaylistQuery.dart';
 import 'package:frontend/models/DTOs/UserPlaylistsDto.dart';
 import 'package:frontend/models/playlist.dart';
 import 'package:frontend/services/base/api_service.dart';
@@ -8,9 +9,11 @@ class PlaylistService extends ApiService {
 
   PlaylistService(this.secureStorage) : super(secureStorage: secureStorage);
 
-  Future<List<Playlist>> getPlaylistsByName(String name) async {
+  Future<List<Playlist>> GetPlaylistsByName(String name) async {
     try {
-      final response = await httpGet('Playlist/GetPlaylistsByName?name=$name');
+      PlaylistQuery query = PlaylistQuery(name: name);
+      final queryParams = query.toQueryParameters();
+      final response = await httpGet('Playlist/GetPlaylists', queryParams: queryParams);
 
       List<dynamic> data = List<dynamic>.from(response['data']);
 
@@ -27,9 +30,9 @@ class PlaylistService extends ApiService {
     }
   }
 
-  Future<Playlist> GetPlaylistDetailsAsync(int id) async {
+  Future<Playlist> GetPlaylistDetails(int id) async {
     try {
-      final response = await httpGet('Playlist/GetPlaylistDetailsAsync/$id');
+      final response = await httpGet('Playlist/GetPlaylistDetails?playlistId=$id');
 
       return _mapToPlaylist(response['data']);
 
@@ -38,9 +41,9 @@ class PlaylistService extends ApiService {
     }
     }
 
-    Future<List<UserPlaylistsDto>> GetUserPlaylists() async {
+    Future<List<UserPlaylistsDto>> GetMyPlaylists() async {
       try {
-        final response = await httpGet('Playlist/GetUserPlaylists');
+        final response = await httpGet('Playlist/GetMyPlaylists');
 
         List<dynamic> data = List<dynamic>.from(response['data']);
 
@@ -57,9 +60,9 @@ class PlaylistService extends ApiService {
       }
     }
 
-    Future<Playlist> GetExploreWeeklyPlaylist() async {
+    Future<Playlist> GetMyExploreWeeklyPlaylist() async {
       try {
-        final response = await httpGet('Playlist/GetExploreWeeklyPlaylist');
+        final response = await httpGet('Playlist/GetMyExploreWeeklyPlaylist');
 
         return _mapToPlaylist(response['data']);
 
@@ -68,9 +71,9 @@ class PlaylistService extends ApiService {
       }
     }
 
-    Future<Playlist> GetLikedTracksPlaylist() async {
+    Future<Playlist> GetMyLikedTracksPlaylist() async {
       try {
-        final response = await httpGet('Playlist/GetLikedTracksPlaylist');
+        final response = await httpGet('Playlist/GetMyLikedTracksPlaylist');
 
         return _mapToPlaylist(response['data']);
 
@@ -81,7 +84,7 @@ class PlaylistService extends ApiService {
 
     Future<void> AddToPlaylist(int playlistId, int trackId) async {
       try {
-        await httpPost('Playlist/AddToPlaylist', {
+        await httpPost('Playlist/AddTrackToPlaylist', {
           'playlistId': playlistId,
           'trackId': trackId,
         });
@@ -90,9 +93,9 @@ class PlaylistService extends ApiService {
       }
     }
 
-    Future<void> CreateAndAddToPlaylist(String playlistName, int trackId) async {
+    Future<void> CreatePlaylist(String playlistName, int trackId) async {
       try {
-        await httpPost('Playlist/CreateAndAddToPlaylist', {
+        await httpPost('Playlist/CreatePlaylist', {
           'playlistName': playlistName,
           'trackId': trackId,
         });

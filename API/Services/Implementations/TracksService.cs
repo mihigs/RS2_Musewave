@@ -2,6 +2,7 @@
 using DataContext.Repositories.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Models.DTOs;
+using Models.DTOs.Queries;
 using Models.Entities;
 using Models.Enums;
 using Services.Interfaces;
@@ -325,6 +326,26 @@ namespace Services.Implementations
                 nextTrack = await _trackRepository.GetRandomTrack(excluding: []);
             }
             return nextTrack;
+        }
+
+        public async Task<IEnumerable<Track>> GetTracksAsync(TrackQuery query)
+        {
+            var results = new List<Track>();
+
+            if (!string.IsNullOrEmpty(query.Name))
+            {
+                var tracksByName = await GetTracksByNameAsync(query.Name);
+                results.AddRange(tracksByName);
+            }
+
+            if (query.ArtistId.HasValue)
+            {
+                var tracksByArtist = await GetTracksByArtistId(query.ArtistId.Value);
+                results.AddRange(tracksByArtist);
+            }
+
+            // Remove duplicates if any
+            return results.Distinct().ToList();
         }
     }
 }

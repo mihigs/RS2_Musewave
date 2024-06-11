@@ -1,5 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/models/DTOs/ArtistDetailsDto.dart';
+import 'package:frontend/models/DTOs/Queries/ArtistQuery.dart';
 import 'package:frontend/models/artist.dart';
 import 'package:frontend/services/base/api_service.dart';
 
@@ -10,7 +11,9 @@ class ArtistService extends ApiService {
 
   Future<List<Artist>> getArtistsByName(String name) async {
     try {
-      final response = await httpGet('Artist/GetArtistsByName?name=$name');
+      ArtistQuery query = ArtistQuery(name: name);
+      final queryParams = query.toQueryParameters();
+      final response = await httpGet('Artist/GetArtists', queryParams: queryParams);
 
       List<dynamic> data = List<dynamic>.from(response['data']);
 

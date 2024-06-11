@@ -1,9 +1,11 @@
-﻿using Models.Entities;
+﻿using Models.DTOs.Queries;
+using Models.Entities;
 
 namespace Services.Interfaces
 {
     public interface IAlbumService
     {
+        Task<IEnumerable<Album>> GetAlbumsAsync(AlbumQuery query);
         Task<IEnumerable<Album>> GetAllAlbumsAsync();
         Task<Album> GetAlbumByIdAsync(int id);
         Task<Album> AddAlbumAsync(Album album);

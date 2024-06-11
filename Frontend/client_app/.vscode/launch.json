@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Client Android Docker",
+            "name": "Android (Docker)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
@@ -14,7 +14,7 @@
             "preLaunchTask": "Build Runner",
         },
         {
-            "name": "Client Web Docker",
+            "name": "Web (Docker)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
@@ -26,7 +26,7 @@
             "preLaunchTask": "Build Runner"
         },
         {
-            "name": "Client Android",
+            "name": "Android",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
@@ -38,7 +38,7 @@
             "preLaunchTask": "Build Runner"
         },
         {
-            "name": "Client Web",
+            "name": "Web",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",

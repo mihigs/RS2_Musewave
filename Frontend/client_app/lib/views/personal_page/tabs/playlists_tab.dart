@@ -21,7 +21,7 @@ class _PlaylistsTabState extends State<PlaylistsTab> {
   @override
   void initState() {
     super.initState();
-    _playlistsFuture = _playlistService.GetUserPlaylists();
+    _playlistsFuture = _playlistService.GetMyPlaylists();
     _searchController.addListener(_onSearchChanged);
   }
 

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/helpers/helper_functions.dart';
+import 'package:frontend/models/DTOs/Queries/JamendoTrackQuery.dart';
+import 'package:frontend/models/DTOs/Queries/TrackQuery.dart';
 import 'package:frontend/models/DTOs/TrackUploadDto.dart';
 import 'package:frontend/models/base/streaming_context.dart';
 import 'package:frontend/models/track.dart';
@@ -21,7 +23,7 @@ class TracksService extends ApiService {
 
   Future<List<Track>> getLikedTracks() async {
     try {
-      final response = await httpGet('Tracks/GetLikedTracks');
+      final response = await httpGet('Tracks/GetMyLikedTracks');
 
       List<dynamic> data = List<dynamic>.from(response['data']);
 
@@ -40,7 +42,10 @@ class TracksService extends ApiService {
 
   Future<List<Track>> getTracksByName(String name) async {
     try {
-      final response = await httpGet('Tracks/GetTracksByName?name=$name');
+      TrackQuery query = TrackQuery(name: name);
+      final queryParams = query.toQueryParameters();
+
+      final response = await httpGet('Tracks/GetTracks', queryParams: queryParams);
 
       List<dynamic> data = List<dynamic>.from(response['data']);
 
@@ -59,7 +64,9 @@ class TracksService extends ApiService {
 
   Future<List<Track>> getJamendoTracksByName(String name) async {
     try {
-      final response = await httpGet('Tracks/GetJamendoTracksByName?name=$name');
+      JamendoTrackQuery query = JamendoTrackQuery(name: name);
+      final queryParams = query.toQueryParameters();
+      final response = await httpGet('Tracks/GetJamendoTracks', queryParams: queryParams);
 
       List<dynamic> data = List<dynamic>.from(response['data']);
 
@@ -130,7 +137,7 @@ class TracksService extends ApiService {
 
   Future<Track> getTrack(int trackId) async {
     try {
-      final response = await httpGet('Tracks/GetTrack/$trackId');
+      final response = await httpGet('Tracks/GetTrackDetails?trackId=$trackId');
       return _mapToTrack(response['data']);
     } on Exception {
       rethrow;
@@ -139,7 +146,7 @@ class TracksService extends ApiService {
 
   Future<Track?> getJamendoTrack(String trackId) async {
     try {
-      final response = await httpGet('Tracks/GetJamendoTrack/$trackId');
+      final response = await httpGet('Tracks/GetJamendoTrackDetails/$trackId');
       if (response == null) {
         return null;
       }
@@ -200,7 +207,7 @@ class TracksService extends ApiService {
 
   Future<bool> toggleLikeTrack(int trackId) async {
     try {
-      final response = await httpPost('Tracks/ToggleLikeTrack/$trackId', null);
+      final response = await httpPost('Tracks/ToggleLikeTrack?trackId=$trackId', null);
       return response != null;
     } on Exception {
       rethrow;
@@ -209,7 +216,7 @@ class TracksService extends ApiService {
 
   Future<List<Track>> getMySongs() async {
     try {
-      final response = await httpGet('Tracks/GetTracksByUser');
+      final response = await httpGet('Tracks/GetMyTracks');
 
       List<dynamic> data = List<dynamic>.from(response['data']);
 

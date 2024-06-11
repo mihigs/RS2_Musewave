@@ -38,7 +38,7 @@ class _SearchPageState extends State<SearchPage> {
       _jamendoTracksFuture = widget.tracksService.getJamendoTracksByName(value);
       _albumsFuture = widget.albumService.getAlbumsByTitle(value);
       _artistsFuture = widget.artistService.getArtistsByName(value);
-      _playlistsFuture = widget.playlistService.getPlaylistsByName(value);
+      _playlistsFuture = widget.playlistService.GetPlaylistsByName(value);
     });
   }
 

@@ -73,7 +73,8 @@ class MusicStreamer extends ChangeNotifier {
         play();
         _prepareNextTrack(streamingContext);
       } else {
-        print('INVALID TRACK URL');
+        print('INVALID TRACK URL:');
+        print(streamingContext.track.signedUrl);
       }
     } catch (e) {
       print("Error starting track: $e");

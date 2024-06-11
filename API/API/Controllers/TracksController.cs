@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTOs;
+using Models.DTOs.Queries;
 using Models.Entities;
+using Services.Implementations;
 using Services.Interfaces;
 using System.Security.Claims;
 
@@ -23,22 +25,24 @@ namespace API.Controllers
             _jamendoService = jamendoService;
         }
 
-        [HttpGet("GetLikedTracks")]
-        public async Task<ApiResponse> GetLikedTracks()
+        [HttpGet("GetTracks")]
+        public async Task<IActionResult> GetTracks([FromQuery] TrackQuery query)
         {
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim is null)
+                var results = await _tracksService.GetTracksAsync(query);
+
+                if (results == null || !results.Any())
                 {
-                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                    apiResponse.Errors.Add("User not found");
-                    return apiResponse;
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("No tracks found");
+                    return Ok(apiResponse);
                 }
-                string userId = userIdClaim.Value;
-                apiResponse.Data = await _tracksService.GetLikedTracksAsync(userId);
+
+                apiResponse.Data = results;
                 apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
             }
             catch (Exception ex)
             {
@@ -46,17 +50,32 @@ namespace API.Controllers
                 apiResponse.Errors.Add(ex.Message);
                 throw;
             }
-            return apiResponse;
         }
 
-        [HttpGet("GetTracksByName")]
-        public async Task<ApiResponse> GetTracksByName(string name)
+
+        [HttpGet("GetTrackDetails")]
+        public async Task<IActionResult> GetTrackDetails(int trackId)
         {
             ApiResponse apiResponse = new ApiResponse();
             try
             {
-                apiResponse.Data = await _tracksService.GetTracksByNameAsync(name);
+                Track trackResult = null;
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim != null)
+                {
+                    string userId = userIdClaim.Value;
+                    trackResult = await _tracksService.GetTrackByIdAsync(trackId, userId);
+                }
+                if (trackResult is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("Track not found");
+                    return NotFound(apiResponse);
+                }
+
+                apiResponse.Data = trackResult;
                 apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
             }
             catch (Exception ex)
             {
@@ -64,11 +83,10 @@ namespace API.Controllers
                 apiResponse.Errors.Add(ex.Message);
                 throw;
             }
-            return apiResponse;
         }
 
-        [HttpGet("GetJamendoTracksByName")]
-        public async Task<ApiResponse> GetJamendoTracksByName(string name)
+        [HttpGet("GetJamendoTracks")]
+        public async Task<ApiResponse> GetJamendoTracks([FromQuery] JamendoTrackQuery query)
         {
             ApiResponse apiResponse = new ApiResponse();
             try
@@ -82,7 +100,102 @@ namespace API.Controllers
                     return apiResponse;
                 }
                 var userId = userIdClaim.Value;
-                apiResponse.Data = await _jamendoService.SearchJamendoByTrackName(name, userId);
+                var results = await _jamendoService.GetJamendoTracksAsync(query, userId);
+
+                if (results == null || !results.Any())
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("No tracks found");
+                    return apiResponse;
+                }
+
+                apiResponse.Data = results;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
+
+        [HttpGet("GetJamendoTrackDetails")]
+        public async Task<IActionResult> GetJamendoTrackDetails(int jamendoId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return BadRequest(apiResponse);
+                }
+                string userId = userIdClaim.Value;
+                var trackResult = await _jamendoService.GetTrackById(jamendoId, userId);
+                if (trackResult is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("Jamendo track not found");
+                    return NotFound(apiResponse);
+                }
+
+                apiResponse.Data = trackResult;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
+
+        [HttpGet("GetMyTracks")]
+        public async Task<IActionResult> GetMyTracks()
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return BadRequest(apiResponse);
+                }
+                string userId = userIdClaim.Value;
+                apiResponse.Data = await _tracksService.GetTracksByUserId(userId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return Ok(apiResponse);
+        }
+
+        [HttpGet("GetMyLikedTracks")]
+        public async Task<ApiResponse> GetMyLikedTracks()
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                apiResponse.Data = await _tracksService.GetLikedTracksAsync(userId);
                 apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
             }
             catch (Exception ex)
@@ -145,72 +258,6 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("GetTrack/{trackId}")]
-        public async Task<IActionResult> GetTrack(int trackId)
-        {
-            ApiResponse apiResponse = new ApiResponse();
-            try
-            {
-                Track trackResult = null;
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim != null)
-                {
-                    string userId = userIdClaim.Value;
-                    trackResult = await _tracksService.GetTrackByIdAsync(trackId, userId);
-                }
-                if (trackResult is null)
-                {
-                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-                    apiResponse.Errors.Add("Track not found");
-                    return NotFound(apiResponse);
-                }
-
-                apiResponse.Data = trackResult;
-                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
-                return Ok(apiResponse);
-            }
-            catch (Exception ex)
-            {
-                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
-                apiResponse.Errors.Add(ex.Message);
-                throw;
-            }
-        }
-
-        [HttpGet("GetJamendoTrack/{jamendoId}")]
-        public async Task<IActionResult> GetJamendoTrack(int jamendoId)
-        {
-            ApiResponse apiResponse = new ApiResponse();
-            try
-            {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim is null)
-                {
-                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                    apiResponse.Errors.Add("User not found");
-                    return BadRequest(apiResponse);
-                }
-                string userId = userIdClaim.Value;
-                var trackResult = await _jamendoService.GetTrackById(jamendoId, userId);
-                if (trackResult is null)
-                {
-                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
-                    apiResponse.Errors.Add("Jamendo track not found");
-                    return NotFound(apiResponse);
-                }
-
-                apiResponse.Data = trackResult;
-                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
-                return Ok(apiResponse);
-            }
-            catch (Exception ex)
-            {
-                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
-                apiResponse.Errors.Add(ex.Message);
-                throw;
-            }
-        }
-
         [HttpPost("GetNextTrack")]
         public async Task<IActionResult> GetNextTrack([FromBody] GetNextTrackRequestDto getNextTrackDto)
         {
@@ -246,8 +293,7 @@ namespace API.Controllers
             }
         }
 
-        // a controller endpoint that takes a trackId, gets the userId from the token, and calls the service to like the track
-        [HttpPost("ToggleLikeTrack/{trackId}")]
+        [HttpPost("ToggleLikeTrack")]
         public async Task<IActionResult> ToggleLikeTrack(int trackId)
         {
             ApiResponse apiResponse = new ApiResponse();
@@ -272,50 +318,5 @@ namespace API.Controllers
                 throw;
             }
         }
-
-        [HttpGet("GetTracksByArtist/{artistId}")]
-        public async Task<IActionResult> GetTracksByArtistId(int artistId)
-        {
-            ApiResponse apiResponse = new ApiResponse();
-            try
-            {
-                apiResponse.Data = await _tracksService.GetTracksByArtistId(artistId);
-                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
-            }
-            catch (Exception ex)
-            {
-                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
-                apiResponse.Errors.Add(ex.Message);
-                throw;
-            }
-            return Ok(apiResponse);
-        }
-
-        [HttpGet("GetTracksByUser")]
-        public async Task<IActionResult> GetTracksByUser()
-        {
-            ApiResponse apiResponse = new ApiResponse();
-            try
-            {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim is null)
-                {
-                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                    apiResponse.Errors.Add("User not found");
-                    return BadRequest(apiResponse);
-                }
-                string userId = userIdClaim.Value;
-                apiResponse.Data = await _tracksService.GetTracksByUserId(userId);
-                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
-            }
-            catch (Exception ex)
-            {
-                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
-                apiResponse.Errors.Add(ex.Message);
-                throw;
-            }
-            return Ok(apiResponse);
-        }
-
     }
 }
