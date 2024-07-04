@@ -213,7 +213,7 @@ class TracksService extends ApiService {
     } on Exception {
       rethrow;
     }
-  } 
+  }
 
   Future<List<Track>> getMySongs() async {
     try {
