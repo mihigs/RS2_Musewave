@@ -15,6 +15,7 @@ namespace DataContext
         public DbSet<LoginActivity> LoginActivity { get; set; }
         public DbSet<JamendoAPIActivity> JamendoAPIActivity { get; set; }
         public DbSet<Comment> Comment { get; set; }
+        public DbSet<SearchHistory> SearchHistory { get; set; }
         public MusewaveDbContext(DbContextOptions<MusewaveDbContext> options)
             : base(options)
         {
@@ -38,11 +39,6 @@ namespace DataContext
                 .WithMany(b => b.TrackGenres)
                 .HasForeignKey(tg => tg.TrackId);
 
-            //modelBuilder.Entity<TrackGenre>()
-            //    .HasOne(tg => tg.Genre)
-            //    .WithMany(g => g.TrackGenres)
-            //    .HasForeignKey(tg => tg.GenreId);
-
             modelBuilder.Entity<Artist>()
                 .HasOne(a => a.User)
                 .WithOne(u => u.Artist)
@@ -62,14 +58,6 @@ namespace DataContext
                 .WithMany(t => t.Likes)
                 .HasForeignKey(l => l.TrackId)
                 .OnDelete(DeleteBehavior.NoAction);
-
-            //modelBuilder.Entity<User>()
-            //    .HasMany(u => u.Playlists)
-            //    .WithOne(p => p.User)
-            //    .OnDelete(DeleteBehavior.NoAction);
-
-            //modelBuilder.Entity<Playlist>()
-            //    .HasOne(p => p.User);
 
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Likes)

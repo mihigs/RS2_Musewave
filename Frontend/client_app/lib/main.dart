@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/services/search_service.dart';
 import 'package:frontend/streaming/music_streamer.dart';
 import 'package:frontend/router.dart';
 import 'package:frontend/services/album_service.dart';
@@ -49,6 +50,7 @@ void main() async {
   getIt.registerSingleton(ArtistService(secureStorage));
   getIt.registerSingleton(PlaylistService(secureStorage));
   getIt.registerSingleton(DashboardService(secureStorage));
+  getIt.registerSingleton(SearchService(secureStorage));
   final authService = getIt.registerSingleton(AuthenticationService(secureStorage: secureStorage));
 
   // Get the token from secure storage

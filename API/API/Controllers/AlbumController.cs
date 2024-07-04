@@ -27,6 +27,13 @@ namespace API.Controllers
             ApiResponse apiResponse = new ApiResponse();
             try
             {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    return BadRequest("User not found");
+                }
+                query.UserId = userIdClaim.Value;
+
                 var results = await _albumService.GetAlbumsAsync(query);
 
                 if (results == null || !results.Any())

@@ -23,6 +23,7 @@ namespace DataContext
             services.AddScoped<ILoginActivityRepository, LoginActivityRepository>();
             services.AddScoped<IJamendoApiActivityRepository, JamendoApiActivityRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<ISearchHistoryRepository, SearchHistoryRepository>();
 
             return services;
         }

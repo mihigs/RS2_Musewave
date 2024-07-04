@@ -27,6 +27,13 @@ namespace API.Controllers
             ApiResponse apiResponse = new ApiResponse();
             try
             {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    return BadRequest("User not found");
+                }
+                query.UserId = userIdClaim.Value;
+
                 var results = await _playlistService.GetPlaylistsAsync(query);
 
                 if (results == null || !results.Any())
@@ -116,7 +123,8 @@ namespace API.Controllers
                     return apiResponse;
                 }
                 string userId = userIdClaim.Value;
-                apiResponse.Data = new PlaylistResponseDto(await _playlistService.GetExploreWeeklyPlaylistAsync(userId));
+                var exploreWeeklyPlaylist = await _playlistService.GetExploreWeeklyPlaylistAsync(userId);
+                apiResponse.Data = new PlaylistResponseDto(exploreWeeklyPlaylist);
                 apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
             }
             catch (Exception ex)

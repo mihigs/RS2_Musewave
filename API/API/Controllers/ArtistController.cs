@@ -4,6 +4,7 @@ using Models.DTOs;
 using Models.DTOs.Queries;
 using Services.Implementations;
 using Services.Interfaces;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -25,6 +26,13 @@ namespace API.Controllers
             ApiResponse apiResponse = new ApiResponse();
             try
             {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    return BadRequest("User not found");
+                }
+                query.UserId = userIdClaim.Value;
+
                 var results = await _artistService.GetArtistsAsync(query);
 
                 if (results == null || !results.Any())

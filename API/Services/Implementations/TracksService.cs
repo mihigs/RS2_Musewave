@@ -23,6 +23,8 @@ namespace Services.Implementations
         private readonly IRedisService _redisService;
         private readonly ICommentRepository _commentRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ISearchHistoryRepository _searchHistoryRepository;
+        private readonly ISearchService _searchService;
 
         public TracksService(
             ITrackRepository trackRespository,
@@ -33,7 +35,9 @@ namespace Services.Implementations
             IJamendoService jamendoService,
             IRedisService redisService,
             ICommentRepository commentRepository,
-            IUserRepository userRepository
+            IUserRepository userRepository,
+            ISearchHistoryRepository searchHistoryRepository,
+            ISearchService searchService
         )
         {
             _trackRepository = trackRespository ?? throw new ArgumentNullException(nameof(trackRespository));
@@ -45,6 +49,8 @@ namespace Services.Implementations
             _redisService = redisService;
             _commentRepository = commentRepository;
             _userRepository = userRepository;
+            _searchHistoryRepository = searchHistoryRepository;
+            _searchService = searchService;
         }
 
         public async Task<IEnumerable<Track>> GetLikedTracksAsync(string userId)
@@ -341,6 +347,7 @@ namespace Services.Implementations
             if (!string.IsNullOrEmpty(query.Name))
             {
                 var tracksByName = await GetTracksByNameAsync(query.Name);
+                await _searchService.LogSearchRequestAsync(query.Name, query.UserId);
                 results.AddRange(tracksByName);
             }
 
