@@ -70,7 +70,7 @@ namespace Services.Implementations
 
                 var similarityThreshold = 0.5; // Initial threshold for similarity
 
-                while (similarityThreshold >= 0)
+                while (similarityThreshold >= 0 && similarGenres.IsNullOrEmpty())
                 {
                     foreach (var userGenreId in userLikedGenreIds)
                     {
