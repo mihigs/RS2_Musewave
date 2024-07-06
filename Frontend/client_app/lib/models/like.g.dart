@@ -7,14 +7,14 @@ part of 'like.dart';
 // **************************************************************************
 
 Like _$LikeFromJson(Map<String, dynamic> json) => Like(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       userId: json['userId'] as String,
       user: json['user'] == null
           ? null
           : User.fromJson(json['user'] as Map<String, dynamic>),
-      trackId: json['trackId'] as int,
+      trackId: (json['trackId'] as num).toInt(),
       track: json['track'] == null
           ? null
           : Track.fromJson(json['track'] as Map<String, dynamic>),

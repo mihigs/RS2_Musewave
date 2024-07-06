@@ -25,6 +25,13 @@ class AuthenticationService extends ApiService {
       if (response.statusCode == 200) {
         const String NameIdentifierClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
         final token = jsonDecode(response.body)['token'] as String;
+        final role = jsonDecode(response.body)['role'] as String;
+
+        if (role != "Admin"){
+          result.error = "You are not authorized to access this page";
+          return result;
+        }
+
         final userId = JwtDecoder.decode(token)[NameIdentifierClaimType] as String;
         await secureStorage.write(key: 'access_token', value: token);
         await secureStorage.write(key: 'user_id', value: userId);

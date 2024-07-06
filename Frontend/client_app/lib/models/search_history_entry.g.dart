@@ -8,7 +8,7 @@ part of 'search_history_entry.dart';
 
 SearchHistoryEntry _$SearchHistoryEntryFromJson(Map<String, dynamic> json) =>
     SearchHistoryEntry(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       searchTerm: json['searchTerm'] as String,

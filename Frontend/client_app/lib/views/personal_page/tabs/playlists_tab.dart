@@ -65,7 +65,7 @@ Widget build(BuildContext context) {
             playlists = playlists.where((playlist) =>
                 playlist.name.toLowerCase().contains(_searchController.text.toLowerCase())).toList();
 
-            if (playlists.isEmpty) {
+            if (playlists.isEmpty && _searchController.text.isEmpty) {
               // No playlists found
               return Center(
                 child: Padding(

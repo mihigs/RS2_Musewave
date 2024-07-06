@@ -78,7 +78,7 @@ class _MyMusicTabState extends State<MyMusicTab> {
                     .contains(_searchController.text.toLowerCase()))
                 .toList();
 
-            if (tracks.isEmpty) {
+            if (tracks.isEmpty && _searchController.text.isEmpty) {
               // No tracks found
               return Center(
                 child: Padding(

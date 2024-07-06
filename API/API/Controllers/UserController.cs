@@ -40,7 +40,16 @@ namespace API.Controllers
                 UserLoginResponse response = await _usersService.Login(model);
                 if (response.Token != null)
                 {
-                    return Ok(new { response.Token });
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    var roles = await _userManager.GetRolesAsync(user);
+                    if (roles.Contains("Admin"))
+                    {
+                        return Ok(new { response.Token, Role = "Admin" });
+                    }
+                    else
+                    {
+                        return Ok(new { response.Token, Role = "User" });
+                    }
                 }
                 else if (response.Error == LoginError.UserDoesNotExist)
                 {
