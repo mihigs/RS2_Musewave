@@ -84,6 +84,7 @@ class _LoginPageState extends State<LoginPage> {
         Center(
           child: SingleChildScrollView(
             child: Container(
+              width: MediaQuery.of(context).size.width * 0.40,
               padding: EdgeInsets.fromLTRB(30, 0, 30, 70),
               child: Form(
                 key: _formKey,

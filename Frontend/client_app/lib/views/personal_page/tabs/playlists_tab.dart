@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/DTOs/UserPlaylistsDto.dart';
 import 'package:frontend/models/playlist.dart';
 import 'package:frontend/services/playlist_service.dart'; // Ensure this service is correctly imported
-import 'package:frontend/widgets/result_item_card.dart';
+import 'package:frontend/widgets/cards/result_item_card.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 

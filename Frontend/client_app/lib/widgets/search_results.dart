@@ -4,7 +4,7 @@ import 'package:frontend/models/artist.dart';
 import 'package:frontend/streaming/music_streamer.dart';
 import 'package:frontend/models/playlist.dart';
 import 'package:frontend/models/track.dart';
-import 'package:frontend/widgets/result_item_card.dart';
+import 'package:frontend/widgets/cards/result_item_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 

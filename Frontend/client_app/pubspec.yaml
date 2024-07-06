@@ -50,6 +50,7 @@ dependencies:
   just_audio: ^0.9.36
   signalr_core: ^1.1.2
   permission_handler: ^11.3.1
+  flutter_stripe: ^10.2.0
 
 dev_dependencies:
   build_runner: ^2.4.8

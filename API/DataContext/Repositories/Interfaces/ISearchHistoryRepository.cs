@@ -1,10 +1,7 @@
 ﻿using Models.Entities;
 
 namespace DataContext.Repositories;
-public interface IAlbumRepository : IRepository<Album>
+public interface ISearchHistoryRepository : IRepository<SearchHistory>
 {
-    Task<IEnumerable<Album>> GetAlbumsByTitleAsync(string title);
-    Task<IEnumerable<Track>> GetAlbumTracksAsync(int albumId);
-    Task<Album> GetAlbumDetails(int albumId);
-
+    Task<IEnumerable<SearchHistory>> GetSearchHistorysAsync(string userId);
 }

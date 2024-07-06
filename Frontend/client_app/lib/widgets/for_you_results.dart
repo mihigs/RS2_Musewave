@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/DTOs/HomepageDetailsDto.dart';
 import 'package:frontend/models/constants/names.dart';
-import 'package:frontend/widgets/result_item_card.dart';
+import 'package:frontend/widgets/cards/result_item_card.dart';
 import 'package:go_router/go_router.dart';
 
 class ForYouResults extends StatefulWidget {

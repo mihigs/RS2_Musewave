@@ -16,6 +16,7 @@ namespace DataContext
         public DbSet<JamendoAPIActivity> JamendoAPIActivity { get; set; }
         public DbSet<Comment> Comment { get; set; }
         public DbSet<SearchHistory> SearchHistory { get; set; }
+        public DbSet<UserDonation> UserDonation { get; set; }
         public MusewaveDbContext(DbContextOptions<MusewaveDbContext> options)
             : base(options)
         {

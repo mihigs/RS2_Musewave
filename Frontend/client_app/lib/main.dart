@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:frontend/services/payments_service.dart';
 import 'package:frontend/services/search_service.dart';
 import 'package:frontend/streaming/music_streamer.dart';
 import 'package:frontend/router.dart';
@@ -31,6 +33,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized before using SecureStorage
   GoRouter.optionURLReflectsImperativeAPIs = true;
   const String signalrHubURL = String.fromEnvironment('SIGNALR_HUB_URL');
+  const String stripePublishableKey = String.fromEnvironment('STRIPE_PUBLIC_KEY');
 
   final getIt = GetIt.instance;
 
@@ -51,7 +54,11 @@ void main() async {
   getIt.registerSingleton(PlaylistService(secureStorage));
   getIt.registerSingleton(DashboardService(secureStorage));
   getIt.registerSingleton(SearchService(secureStorage));
+  final paymentsService = getIt.registerSingleton(PaymentsService(secureStorage));
   final authService = getIt.registerSingleton(AuthenticationService(secureStorage: secureStorage));
+
+  // Initialize Stripe
+  paymentsService.initialize(stripePublishableKey);
 
   // Get the token from secure storage
   final accessToken = await authService.checkLocalStorageForToken();
