@@ -21,7 +21,7 @@ class _DashboardsPageState extends State<DashboardsPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     return FutureBuilder<AdminDashboardDetailsDto>(
       future: dashboardDetails,
       builder: (context, snapshot) {
@@ -38,6 +38,8 @@ class _DashboardsPageState extends State<DashboardsPage> {
   }
 
   Widget buildDashboard(AdminDashboardDetailsDto data) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Container(
@@ -61,6 +63,8 @@ class _DashboardsPageState extends State<DashboardsPage> {
                         GeneralCard(data: data),
                         SizedBox(height: constraints.maxHeight * 0.01),
                         UsersCard(data: data),
+                        SizedBox(height: constraints.maxHeight * 0.01),
+                        DonationsCard(data: data),
                       ],
                     ),
                   ),
@@ -133,6 +137,33 @@ class UsersCard extends StatelessWidget {
   }
 }
 
+class DonationsCard extends StatelessWidget {
+  final AdminDashboardDetailsDto data;
+
+  const DonationsCard({Key? key, required this.data}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Container(
+        padding: EdgeInsets.all(15),
+        child: ListTile(
+          title: Text('Donations', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          subtitle: Container(
+            padding: EdgeInsets.only(top: 10),
+            child: Column(
+              children: [
+                DashboardItem(title: 'Total Donations Amount (USD):', value: '\$${data.totalDonationsAmount.toStringAsFixed(2)}'),
+                DashboardItem(title: 'Total Donations Count:', value: '${data.totalDonationsCount}'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class RightSideCard extends StatelessWidget {
   final jamendoAPILimit = 25000;
 
@@ -189,6 +220,7 @@ class RightSideCard extends StatelessWidget {
     );
   }
 }
+
 class PieChartWidget extends StatelessWidget {
   final int musewaveTrackCount;
   final int jamendoTrackCount;

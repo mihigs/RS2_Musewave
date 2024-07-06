@@ -19,8 +19,13 @@ namespace DataContext
             try
             {
                 Console.WriteLine("Applying migrations...");
-                Console.Write("Connection string: ");
+
+                Console.Write("Db Connection string: ");
                 Console.WriteLine(Environment.GetEnvironmentVariable("ConnectionString"));
+
+                Console.Write("Redis port: ");
+                Console.WriteLine(Environment.GetEnvironmentVariable("Redis__Port"));
+
                 await _context.Database.MigrateAsync();
                 Console.WriteLine("Migrations finished.");
             }

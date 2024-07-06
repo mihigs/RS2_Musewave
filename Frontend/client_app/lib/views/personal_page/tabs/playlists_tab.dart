@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/DTOs/UserPlaylistsDto.dart';
+import 'package:frontend/models/constants/result_card_types.dart';
 import 'package:frontend/models/playlist.dart';
 import 'package:frontend/services/playlist_service.dart'; // Ensure this service is correctly imported
-import 'package:frontend/widgets/result_item_card.dart';
+import 'package:frontend/widgets/cards/result_item_card.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
@@ -64,7 +65,7 @@ Widget build(BuildContext context) {
             playlists = playlists.where((playlist) =>
                 playlist.name.toLowerCase().contains(_searchController.text.toLowerCase())).toList();
 
-            if (playlists.isEmpty) {
+            if (playlists.isEmpty && _searchController.text.isEmpty) {
               // No playlists found
               return Center(
                 child: Padding(
@@ -82,7 +83,7 @@ Widget build(BuildContext context) {
                 padding: const EdgeInsets.all(8.0),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: (4 / 3),
+                  childAspectRatio: (4 / 4),
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),
@@ -93,7 +94,7 @@ Widget build(BuildContext context) {
                     onTap: () => GoRouter.of(context).push('/playlist/${playlist.id}/false'),
                     child: ResultItemCard(
                       title: playlist.name,
-                      // Add any other relevant details you'd like to display
+                      type: ResultCardType.Playlist
                     ),
                   );
                 },

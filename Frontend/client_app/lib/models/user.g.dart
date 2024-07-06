@@ -23,14 +23,14 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
           ? null
           : DateTime.parse(json['lockoutEnd'] as String),
       lockoutEnabled: json['lockoutEnabled'] as bool,
-      accessFailedCount: json['accessFailedCount'] as int,
+      accessFailedCount: (json['accessFailedCount'] as num).toInt(),
       likes: (json['likes'] as List<dynamic>?)
           ?.map((e) => Like.fromJson(e as Map<String, dynamic>))
           .toList(),
       artist: json['artist'] == null
           ? null
           : Artist.fromJson(json['artist'] as Map<String, dynamic>),
-      artistId: json['artistId'] as int?,
+      artistId: (json['artistId'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{

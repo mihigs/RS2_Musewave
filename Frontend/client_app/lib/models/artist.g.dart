@@ -7,7 +7,7 @@ part of 'artist.dart';
 // **************************************************************************
 
 Artist _$ArtistFromJson(Map<String, dynamic> json) => Artist(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       jamendoArtistId: json['jamendoArtistId'] as String?,

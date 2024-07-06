@@ -70,7 +70,8 @@ namespace Services.Implementations
             var exploreWeeklyPlaylist = await _playlistRepository.GetExploreWeeklyPlaylistAsync(userId);
             if (exploreWeeklyPlaylist == null)
             {
-                exploreWeeklyPlaylist = await _exploreWeeklyGenerator.GenerateExploreWeeklyPlaylistForUser(userId);
+                await _exploreWeeklyGenerator.GenerateExploreWeeklyPlaylistForUser(userId);
+                exploreWeeklyPlaylist = await _playlistRepository.GetExploreWeeklyPlaylistAsync(userId);
             }
             return exploreWeeklyPlaylist;
         }

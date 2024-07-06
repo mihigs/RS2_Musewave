@@ -7,7 +7,7 @@ part of 'playlist.dart';
 // **************************************************************************
 
 Playlist _$PlaylistFromJson(Map<String, dynamic> json) => Playlist(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       name: json['name'] as String,

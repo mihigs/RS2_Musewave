@@ -7,17 +7,18 @@ part of 'album.dart';
 // **************************************************************************
 
 Album _$AlbumFromJson(Map<String, dynamic> json) => Album(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       title: json['title'] as String,
-      artistId: json['artistId'] as int,
+      artistId: (json['artistId'] as num).toInt(),
       artist: json['artist'] == null
           ? null
           : Artist.fromJson(json['artist'] as Map<String, dynamic>),
       tracks: (json['tracks'] as List<dynamic>)
           .map((e) => Track.fromJson(e as Map<String, dynamic>))
           .toList(),
+      coverImageUrl: json['coverImageUrl'] as String?,
     );
 
 Map<String, dynamic> _$AlbumToJson(Album instance) => <String, dynamic>{
@@ -28,4 +29,5 @@ Map<String, dynamic> _$AlbumToJson(Album instance) => <String, dynamic>{
       'artistId': instance.artistId,
       'artist': instance.artist,
       'tracks': instance.tracks,
+      'coverImageUrl': instance.coverImageUrl,
     };

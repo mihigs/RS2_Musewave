@@ -10,6 +10,7 @@
                 "--dart-define=BASE_URL=http://10.0.2.2:8080/api",
                 "--dart-define=LISTENER_URL=http://10.0.2.2:8082/api",
                 "--dart-define=SIGNALR_HUB_URL=http://10.0.2.2:8080/notificationHub",
+                "--dart-define=STRIPE_PUBLIC_KEY=pk_test_51PZGBIRwyhx2IiJVM8aVdDPGk4po7vWjCuSJbQTS4H6hLqjpTd0EtNn70NhB7CwpVE7rBByBHtAtMCujDNd2Y3ck00QomHBSp0",
             ],
             "preLaunchTask": "Build Runner",
         },
@@ -22,6 +23,7 @@
                 "--dart-define=BASE_URL=http://localhost:8080/api",
                 "--dart-define=LISTENER_URL=http://localhost:8082/api",
                 "--dart-define=SIGNALR_HUB_URL=http://localhost:8080/notificationHub",
+                "--dart-define=STRIPE_PUBLIC_KEY=pk_test_51PZGBIRwyhx2IiJVM8aVdDPGk4po7vWjCuSJbQTS4H6hLqjpTd0EtNn70NhB7CwpVE7rBByBHtAtMCujDNd2Y3ck00QomHBSp0",
             ],
             "preLaunchTask": "Build Runner"
         },
@@ -34,6 +36,7 @@
                 "--dart-define=BASE_URL=https://10.0.2.2:7074/api",
                 "--dart-define=LISTENER_URL=http://10.0.2.2:7151/api",
                 "--dart-define=SIGNALR_HUB_URL=https://10.0.2.2:7074/notificationHub",
+                "--dart-define=STRIPE_PUBLIC_KEY=pk_test_51PZGBIRwyhx2IiJVM8aVdDPGk4po7vWjCuSJbQTS4H6hLqjpTd0EtNn70NhB7CwpVE7rBByBHtAtMCujDNd2Y3ck00QomHBSp0",
             ],
             "preLaunchTask": "Build Runner"
         },
@@ -46,6 +49,7 @@
                 "--dart-define=BASE_URL=https://localhost:7074/api",
                 "--dart-define=LISTENER_URL=http://localhost:7151/api",
                 "--dart-define=SIGNALR_HUB_URL=https://localhost:7074/notificationHub",
+                "--dart-define=STRIPE_PUBLIC_KEY=pk_test_51PZGBIRwyhx2IiJVM8aVdDPGk4po7vWjCuSJbQTS4H6hLqjpTd0EtNn70NhB7CwpVE7rBByBHtAtMCujDNd2Y3ck00QomHBSp0",
             ],
             "preLaunchTask": "Build Runner"
         },

@@ -20,6 +20,8 @@ namespace Services.Implementations
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IGenreSimilarityTrackerService, GenreSimilarityTrackerService>();
             services.AddScoped<IExploreWeeklyGenerator, ExploreWeeklyGenerator>();
+            services.AddScoped<ISearchService, SearchService>();
+            services.AddScoped<IPaymentsService, PaymentsService>();
 
             return services;
         }

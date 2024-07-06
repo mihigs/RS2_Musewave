@@ -3,6 +3,7 @@ using DataContext.Seeder;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Models.Base;
 using Services.Implementations;
 using System.Text;
 
@@ -55,6 +56,18 @@ builder.Services.AddCors(options =>
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });
+});
+
+// Add Stripe settings
+var stripeSettings = new StripeSettings
+{
+    SecretKey = configuration["StripeSettings:SecretKey"],
+    PublicKey = configuration["StripeSettings:PublicKey"]
+};
+services.Configure<StripeSettings>(options =>
+{
+    options.SecretKey = stripeSettings.SecretKey;
+    options.PublicKey = stripeSettings.PublicKey;
 });
 
 // Add controllers with newtonsoft json

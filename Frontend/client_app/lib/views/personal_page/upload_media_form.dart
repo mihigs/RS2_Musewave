@@ -191,7 +191,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                     child: ElevatedButton(
                       child: Text('Select Media'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
+                        backgroundColor: Theme.of(context).splashColor,
                         foregroundColor: Colors.white,
                       ),
                       onPressed: _uploadFile,

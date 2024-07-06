@@ -1,4 +1,5 @@
 ﻿using DataContext.Repositories;
+using Models.DTOs;
 using Models.DTOs.Queries;
 using Models.Entities;
 using Services.Interfaces;

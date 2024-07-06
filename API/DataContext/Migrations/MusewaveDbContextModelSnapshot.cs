@@ -166,6 +166,9 @@ namespace DataContext.Migrations
                     b.Property<int>("ArtistId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CoverImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -180,7 +183,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("ArtistId");
 
-                    b.ToTable("Albums", (string)null);
+                    b.ToTable("Albums");
                 });
 
             modelBuilder.Entity("Models.Entities.Artist", b =>
@@ -212,7 +215,7 @@ namespace DataContext.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Artists", (string)null);
+                    b.ToTable("Artists");
                 });
 
             modelBuilder.Entity("Models.Entities.Comment", b =>
@@ -246,7 +249,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comment", (string)null);
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("Models.Entities.Genre", b =>
@@ -269,7 +272,7 @@ namespace DataContext.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres", (string)null);
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("Models.Entities.JamendoAPIActivity", b =>
@@ -296,7 +299,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("JamendoAPIActivity", (string)null);
+                    b.ToTable("JamendoAPIActivity");
                 });
 
             modelBuilder.Entity("Models.Entities.Like", b =>
@@ -326,7 +329,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Like", (string)null);
+                    b.ToTable("Like");
                 });
 
             modelBuilder.Entity("Models.Entities.LoginActivity", b =>
@@ -354,7 +357,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("LoginActivity", (string)null);
+                    b.ToTable("LoginActivity");
                 });
 
             modelBuilder.Entity("Models.Entities.Playlist", b =>
@@ -389,7 +392,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Playlist", (string)null);
+                    b.ToTable("Playlist");
                 });
 
             modelBuilder.Entity("Models.Entities.PlaylistTrack", b =>
@@ -404,7 +407,42 @@ namespace DataContext.Migrations
 
                     b.HasIndex("TrackId");
 
-                    b.ToTable("PlaylistTrack", (string)null);
+                    b.ToTable("PlaylistTrack");
+                });
+
+            modelBuilder.Entity("Models.Entities.SearchHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("SearchDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SearchTerm")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SearchHistory");
                 });
 
             modelBuilder.Entity("Models.Entities.Track", b =>
@@ -452,7 +490,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("ArtistId");
 
-                    b.ToTable("Tracks", (string)null);
+                    b.ToTable("Tracks");
                 });
 
             modelBuilder.Entity("Models.Entities.TrackGenre", b =>
@@ -467,7 +505,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("TrackGenres", (string)null);
+                    b.ToTable("TrackGenres");
                 });
 
             modelBuilder.Entity("Models.Entities.User", b =>
@@ -537,6 +575,38 @@ namespace DataContext.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Entities.UserDonation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserDonation");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -700,6 +770,17 @@ namespace DataContext.Migrations
                     b.Navigation("Track");
                 });
 
+            modelBuilder.Entity("Models.Entities.SearchHistory", b =>
+                {
+                    b.HasOne("Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Models.Entities.Track", b =>
                 {
                     b.HasOne("Models.Entities.Album", "Album")
@@ -734,6 +815,17 @@ namespace DataContext.Migrations
                     b.Navigation("Genre");
 
                     b.Navigation("Track");
+                });
+
+            modelBuilder.Entity("Models.Entities.UserDonation", b =>
+                {
+                    b.HasOne("Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Models.Entities.Album", b =>

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/constants/result_card_types.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/router.dart';
 import 'package:frontend/services/tracks_service.dart';
-import 'package:frontend/widgets/result_item_card.dart';
+import 'package:frontend/widgets/cards/result_item_card.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
@@ -77,7 +78,7 @@ class _MyMusicTabState extends State<MyMusicTab> {
                     .contains(_searchController.text.toLowerCase()))
                 .toList();
 
-            if (tracks.isEmpty) {
+            if (tracks.isEmpty && _searchController.text.isEmpty) {
               // No tracks found
               return Center(
                 child: Padding(
@@ -105,20 +106,20 @@ class _MyMusicTabState extends State<MyMusicTab> {
                 padding: const EdgeInsets.fromLTRB(5, 0, 5, 3),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: (3 / 3),
+                  childAspectRatio: (3 / 3.6),
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),
                 itemCount: tracks.length,
                 itemBuilder: (context, index) {
                   var track = tracks[index];
-                  return GestureDetector(
+                  return ResultItemCard(
                     onTap: () =>
-                        GoRouter.of(context).push('/track/${track.id}/0/0'),
-                    child: ResultItemCard(
-                      title: track.title,
-                      subtitle: track.artist?.user?.userName,
-                    ),
+                      GoRouter.of(context).push('/track/${track.id}/0/0'),
+                    title: track.title,
+                    credits: track.artist?.user?.userName,
+                    type: ResultCardType.Track,
+                    imageUrl: track.imageUrl,
                   );
                 },
               );

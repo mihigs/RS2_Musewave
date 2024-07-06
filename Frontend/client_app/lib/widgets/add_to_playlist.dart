@@ -36,12 +36,13 @@ class _AddToPlaylistModalState extends State<AddToPlaylistModal> {
     setState(() {
       playlistTrackStatus[playlistId] = isInPlaylist;
     });
-    
+
     // Then update the backend
     if (isInPlaylist) {
       playlistService.AddToPlaylist(playlistId, int.parse(widget.trackId));
     } else {
-      playlistService.RemoveTrackFromPlaylist(playlistId, int.parse(widget.trackId));
+      playlistService.RemoveTrackFromPlaylist(
+          playlistId, int.parse(widget.trackId));
     }
   }
 
@@ -66,13 +67,23 @@ class _AddToPlaylistModalState extends State<AddToPlaylistModal> {
                         icon: Icon(Icons.arrow_forward),
                         onPressed: () async {
                           await playlistService.CreatePlaylist(
-                              _newPlaylistController.text, int.parse(widget.trackId));
+                              _newPlaylistController.text,
+                              int.parse(widget.trackId));
                           Navigator.of(context).pop();
                         },
                       ),
               ),
               onChanged: (value) {
                 setState(() {}); // To update the visibility of the suffix icon
+              },
+              onSubmitted: (value) async {
+                await playlistService.CreatePlaylist(
+                    _newPlaylistController.text, int.parse(widget.trackId));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text("Playlist created!"),
+                  duration: Duration(seconds: 1),
+                ));
+                Navigator.of(context).pop();
               },
             ),
           ),
@@ -94,8 +105,9 @@ class _AddToPlaylistModalState extends State<AddToPlaylistModal> {
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
                     UserPlaylistsDto playlist = snapshot.data![index];
-                    bool isTrackInPlaylist = playlistTrackStatus[playlist.id] ?? false;
-                    
+                    bool isTrackInPlaylist =
+                        playlistTrackStatus[playlist.id] ?? false;
+
                     return ListTile(
                       title: Text(playlist.name),
                       trailing: Checkbox(

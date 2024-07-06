@@ -19,7 +19,6 @@ namespace Services.Implementations
         private readonly IPlaylistRepository _playlistRepository;
         private readonly ILikeRepository _likeRepository;
         private readonly IArtistRepository _artistRepository;
-        private readonly IJamendoService _jamendoService;
         private readonly IRedisService _redisService;
         private readonly ICommentRepository _commentRepository;
         private readonly IUserRepository _userRepository;
@@ -30,7 +29,6 @@ namespace Services.Implementations
             IPlaylistRepository playlistRepository,
             ILikeRepository likeRepository,
             IArtistRepository artistRepository,
-            IJamendoService jamendoService,
             IRedisService redisService,
             ICommentRepository commentRepository,
             IUserRepository userRepository
@@ -41,7 +39,6 @@ namespace Services.Implementations
             _playlistRepository = playlistRepository;
             _likeRepository = likeRepository;
             _artistRepository = artistRepository;
-            _jamendoService = jamendoService;
             _redisService = redisService;
             _commentRepository = commentRepository;
             _userRepository = userRepository;

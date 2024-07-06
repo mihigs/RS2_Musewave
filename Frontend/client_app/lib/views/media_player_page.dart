@@ -203,7 +203,10 @@ class MediaPlayerPageState extends State<MediaPlayerPage> {
                 widget.tracksService
                     .toggleLikeTrack(currentTrack!.id)
                     .then((response) => {
-                          if (response) {model.toggleIsLiked()}
+                          if (response) {
+                            model.toggleIsLiked(),
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration: Duration(seconds: 1), content: Text(isLiked ? 'Track added to favorites' : 'Removed from favorites'),))
+                          }
                         });
               }
             },
@@ -268,7 +271,10 @@ class MediaPlayerPageState extends State<MediaPlayerPage> {
                       child: Text(
                         currentTrack!.artist!.user!.userName,
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(
+                          fontSize: 20,
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
                     ),
                   ),

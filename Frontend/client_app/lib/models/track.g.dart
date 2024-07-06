@@ -7,12 +7,12 @@ part of 'track.dart';
 // **************************************************************************
 
 Track _$TrackFromJson(Map<String, dynamic> json) => Track(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       title: json['title'] as String,
-      duration: json['duration'] as int,
-      albumId: json['albumId'] as int?,
+      duration: (json['duration'] as num).toInt(),
+      albumId: (json['albumId'] as num?)?.toInt(),
       album: json['album'] == null
           ? null
           : Album.fromJson(json['album'] as Map<String, dynamic>),
@@ -25,7 +25,7 @@ Track _$TrackFromJson(Map<String, dynamic> json) => Track(
       artist: json['artist'] == null
           ? null
           : Artist.fromJson(json['artist'] as Map<String, dynamic>),
-      artistId: json['artistId'] as int?,
+      artistId: (json['artistId'] as num?)?.toInt(),
       filePath: json['filePath'] as String?,
       signedUrl: json['signedUrl'] as String?,
       isLiked: json['isLiked'] as bool?,
@@ -53,9 +53,9 @@ Map<String, dynamic> _$TrackToJson(Track instance) => <String, dynamic>{
     };
 
 TrackGenre _$TrackGenreFromJson(Map<String, dynamic> json) => TrackGenre(
-      trackId: json['trackId'] as int,
+      trackId: (json['trackId'] as num).toInt(),
       track: Track.fromJson(json['track'] as Map<String, dynamic>),
-      genreId: json['genreId'] as int,
+      genreId: (json['genreId'] as num).toInt(),
       genre: Genre.fromJson(json['genre'] as Map<String, dynamic>),
     );
 

@@ -7,7 +7,7 @@ part of 'base_entity.dart';
 // **************************************************************************
 
 BaseEntity _$BaseEntityFromJson(Map<String, dynamic> json) => BaseEntity(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
