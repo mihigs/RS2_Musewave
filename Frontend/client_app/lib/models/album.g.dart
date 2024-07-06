@@ -18,6 +18,7 @@ Album _$AlbumFromJson(Map<String, dynamic> json) => Album(
       tracks: (json['tracks'] as List<dynamic>)
           .map((e) => Track.fromJson(e as Map<String, dynamic>))
           .toList(),
+      coverImageUrl: json['coverImageUrl'] as String?,
     );
 
 Map<String, dynamic> _$AlbumToJson(Album instance) => <String, dynamic>{
@@ -28,4 +29,5 @@ Map<String, dynamic> _$AlbumToJson(Album instance) => <String, dynamic>{
       'artistId': instance.artistId,
       'artist': instance.artist,
       'tracks': instance.tracks,
+      'coverImageUrl': instance.coverImageUrl,
     };

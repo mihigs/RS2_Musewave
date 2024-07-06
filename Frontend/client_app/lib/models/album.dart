@@ -11,6 +11,7 @@ class Album extends BaseEntity{
   int artistId;
   Artist? artist;
   List<Track> tracks;
+  String? coverImageUrl;
 
   Album({
     required super.id,
@@ -19,7 +20,8 @@ class Album extends BaseEntity{
     required this.title,
     required this.artistId,
     required this.artist,
-    required this.tracks, 
+    required this.tracks,
+    this.coverImageUrl,
   });
 
   factory Album.fromJson(Map<String, dynamic> json) => _$AlbumFromJson(json);

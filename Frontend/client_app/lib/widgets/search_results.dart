@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/album.dart';
 import 'package:frontend/models/artist.dart';
+import 'package:frontend/models/constants/result_card_types.dart';
 import 'package:frontend/streaming/music_streamer.dart';
 import 'package:frontend/models/playlist.dart';
 import 'package:frontend/models/track.dart';
@@ -106,10 +107,11 @@ class _SearchResultsState extends State<SearchResults> {
                     Container(
                         padding: const EdgeInsets.all(12.0),
                         child: Text('Tracks',
-                            style: Theme.of(context).textTheme.headlineMedium)),
+                            style: Theme.of(context).textTheme.headlineSmall)),
                     GridView.count(
                       crossAxisCount: 3,
                       crossAxisSpacing: 5,
+                      childAspectRatio: (4 / 4),
                       mainAxisSpacing: 5,
                       padding: const EdgeInsets.all(8.0),
                       shrinkWrap: true,
@@ -122,7 +124,9 @@ class _SearchResultsState extends State<SearchResults> {
                                       .push('/track/${track.id}/0/0'),
                                   child: ResultItemCard(
                                     title: track.title,
-                                    subtitle: track.artist?.user?.userName,
+                                    credits: track.artist?.user?.userName,
+                                    type: ResultCardType.Track,
+                                    imageUrl: track.imageUrl,
                                   ),
                                 )),
                       ],
@@ -141,10 +145,11 @@ class _SearchResultsState extends State<SearchResults> {
                     Container(
                         padding: const EdgeInsets.all(12.0),
                         child: Text('Jamendo Tracks',
-                            style: Theme.of(context).textTheme.headlineMedium)),
+                            style: Theme.of(context).textTheme.headlineSmall)),
                     GridView.count(
                       crossAxisCount: 3,
                       crossAxisSpacing: 5,
+                      childAspectRatio: (4 / 5),
                       mainAxisSpacing: 5,
                       padding: const EdgeInsets.all(8.0),
                       shrinkWrap: true,
@@ -159,7 +164,9 @@ class _SearchResultsState extends State<SearchResults> {
                                   },
                                   child: ResultItemCard(
                                     title: track.title,
-                                    subtitle: track.artist?.user?.userName,
+                                    credits: track.artist?.user?.userName,
+                                    type: ResultCardType.Track,
+                                    imageUrl: track.imageUrl,
                                   ),
                                 )),
                       ],
@@ -178,10 +185,11 @@ class _SearchResultsState extends State<SearchResults> {
                     Container(
                         padding: const EdgeInsets.all(12.0),
                         child: Text('Albums',
-                            style: Theme.of(context).textTheme.headlineMedium)),
+                            style: Theme.of(context).textTheme.headlineSmall)),
                     GridView.count(
                       crossAxisCount: 3,
                       crossAxisSpacing: 5,
+                      childAspectRatio: (4 / 4),
                       mainAxisSpacing: 5,
                       padding: const EdgeInsets.all(8.0),
                       shrinkWrap: true,
@@ -195,6 +203,8 @@ class _SearchResultsState extends State<SearchResults> {
                                   child: ResultItemCard(
                                     title: album.title,
                                     subtitle: album.artist?.user?.userName,
+                                    type: ResultCardType.Album,
+                                    imageUrl: album.coverImageUrl,
                                   ),
                                 )),
                       ],
@@ -213,10 +223,11 @@ class _SearchResultsState extends State<SearchResults> {
                     Container(
                         padding: const EdgeInsets.all(12.0),
                         child: Text('Artists',
-                            style: Theme.of(context).textTheme.headlineMedium)),
+                            style: Theme.of(context).textTheme.headlineSmall)),
                     GridView.count(
                       crossAxisCount: 3,
                       crossAxisSpacing: 5,
+                      childAspectRatio: (4 / 4),
                       mainAxisSpacing: 5,
                       padding: const EdgeInsets.all(8.0),
                       shrinkWrap: true,
@@ -235,6 +246,8 @@ class _SearchResultsState extends State<SearchResults> {
                                 .push('/artist/$artistId/$hasJamendoId'),
                             child: ResultItemCard(
                               title: artist.user!.userName,
+                              type: ResultCardType.Artist,
+                              imageUrl: artist.artistImageUrl,
                             ),
                           );
                         }),
@@ -254,10 +267,11 @@ class _SearchResultsState extends State<SearchResults> {
                     Container(
                         padding: const EdgeInsets.all(12.0),
                         child: Text('Playlists',
-                            style: Theme.of(context).textTheme.headlineMedium)),
+                            style: Theme.of(context).textTheme.headlineSmall)),
                     GridView.count(
                       crossAxisCount: 3,
                       crossAxisSpacing: 5,
+                      childAspectRatio: (4 / 4),
                       mainAxisSpacing: 5,
                       padding: const EdgeInsets.all(8.0),
                       shrinkWrap: true,
@@ -270,6 +284,7 @@ class _SearchResultsState extends State<SearchResults> {
                                       .push('/playlist/${playlist.id}/false'),
                                   child: ResultItemCard(
                                     title: playlist.name,
+                                    type: ResultCardType.Playlist,
                                   ),
                                 )),
                       ],
