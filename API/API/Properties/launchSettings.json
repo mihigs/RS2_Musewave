@@ -26,7 +26,7 @@
         "Redis__Host": "localhost",
         "Redis__Port": "6380",
         "Redis__AbortOnConnectFail": "false",
-        "RunJamendoSeed": "false",
+        "RunJamendoSeed": "true",
         "StripeSettings__SecretKey": "sk_test_51PZGBIRwyhx2IiJVx2CGt6MVOFDjNmnZHkyY5lsLlVFWnMxMKPPoZq1F67nfq24HRUB0HWniNi1CQ7CgivNY8cIX00tuZIR2n5",
         "StripeSettings__PublicKey": "pk_test_51PZGBIRwyhx2IiJVM8aVdDPGk4po7vWjCuSJbQTS4H6hLqjpTd0EtNn70NhB7CwpVE7rBByBHtAtMCujDNd2Y3ck00QomHBSp0"
       },

@@ -68,36 +68,43 @@ namespace Services.Implementations
                 // Use the similarity matrix to find tracks with similar genres
                 var similarGenres = new Dictionary<int, double>(); // To store IDs of genres similar to the user's liked genres, and the similarity score
 
-                foreach (var userGenreId in userLikedGenreIds)
+                var similarityThreshold = 0.5; // Initial threshold for similarity
+
+                while (similarityThreshold >= 0)
                 {
-                    // Find similar genres based on the similarity matrix
-                    foreach (var entry in similarityMatrix)
+                    foreach (var userGenreId in userLikedGenreIds)
                     {
-                        var genres = entry.Key.Split('-').Select(int.Parse).ToArray();
-                        if ((genres.Contains(userGenreId) && entry.Value > 0.5)) // Threshold for similarity
+                        // Find similar genres based on the similarity matrix
+                        foreach (var entry in similarityMatrix)
                         {
-                            foreach (var genreId in genres)
+                            var genres = entry.Key.Split('-').Select(int.Parse).ToArray();
+                            if (genres.Contains(userGenreId) && entry.Value > similarityThreshold) // Threshold for similarity
                             {
-                                // Check if the genre is not already liked by the user
-                                if (!userLikedGenreIds.Contains(genreId))
+                                foreach (var genreId in genres)
                                 {
-                                    // Update or add the genre with its similarity score
-                                    if (similarGenres.ContainsKey(genreId))
+                                    // Check if the genre is not already liked by the user
+                                    if (!userLikedGenreIds.Contains(genreId))
                                     {
-                                        // Update the score if the new score is higher
-                                        if (similarGenres[genreId] < entry.Value)
+                                        // Update or add the genre with its similarity score
+                                        if (similarGenres.ContainsKey(genreId))
                                         {
-                                            similarGenres[genreId] = entry.Value;
+                                            // Update the score if the new score is higher
+                                            if (similarGenres[genreId] < entry.Value)
+                                            {
+                                                similarGenres[genreId] = entry.Value;
+                                            }
                                         }
-                                    }
-                                    else
-                                    {
-                                        similarGenres.Add(genreId, entry.Value);
+                                        else
+                                        {
+                                            similarGenres.Add(genreId, entry.Value);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+
+                    similarityThreshold -= 0.25;
                 }
                 if (similarGenres.IsNullOrEmpty())
                 {
