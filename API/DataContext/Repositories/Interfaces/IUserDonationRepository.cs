@@ -1,7 +1,7 @@
-﻿using Models.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Models.Entities;
 
 namespace DataContext.Repositories;
 public interface IUserDonationRepository : IRepository<UserDonation>
 {
-
 }

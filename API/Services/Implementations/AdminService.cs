@@ -1,4 +1,5 @@
-﻿using DataContext.Repositories.Interfaces;
+﻿using DataContext.Repositories;
+using DataContext.Repositories.Interfaces;
 using Models.DTOs;
 using Services.Interfaces;
 
@@ -12,13 +13,15 @@ namespace Services.Implementations
         private readonly ILoginActivityRepository _loginActivityRepository;
         private readonly IJamendoApiActivityRepository _jamendoApiActivityRepository;
         private readonly IRedisService _redisService;
+        private readonly IUserDonationRepository _userDonationRepository;
 
         public AdminService(ITrackRepository trackRepository,
             IUserRepository userRepository,
             IArtistRepository artistRepository,
             ILoginActivityRepository loginActivityRepository,
             IJamendoApiActivityRepository jamendoApiActivityRepository,
-            IRedisService redisService
+            IRedisService redisService,
+            IUserDonationRepository userDonationRepository
             )
         {
             _trackRepository = trackRepository ?? throw new ArgumentNullException(nameof(trackRepository));
@@ -27,6 +30,7 @@ namespace Services.Implementations
             _loginActivityRepository = loginActivityRepository;
             _jamendoApiActivityRepository = jamendoApiActivityRepository;
             _redisService = redisService;
+            _userDonationRepository = userDonationRepository;
         }
 
         public async Task<AdminDashboardDetailsDto> GetDashboardDetails()
@@ -38,6 +42,9 @@ namespace Services.Implementations
             var dailyLoginCount = await _loginActivityRepository.GetDailyLoginCount();
             var jamendoApiActivity = await _jamendoApiActivityRepository.GetJamendoAPIRequestCountPerMonth();
             var totalTimeListened = await _redisService.GetAllUserTotalTimeListened();
+            var allDonations = await _userDonationRepository.GetAll();
+            decimal totalDonationsAmount = allDonations.Sum(x => x.Amount) / 100;
+            var totalDonationsCount = allDonations.Count();
 
             return new AdminDashboardDetailsDto
             {
@@ -47,7 +54,9 @@ namespace Services.Implementations
                 ArtistCount = artistCount,
                 DailyLoginCount = dailyLoginCount,
                 JamendoApiActivity = jamendoApiActivity,
-                TotalTimeListened = totalTimeListened
+                TotalTimeListened = totalTimeListened,
+                TotalDonationsAmount = totalDonationsAmount,
+                TotalDonationsCount = totalDonationsCount
             };
         }
     }

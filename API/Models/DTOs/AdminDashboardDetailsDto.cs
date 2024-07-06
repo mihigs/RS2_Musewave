@@ -9,5 +9,7 @@
         public int DailyLoginCount { get; set; }
         public int JamendoApiActivity { get; set; }
         public int TotalTimeListened { get; set; }
+        public decimal TotalDonationsAmount { get; set; }
+        public int TotalDonationsCount { get; set; }
     }
 }

@@ -6,6 +6,8 @@ class AdminDashboardDetailsDto {
   int dailyLoginCount;
   int jamendoApiActivity;
   int totalTimeListened;
+  double totalDonationsAmount;
+  int totalDonationsCount;
 
   AdminDashboardDetailsDto({
     required this.musewaveTrackCount,
@@ -15,6 +17,8 @@ class AdminDashboardDetailsDto {
     required this.dailyLoginCount,
     required this.jamendoApiActivity,
     required this.totalTimeListened,
+    required this.totalDonationsAmount,
+    required this.totalDonationsCount,
   });
 
   // Converting a JSON map to the DTO instance
@@ -26,6 +30,8 @@ class AdminDashboardDetailsDto {
         dailyLoginCount: json['dailyLoginCount'],
         jamendoApiActivity: json['jamendoApiActivity'],
         totalTimeListened: json['totalTimeListened'],
+        totalDonationsAmount: json['totalDonationsAmount'].toDouble(),
+        totalDonationsCount: json['totalDonationsCount'],
       );
 
   // Converting the DTO instance to a JSON map
@@ -37,5 +43,7 @@ class AdminDashboardDetailsDto {
         'dailyLoginCount': dailyLoginCount,
         'jamendoApiActivity': jamendoApiActivity,
         'totalTimeListened': totalTimeListened,
+        'totalDonationsAmount': totalDonationsAmount,
+        'totalDonationsCount': totalDonationsCount,
       };
 }
