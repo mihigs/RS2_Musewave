@@ -107,7 +107,6 @@ class _CollectionListState extends State<CollectionList> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        // Track cover art placeholder with purple gradient background
                         height: 150,
                         width: 150,
                         decoration: const BoxDecoration(
