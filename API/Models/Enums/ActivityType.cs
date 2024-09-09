@@ -1,11 +1,12 @@
 ﻿namespace Models.Enums
 {
-    public enum JamendoAPIActivityType
+    public enum ActivityType
     {
         SearchJamendoByTrackName = 1,
-        GetTrackById = 2,
+        GetJamendoTrackById = 2,
         GetJamendoTracksPerGenres = 3,
         GetPopularJamendoTracks = 4,
         GetJamendoArtistDetails = 5,
+        UserLogin = 6,
     }
 }

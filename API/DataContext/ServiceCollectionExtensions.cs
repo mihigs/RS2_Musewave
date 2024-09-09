@@ -20,8 +20,7 @@ namespace DataContext
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPlaylistTrackRepository, PlaylistTrackRepository>();
             services.AddScoped<ITrackGenreRepository, TrackGenreRepository>();
-            services.AddScoped<ILoginActivityRepository, LoginActivityRepository>();
-            services.AddScoped<IJamendoApiActivityRepository, JamendoApiActivityRepository>();
+            services.AddScoped<IActivityRepository, ActivityRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ISearchHistoryRepository, SearchHistoryRepository>();
             services.AddScoped<IUserDonationRepository, UserDonationRepository>();
