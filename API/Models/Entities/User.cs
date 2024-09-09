@@ -8,6 +8,8 @@ namespace Models.Entities
         public virtual Artist? Artist { get; set; }
         public int? ArtistId { get; set; }
         public string UserName { get; set; }
+        public int LanguageId { get; set; }
+        public Language Language { get; set; }
 
         public User()
         {

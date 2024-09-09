@@ -6,6 +6,7 @@ import 'package:frontend/services/playlist_service.dart'; // Ensure this service
 import 'package:frontend/widgets/cards/result_item_card.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PlaylistsTab extends StatefulWidget {
   const PlaylistsTab({super.key});
@@ -45,10 +46,10 @@ Widget build(BuildContext context) {
       appBar: AppBar(
         title: TextField(
           controller: _searchController,
-          decoration: const InputDecoration(
-            hintText: 'Search playlists...',
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(context)!.search_playlists,
             border: InputBorder.none,
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
           ),
         ),
       ),
@@ -71,7 +72,7 @@ Widget build(BuildContext context) {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    'Start by creating your first playlist',
+                    AppLocalizations.of(context)!.no_playlists,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
@@ -102,7 +103,7 @@ Widget build(BuildContext context) {
             }
           } else {
             // In case no data is available
-            return const Center(child: Text('No data available'));
+            return Center(child: Text(AppLocalizations.of(context)!.no_data_available));
           }
         },
       ),

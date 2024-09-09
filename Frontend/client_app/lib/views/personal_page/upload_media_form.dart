@@ -8,6 +8,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/helpers/permission_handler.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UploadMediaPage extends StatefulWidget {
   final TracksService tracksService = GetIt.I<TracksService>();
@@ -25,8 +26,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
   bool _fileReady = false;
   bool _isUploading = false; // New state variable to track upload status
   int maximumFileSize = 10000000; // 10MB
-  String _uploadMessage =
-      "Select a track and give it a name to get started..."; // To display success or error messages
+  String _uploadMessage = ""; // To display success or error messages
 
   Future<void> _uploadFile() async {
     // Ask for permissions
@@ -71,11 +71,10 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
   }
 
   // Handler which listens to signalR for track processing status
-  void _initializeTrackProcessingStatusHandler() {
-    widget.signalrService.registerTrackUploadFailed((data) => _setUploadMessage(
-        "Track processing has unfortunately failed. Please try uploading again."));
+  void _initializeTrackProcessingStatusHandler(context) {
+    widget.signalrService.registerTrackUploadFailed((data) => _setUploadMessage(AppLocalizations.of(context)!.track_processing_failed));
     widget.signalrService.registerOnTrackReady(
-        (data) => _setUploadMessage("Track processed successfuly!"));
+        (data) => _setUploadMessage(AppLocalizations.of(context)!.track_processing_success));
   }
 
   void _setUploadMessage(String message) {
@@ -88,7 +87,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
     if (!_validate()) {
       return;
     }
-    _setUploadMessage("Processing track...");
+    _setUploadMessage(AppLocalizations.of(context)!.track_processing);
 
     String? userId = await widget.authService.getUserIdFromStorage();
 
@@ -107,8 +106,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
     );
 
     if(!result){
-      _setUploadMessage(
-        "Track processing has unfortunately failed. Please try uploading again.");
+      _setUploadMessage(AppLocalizations.of(context)!.track_processing_failed);
     }
   }
 
@@ -125,11 +123,12 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
   @override
   void initState() {
     super.initState();
-    _initializeTrackProcessingStatusHandler();
   }
 
   @override
   Widget build(BuildContext context) {
+    _uploadMessage = AppLocalizations.of(context)!.upload_track_start;
+    _initializeTrackProcessingStatusHandler(context);
     return Scaffold(
       appBar: AppBar(
         leading: _isUploading // Disable back button when uploading
@@ -144,7 +143,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                   }
                 },
               ),
-        title: Text('Upload Track'),
+        title: Text(AppLocalizations.of(context)!.upload_track_title),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -154,10 +153,10 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               TextFormField(
-                decoration: InputDecoration(labelText: 'Title'),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.track_title),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the title for the track';
+                    return AppLocalizations.of(context)!.track_title_hint;;
                   }
                   return null;
                 },
@@ -177,7 +176,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                     if (_isUploading) ...[
                       LinearProgressIndicator(),
                       SizedBox(height: 10),
-                      Text("Uploading track..."),
+                      Text(AppLocalizations.of(context)!.upload_track_uploading),
                     ],
                     SizedBox(height: 10),
                     Text(_uploadMessage, textAlign: TextAlign.center),
@@ -189,7 +188,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
-                      child: Text('Select Media'),
+                      child: Text(AppLocalizations.of(context)!.select_media_button),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).splashColor,
                         foregroundColor: Colors.white,
@@ -201,7 +200,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
-                      child: Text('Submit'),
+                      child: Text(AppLocalizations.of(context)!.submit),
                       onPressed: _validate()
                           ? () {
                               if (_formKey.currentState != null && _validate()) {

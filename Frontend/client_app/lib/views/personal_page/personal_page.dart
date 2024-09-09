@@ -7,6 +7,7 @@ import 'package:frontend/views/personal_page/tabs/playlists_tab.dart';
 import 'package:frontend/views/personal_page/tabs/profile_tab.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PersonalPage extends StatelessWidget {
   final AuthenticationService authService = GetIt.I<AuthenticationService>();
@@ -45,11 +46,11 @@ class PersonalPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      bottom: const TabBar(
+                      bottom: TabBar(
                         tabs: [
-                          Tab(text: 'Profile'),
-                          Tab(text: 'Playlists'),
-                          Tab(text: 'My Music'),
+                          Tab(text: AppLocalizations.of(context)!.profile),
+                          Tab(text: AppLocalizations.of(context)!.playlists),
+                          Tab(text: AppLocalizations.of(context)!.my_music),
                         ],
                       ),
                     ),

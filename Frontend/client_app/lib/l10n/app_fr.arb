@@ -1,0 +1,92 @@
+{
+  "@@locale": "fr",
+
+  "english": "Anglais",
+  "spanish": "Espagnol",
+  "french": "Français",
+  "german": "Allemand",
+  "bosnian": "Bosniaque",
+
+  "generic_error": "Une erreur s'est produite",
+  "no_data_available": "Aucune donnée disponible",
+
+  "submit": "Soumettre",
+  "show_more": "Voir plus",
+  
+  "email": "E-mail",
+  "email_hint": "Veuillez entrer votre e-mail",
+  "email_hint_invalid": "Veuillez entrer un e-mail valide",
+  "password": "Mot de passe",
+  "password_hint": "Veuillez entrer votre mot de passe",
+  "password_hint_invalid": "Le mot de passe doit inclure au moins une majuscule, un chiffre et un caractère spécial",
+  "login": "Connexion",
+  "login_error": "Échec de la connexion. Veuillez réessayer.",
+
+  "home": "Accueil",
+  "search": "Recherche",
+  "you": "Vous",
+
+  "search_hint": "Recherchez de la musique, des artistes, des playlists...",
+  "made_for_you": "Fait pour vous",
+  "popular_jamendo_tracks": "Morceaux populaires de Jamendo",
+
+  "explore_weekly":  "Explorer la semaine",
+  "liked_tracks": "Morceaux aimés",
+
+  "profile": "Profil",
+  "playlists": "Playlists",
+  "my_music": "Ma musique",
+
+  "donate": "Faire un don",
+  "language": "Langue",
+  "logout": "Déconnexion",
+
+  "donations": "Dons",
+  "donations_message": "Nous fonctionnons grâce aux dons. Votre soutien est très apprécié !",
+  "donation_success": "Don réussi ! Merci pour votre soutien.",
+  "payment_canceled": "Paiement annulé.",
+  "payment_failed": "Échec du paiement : ",
+
+  "failed_to_load_languages": "Échec du chargement des langues.",
+  "select_language": "Sélectionnez une langue",
+  "language_update_success": "Langue mise à jour avec succès.",
+  "language_update_failed": "Échec de la mise à jour de la langue.",
+
+  "search_playlists": "Rechercher des playlists...",
+  "no_playlists": "Commencez par créer votre première playlist",
+
+  "search_tracks": "Rechercher des morceaux...",
+  "no_tracks": "Devenez artiste en téléchargeant votre premier morceau",
+
+  "no_tracks_found": "Aucun morceau trouvé.",
+  "tracks": "Morceaux",
+  "jamendo_tracks": "Morceaux Jamendo",
+  "albums": "Albums",
+  "artists": "Artistes",
+
+  "track_processing": "Traitement du morceau...",
+  "track_processing_failed": "Le traitement du morceau a échoué. Veuillez réessayer de télécharger.",
+  "track_processing_success": "Morceau traité avec succès !",
+  "upload_track_title": "Télécharger un morceau",
+  "upload_track_start": "Sélectionnez un morceau et donnez-lui un nom pour commencer...",
+  "upload_track_uploading": "Téléchargement du morceau...",
+  "track_title_hint": "Veuillez entrer le titre du morceau",
+  "select_media_button": "Sélectionner un fichier",
+
+  "comments": "Commentaires",
+  "no_comments_found": "Aucun commentaire trouvé",
+  "add_comment": "Ajouter un commentaire",
+
+  "add_to_playlist": "Ajouter à la playlist",
+  "add_to_new_playlist": "Ajouter à une nouvelle playlist",
+  "playlist_created": "Playlist créée !",
+  "no_playlist_found": "Aucune playlist trouvée",
+
+  "track_added_to_favorites": "Morceau ajouté aux favoris",
+  "track_removed_from_favorites": "Supprimé des favoris",
+  
+  "track_title": "Titre",
+  "credits_by": "Par",
+
+  "track_is_ready": "Votre morceau est prêt !"
+}

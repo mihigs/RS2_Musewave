@@ -13,9 +13,12 @@ namespace DataContext
         public DbSet<Genre> Genres { get; set; }
         public DbSet<TrackGenre> TrackGenres { get; set; }
         public DbSet<Activity> Activity { get; set; }
-        public DbSet<Comment> Comment { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public DbSet<SearchHistory> SearchHistory { get; set; }
-        public DbSet<UserDonation> UserDonation { get; set; }
+        public DbSet<UserDonation> UserDonations { get; set; }
+        public DbSet<Language> Languages { get; set; }
+        public DbSet<Playlist> Playlists { get; set; }
+
         public MusewaveDbContext(DbContextOptions<MusewaveDbContext> options)
             : base(options)
         {
@@ -68,6 +71,12 @@ namespace DataContext
 
             modelBuilder.Entity<Track>()
                 .Ignore(t => t.IsLiked);
+
+            #region Table Name Configuration
+
+            modelBuilder.Entity<Language>().ToTable("Languages");
+
+            #endregion
         }
     }
 }

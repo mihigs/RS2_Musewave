@@ -29,11 +29,13 @@ class AuthenticationService extends ApiService {
         const String NameIdentifierClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
         final token = jsonDecode(response.body)['token'] as String;
         final userId = JwtDecoder.decode(token)[NameIdentifierClaimType] as String;
+        final languageCode = jsonDecode(response.body)['languageCode'] as String;
         // Initialize SignalR connection
         signalrService.initializeConnection(token);
         // Store data in secure storage
         await secureStorage.write(key: 'access_token', value: token);
         await secureStorage.write(key: 'user_id', value: userId);
+        await secureStorage.write(key: 'language_code', value: languageCode);
         result.token = token;
         // Update logged in state
         loggedInState.login();

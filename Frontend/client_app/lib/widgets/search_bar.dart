@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchBarWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
@@ -20,7 +21,7 @@ class SearchBarWidget extends StatelessWidget {
       onTap: onTap,
       onFieldSubmitted: onSubmitted,
       decoration: InputDecoration(
-        labelText: 'Search for music, artists, playlists...',
+        labelText: AppLocalizations.of(context)!.search_hint,
         prefixIcon: const Icon(Icons.search),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(25.0)),

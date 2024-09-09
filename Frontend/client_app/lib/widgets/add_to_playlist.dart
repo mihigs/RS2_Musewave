@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/DTOs/UserPlaylistsDto.dart';
 import 'package:frontend/services/playlist_service.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddToPlaylistModal extends StatefulWidget {
   final String trackId;
@@ -51,7 +52,7 @@ class _AddToPlaylistModalState extends State<AddToPlaylistModal> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text('Add to Playlist'),
+        title: Text(AppLocalizations.of(context)!.add_to_playlist),
       ),
       body: Column(
         children: [
@@ -60,7 +61,7 @@ class _AddToPlaylistModalState extends State<AddToPlaylistModal> {
             child: TextField(
               controller: _newPlaylistController,
               decoration: InputDecoration(
-                hintText: "Add to new playlist",
+                hintText: AppLocalizations.of(context)!.add_to_new_playlist,
                 suffixIcon: _newPlaylistController.text.isEmpty
                     ? null
                     : IconButton(
@@ -80,7 +81,7 @@ class _AddToPlaylistModalState extends State<AddToPlaylistModal> {
                 await playlistService.CreatePlaylist(
                     _newPlaylistController.text, int.parse(widget.trackId));
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text("Playlist created!"),
+                  content: Text(AppLocalizations.of(context)!.playlist_created),
                   duration: Duration(seconds: 1),
                 ));
                 Navigator.of(context).pop();
@@ -98,7 +99,7 @@ class _AddToPlaylistModalState extends State<AddToPlaylistModal> {
                   return Center(child: Text("Error: ${snapshot.error}"));
                 }
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text("No Playlists Found"));
+                  return Center(child: Text(AppLocalizations.of(context)!.no_playlist_found));
                 }
 
                 return ListView.builder(

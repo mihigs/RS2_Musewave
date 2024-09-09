@@ -24,6 +24,7 @@ namespace DataContext
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ISearchHistoryRepository, SearchHistoryRepository>();
             services.AddScoped<IUserDonationRepository, UserDonationRepository>();
+            services.AddScoped<ILanguageRepository, LanguageRepository>();
 
             return services;
         }

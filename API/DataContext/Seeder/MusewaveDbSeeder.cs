@@ -9,6 +9,7 @@ namespace DataContext.Seeder
     public class MusewaveDbSeeder(MusewaveDbContext musewaveDbContext,
             RoleManager<IdentityRole> roleManager,
             UserManager<User> userManager,
+            ILanguageRepository languageRepository,
             IUserRepository userRepository,
             IArtistRepository artistRepository,
             IPlaylistRepository playlistRepository,
@@ -23,6 +24,7 @@ namespace DataContext.Seeder
         public readonly MusewaveDbContext _musewaveDbContext = musewaveDbContext;
         public readonly RoleManager<IdentityRole> _roleManager = roleManager;
         public readonly UserManager<User> _userManager = userManager;
+        public readonly ILanguageRepository _languageRepository = languageRepository;
         public readonly IUserRepository _userRepository = userRepository;
         public readonly IArtistRepository _artistRepository = artistRepository;
         public readonly IPlaylistRepository _playlistRepository = playlistRepository;
@@ -37,6 +39,7 @@ namespace DataContext.Seeder
         {
             try
             {
+                await new LanguageSeeder(_languageRepository).Seed();
                 await new RoleSeeder(_roleManager).Seed();
                 await new UserSeeder(_userManager, _userRepository, _artistRepository).Seed();
                 await new AlbumSeeder(_artistRepository, _albumRepository).Seed();

@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:frontend/services/language_service.dart';
 import 'package:frontend/services/payments_service.dart';
 import 'package:frontend/services/search_service.dart';
 import 'package:frontend/streaming/music_streamer.dart';
@@ -19,6 +21,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/services/signalr_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -41,7 +44,10 @@ void main() async {
   HttpOverrides.global = MyHttpOverrides();
 
   // Register secure storage
-  final secureStorage = getIt.registerSingleton(const FlutterSecureStorage());
+  final secureStorage = FlutterSecureStorage();
+  getIt.registerSingleton(secureStorage);
+
+  final currentLanguageCode = await secureStorage.read(key: 'language_code').then((value) => value ?? 'en');
 
   // Initialize and register the SignalRServices
   final signalRService = getIt.registerSingleton<SignalRService>(SignalRService(signalrHubURL));
@@ -54,6 +60,7 @@ void main() async {
   getIt.registerSingleton(PlaylistService(secureStorage));
   getIt.registerSingleton(DashboardService(secureStorage));
   getIt.registerSingleton(SearchService(secureStorage));
+  getIt.registerSingleton(LanguageService(secureStorage));
   final paymentsService = getIt.registerSingleton(PaymentsService(secureStorage));
   final authService = getIt.registerSingleton(AuthenticationService(secureStorage: secureStorage));
 
@@ -64,7 +71,7 @@ void main() async {
   final accessToken = await authService.checkLocalStorageForToken();
 
   // Initialize SignalR connection if the user is logged in
-  if(accessToken != null && !signalRService.isInitialized){
+  if (accessToken != null && !signalRService.isInitialized) {
     await signalRService.initializeConnection(accessToken);
   }
 
@@ -76,20 +83,49 @@ void main() async {
     create: (context) => MusicStreamer(),
     child: MyApp(
       router: router,
+      currentLanguageCode: currentLanguageCode,
     ),
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final GoRouter router;
+  final String currentLanguageCode;
 
-  MyApp({required this.router});
-  
+  MyApp({required this.router, required this.currentLanguageCode});
+
+  static void setLocale(BuildContext context, Locale newLocale) {
+    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
+    state?.setLocale(newLocale);
+  }
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale _locale = const Locale('en');
+
+  @override
+  void initState() {
+    super.initState();
+    _locale = Locale(widget.currentLanguageCode);
+  }
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Musewave',
-      routerConfig: router,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: _locale,
+      routerConfig: widget.router,
       darkTheme: ThemeData.dark(),
       theme: ThemeData(
         iconTheme: const IconThemeData(color: Colors.black),
@@ -98,7 +134,7 @@ class MyApp extends StatelessWidget {
       ),
       builder: (context, router) {
         return SignalRListenerWidget(
-          router: router!
+          router: router!,
         );
       },
       debugShowCheckedModeBanner: false,

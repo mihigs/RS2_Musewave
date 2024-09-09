@@ -4,6 +4,7 @@ import 'package:frontend/services/payments_service.dart';
 import 'package:frontend/widgets/cards/donations_card.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DonationsPage extends StatelessWidget {
   final PaymentsService paymentsService = GetIt.I<PaymentsService>(); // Get PaymentsService instance
@@ -14,16 +15,16 @@ class DonationsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Donations'),
+        title: Text(AppLocalizations.of(context)!.donations),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              'We run on donations. Your support is highly appreciated!',
-              style: TextStyle(fontSize: 18),
+            Text(
+              AppLocalizations.of(context)!.donations_message,
+              style: const TextStyle(fontSize: 18),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
@@ -66,7 +67,7 @@ class DonationsPage extends StatelessWidget {
 
       // Handle successful payment
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Donation successful! Thank you for your support.')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.donation_success)),
       );
 
       // Log donation
@@ -80,17 +81,17 @@ class DonationsPage extends StatelessWidget {
       // Handle Stripe-specific exceptions
       if (e.error.code == FailureCode.Canceled) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Payment canceled')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.payment_canceled)),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Donation failed: ${e.error.message}')),
+          SnackBar(content: Text('${AppLocalizations.of(context)!.payment_failed}: ${e.error.message}')),
         );
       }
     } catch (e) {
       // Handle other exceptions
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Donation failed: $e')),
+        SnackBar(content: Text('${AppLocalizations.of(context)!.payment_failed}: $e')),
       );
     }
   }

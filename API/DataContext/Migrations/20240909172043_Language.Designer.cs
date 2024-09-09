@@ -4,6 +4,7 @@ using DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataContext.Migrations
 {
     [DbContext(typeof(MusewaveDbContext))]
-    partial class MusewaveDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240909172043_Language")]
+    partial class Language
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,7 +188,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Activity", (string)null);
+                    b.ToTable("Activity");
                 });
 
             modelBuilder.Entity("Models.Entities.Album", b =>
@@ -216,7 +219,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("ArtistId");
 
-                    b.ToTable("Albums", (string)null);
+                    b.ToTable("Albums");
                 });
 
             modelBuilder.Entity("Models.Entities.Artist", b =>
@@ -248,7 +251,7 @@ namespace DataContext.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Artists", (string)null);
+                    b.ToTable("Artists");
                 });
 
             modelBuilder.Entity("Models.Entities.Comment", b =>
@@ -282,7 +285,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("Models.Entities.Genre", b =>
@@ -305,7 +308,7 @@ namespace DataContext.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres", (string)null);
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("Models.Entities.Language", b =>
@@ -332,7 +335,7 @@ namespace DataContext.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Languages", (string)null);
+                    b.ToTable("Language");
                 });
 
             modelBuilder.Entity("Models.Entities.Like", b =>
@@ -362,7 +365,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Like", (string)null);
+                    b.ToTable("Like");
                 });
 
             modelBuilder.Entity("Models.Entities.Playlist", b =>
@@ -397,7 +400,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Playlists", (string)null);
+                    b.ToTable("Playlist");
                 });
 
             modelBuilder.Entity("Models.Entities.PlaylistTrack", b =>
@@ -412,7 +415,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("TrackId");
 
-                    b.ToTable("PlaylistTrack", (string)null);
+                    b.ToTable("PlaylistTrack");
                 });
 
             modelBuilder.Entity("Models.Entities.SearchHistory", b =>
@@ -447,7 +450,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SearchHistory", (string)null);
+                    b.ToTable("SearchHistory");
                 });
 
             modelBuilder.Entity("Models.Entities.Track", b =>
@@ -495,7 +498,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("ArtistId");
 
-                    b.ToTable("Tracks", (string)null);
+                    b.ToTable("Tracks");
                 });
 
             modelBuilder.Entity("Models.Entities.TrackGenre", b =>
@@ -510,7 +513,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("TrackGenres", (string)null);
+                    b.ToTable("TrackGenres");
                 });
 
             modelBuilder.Entity("Models.Entities.User", b =>
@@ -616,7 +619,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserDonations", (string)null);
+                    b.ToTable("UserDonation");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

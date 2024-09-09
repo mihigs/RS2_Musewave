@@ -163,7 +163,8 @@ namespace Services.Implementations
                                 PhoneNumberConfirmed = false,
                                 TwoFactorEnabled = false,
                                 LockoutEnabled = false,
-                                AccessFailedCount = 0
+                                AccessFailedCount = 0,
+                                LanguageId = 1
                             };
                         }
                     };
@@ -450,7 +451,8 @@ namespace Services.Implementations
                                 PhoneNumberConfirmed = false,
                                 TwoFactorEnabled = false,
                                 LockoutEnabled = false,
-                                AccessFailedCount = 0
+                                AccessFailedCount = 0,
+                                LanguageId = 1
                             }
                         };
                         result.Artist = artist;

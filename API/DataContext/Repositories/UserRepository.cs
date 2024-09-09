@@ -22,6 +22,7 @@ namespace DataContext.Repositories
         public async Task<User> GetUserById(string id)
         {
             return await _dbContext.Set<User>()
+                .Include(u => u.Language)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 

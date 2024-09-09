@@ -74,13 +74,13 @@ namespace Services.Implementations
                     // Log successful login
                     await _activityRepository.AddActivity(userId: user.Id, ActivityType.UserLogin, isSuccessful: true);
                     // Return generated token
-                    return new UserLoginResponse { Token = GenerateJwtToken(user, userRoles.ToList()) };
+                    return new UserLoginResponse { Token = GenerateJwtToken(user, userRoles.ToList()), Language = user.Language };
                 }
                 else
                 {
                     // Log unsuccessful login
                     await _activityRepository.AddActivity(userId: user.Id, ActivityType.UserLogin, isSuccessful: false);
-                    return new UserLoginResponse { Error = LoginError.InvalidLoginCredentials };
+                    return new UserLoginResponse { Error = LoginError.InvalidLoginCredentials, Language = user.Language };
                 }
             }
             catch (Exception ex)
@@ -98,7 +98,8 @@ namespace Services.Implementations
                 var user = new User
                 {
                     UserName = model.Email,
-                    Email = model.Email
+                    Email = model.Email,
+                    LanguageId = 1
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password); // Create user with password
@@ -215,6 +216,26 @@ namespace Services.Implementations
             {
                 // Log error
                 throw new Exception("Error getting homepage details", ex);
+            }
+        }
+
+        public async Task UpdatePreferedLanguage(string userId, int languageId)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user is null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                user.LanguageId = languageId;
+                await _userManager.UpdateAsync(user);
+            }
+            catch (Exception ex)
+            {
+                // Log error
+                throw new Exception("Error updating prefered language", ex);
             }
         }
     }

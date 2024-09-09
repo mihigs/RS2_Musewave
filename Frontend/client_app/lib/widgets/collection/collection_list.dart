@@ -8,6 +8,7 @@ import 'package:frontend/services/playlist_service.dart';
 import 'package:frontend/widgets/collection/collection_list_item.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CollectionList extends StatefulWidget {
   int? contextId;
@@ -128,7 +129,7 @@ class _CollectionListState extends State<CollectionList> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: artistName != null ? Text(
-                          playlist?.isExploreWeekly ?? false ? 'Made for you' : 'by: $artistName',
+                          playlist?.isExploreWeekly ?? false ? AppLocalizations.of(context)!.made_for_you : '${AppLocalizations.of(context)!.credits_by}: $artistName',
                           style: TextStyle(fontSize: 16),
                         ) : null,
                       ),

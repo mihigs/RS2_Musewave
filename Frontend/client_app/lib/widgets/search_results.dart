@@ -6,6 +6,7 @@ import 'package:frontend/models/playlist.dart';
 import 'package:frontend/models/track.dart';
 import 'package:frontend/widgets/cards/result_item_card.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchResults extends StatefulWidget {
   final List<Track> tracks;
@@ -57,14 +58,14 @@ class _SearchResultsState extends State<SearchResults> {
             if (noResults)
               Center(
                 child: Text(
-                  'No tracks found.',
+                  AppLocalizations.of(context)!.no_tracks_found,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
             if (tracks.isNotEmpty) ...[
               Container(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text('Tracks',
+                  child: Text(AppLocalizations.of(context)!.tracks,
                       style: Theme.of(context).textTheme.headlineSmall)),
               GridView.count(
                 crossAxisCount: 3,
@@ -96,13 +97,13 @@ class _SearchResultsState extends State<SearchResults> {
                       _tracksToShow += 8;
                     });
                   },
-                  child: Text('Show more'),
+                  child: Text(AppLocalizations.of(context)!.show_more),
                 ),
             ],
             if (jamendoTracks.isNotEmpty) ...[
               Container(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text('Jamendo Tracks',
+                  child: Text(AppLocalizations.of(context)!.jamendo_tracks,
                       style: Theme.of(context).textTheme.headlineSmall)),
               GridView.count(
                 crossAxisCount: 3,
@@ -136,13 +137,13 @@ class _SearchResultsState extends State<SearchResults> {
                       _jamendoTracksToShow += 8;
                     });
                   },
-                  child: Text('Show more'),
+                  child: Text(AppLocalizations.of(context)!.show_more),
                 ),
             ],
             if (albums.isNotEmpty) ...[
               Container(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text('Albums',
+                  child: Text(AppLocalizations.of(context)!.albums,
                       style: Theme.of(context).textTheme.headlineSmall)),
               GridView.count(
                 crossAxisCount: 3,
@@ -174,13 +175,13 @@ class _SearchResultsState extends State<SearchResults> {
                       _albumsToShow += 8;
                     });
                   },
-                  child: const Text('Show more'),
+                  child: Text(AppLocalizations.of(context)!.show_more),
                 ),
             ],
             if (artists.isNotEmpty) ...[
               Container(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text('Artists',
+                  child: Text(AppLocalizations.of(context)!.artists,
                       style: Theme.of(context).textTheme.headlineSmall)),
               GridView.count(
                 crossAxisCount: 3,
@@ -216,13 +217,13 @@ class _SearchResultsState extends State<SearchResults> {
                       _artistsToShow += 8;
                     });
                   },
-                  child: const Text('Show more'),
+                  child: Text(AppLocalizations.of(context)!.show_more),
                 ),
             ],
             if (playlists.isNotEmpty) ...[
               Container(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text('Playlists',
+                  child: Text(AppLocalizations.of(context)!.playlists,
                       style: Theme.of(context).textTheme.headlineSmall)),
               GridView.count(
                 crossAxisCount: 3,
@@ -252,7 +253,7 @@ class _SearchResultsState extends State<SearchResults> {
                       _playlistsToShow += 8;
                     });
                   },
-                  child: const Text('Show more'),
+                  child: Text(AppLocalizations.of(context)!.show_more),
                 ),
             ],
           ],
