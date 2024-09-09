@@ -96,21 +96,19 @@ Use the following credentials to log in:
   - **Username**: user1@musewave.com
   - **Password**: Test_123
 
+- **Dummy Credit Card**
+  - **Card Number**: 4242 4242 4242 4242
+
 ## Future Plans and TODOs
 
 - Develop a client desktop app and improve responsiveness
 - Dockerize Flutter web builds
-- Cache search history
 - Search by genre and genre playlists
 - Implement "show more" functionality for Jamendo track search results
 - Notification tray media controls
 - Allow multiple artists to collaborate on tracks/albums
 - Caching audio on the client side
 - API token for the client app
-
-## Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request for review.
 
 ## License
 
