@@ -3,6 +3,7 @@ import 'package:frontend/models/comment.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:frontend/widgets/collection/comment_item.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TrackCommentsModal extends StatefulWidget {
   final String trackId;
@@ -50,7 +51,7 @@ class _TrackCommentsModalState extends State<TrackCommentsModal> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text('Comments'),
+        title: Text(AppLocalizations.of(context)!.comments),
       ),
       body: Column(
         children: [
@@ -65,7 +66,7 @@ class _TrackCommentsModalState extends State<TrackCommentsModal> {
                   return Center(child: Text("Error: ${snapshot.error}"));
                 }
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text("No Comments Found"));
+                  return Center(child: Text(AppLocalizations.of(context)!.no_comments_found));
                 }
 
                 return ListView.builder(
@@ -84,7 +85,7 @@ class _TrackCommentsModalState extends State<TrackCommentsModal> {
               controller: _commentController,
               maxLength: 500,
               decoration: InputDecoration(
-                hintText: "Add a comment",
+                hintText: AppLocalizations.of(context)!.add_comment,
                 counterText: "${_characterCount}/500",
                 suffixIcon: IconButton(
                   icon: Icon(Icons.send),

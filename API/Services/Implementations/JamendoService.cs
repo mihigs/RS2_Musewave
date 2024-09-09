@@ -19,8 +19,8 @@ namespace Services.Implementations
         private readonly IArtistRepository _artistRepository;
         private readonly IGenreRepository _genreRepository;
         private readonly ILikeRepository _likeRepository;
-        private readonly IJamendoApiActivityRepository _jamendoApiActivityRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IActivityRepository _activityRepository;
 
         public JamendoService(
             IConfiguration configuration,
@@ -28,8 +28,8 @@ namespace Services.Implementations
             IArtistRepository artistRepository,
             IGenreRepository genreRepository,
             ILikeRepository likeRepository,
-            IJamendoApiActivityRepository jamendoApiActivityRepository,
-            IUserRepository userRepository
+            IUserRepository userRepository,
+            IActivityRepository activityRepository
             )
         {
             _configuration = configuration;
@@ -37,8 +37,8 @@ namespace Services.Implementations
             _artistRepository = artistRepository;
             _genreRepository = genreRepository;
             _likeRepository = likeRepository;
-            _jamendoApiActivityRepository = jamendoApiActivityRepository;
             _userRepository = userRepository;
+            _activityRepository = activityRepository;
         }
         public async Task<IEnumerable<Track>> GetJamendoTracksAsync(JamendoTrackQuery query, string userId)
         {
@@ -63,8 +63,6 @@ namespace Services.Implementations
                 var response = client.GetAsync($"tracks/?client_id={_configuration["Jamendo:ClientId"]}&include=musicinfo&format=jsonpretty&name={trackName}").Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    // Log the activity
-                    await _jamendoApiActivityRepository.AddJamendoApiActivity(JamendoAPIActivityType.SearchJamendoByTrackName, userId);
 
                     var serializedResponse = await response.Content.ReadAsStringAsync();
                     var deserializedResponse = MapJamendoApiTrackResponse(serializedResponse);
@@ -77,16 +75,21 @@ namespace Services.Implementations
                         }
                     }
 
+                    // Log the activity
+                    await _activityRepository.AddActivity(userId, ActivityType.SearchJamendoByTrackName, true);
+
                     return tracks;
                 }
                 else
                 {
+                    await _activityRepository.AddActivity(userId, ActivityType.SearchJamendoByTrackName, false);
                     throw new Exception("Failed to query Jamendo");
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                await _activityRepository.AddActivity(userId, ActivityType.SearchJamendoByTrackName, false);
                 throw new Exception("Failed to search Jamendo by track name", e);
             }
         }
@@ -160,7 +163,8 @@ namespace Services.Implementations
                                 PhoneNumberConfirmed = false,
                                 TwoFactorEnabled = false,
                                 LockoutEnabled = false,
-                                AccessFailedCount = 0
+                                AccessFailedCount = 0,
+                                LanguageId = 1
                             };
                         }
                     };
@@ -303,15 +307,16 @@ namespace Services.Implementations
                     var response = client.GetAsync($"tracks/?client_id={_configuration["Jamendo:ClientId"]}&include=musicinfo&format=jsonpretty&id={trackId}").Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        // Log the activity
-                        await _jamendoApiActivityRepository.AddJamendoApiActivity(JamendoAPIActivityType.GetTrackById, userId);
-
                         var serializedResponse = response.Content.ReadAsStringAsync().Result;
                         var result = MapJamendoApiTrackResponse(serializedResponse);
                         track = await MapJamendoResponseToTrack(result.Results.FirstOrDefault(), userId);
+
+                        // Log the activity
+                        await _activityRepository.AddActivity(userId, ActivityType.GetJamendoTrackById, true);
                     }
                     else
                     {
+                        await _activityRepository.AddActivity(userId, ActivityType.GetJamendoTrackById, false);
                         throw new Exception("Failed to get Jamendo track by id");
                     }
                 }
@@ -338,9 +343,6 @@ namespace Services.Implementations
                 var response = client.GetAsync($"tracks/?client_id={_configuration["Jamendo:ClientId"]}&format=jsonpretty&limit=5&include=musicinfo&tags={tags}").Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    // Log the activity
-                    await _jamendoApiActivityRepository.AddJamendoApiActivity(JamendoAPIActivityType.GetJamendoTracksPerGenres);
-
                     var serializedResponse = await response.Content.ReadAsStringAsync();
                     var deserializedResponse = MapJamendoApiTrackResponse(serializedResponse);
                     var tracks = new List<Track>();
@@ -352,10 +354,14 @@ namespace Services.Implementations
                         }
                     }
 
+                    // Log the activity
+                    await _activityRepository.AddActivity(null, ActivityType.GetJamendoTracksPerGenres, true);
+
                     return tracks;
                 }
                 else
                 {
+                    await _activityRepository.AddActivity(null, ActivityType.GetJamendoTracksPerGenres, false);
                     throw new Exception("Failed to query Jamendo");
                 }
             }
@@ -375,9 +381,6 @@ namespace Services.Implementations
                 var response = client.GetAsync($"tracks/?client_id={_configuration["Jamendo:ClientId"]}&format=jsonpretty&limit=5&include=musicinfo&order=popularity_month").Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    // Log the activity
-                    await _jamendoApiActivityRepository.AddJamendoApiActivity(JamendoAPIActivityType.GetPopularJamendoTracks);
-
                     var serializedResponse = await response.Content.ReadAsStringAsync();
                     var deserializedResponse = MapJamendoApiTrackResponse(serializedResponse);
                     var tracks = new List<Track>();
@@ -389,10 +392,14 @@ namespace Services.Implementations
                         }
                     }
 
+                    // Log the activity
+                    await _activityRepository.AddActivity(null, ActivityType.GetPopularJamendoTracks, true);
+
                     return tracks;
                 }
                 else
                 {
+                    await _activityRepository.AddActivity(null, ActivityType.GetPopularJamendoTracks, false);
                     throw new Exception("Failed to query Jamendo");
                 }
             }
@@ -413,8 +420,6 @@ namespace Services.Implementations
                 var response = client.GetAsync($"artists/tracks/?client_id={_configuration["Jamendo:ClientId"]}&format=jsonpretty&id={jamendoArtistId}").Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    // Log the activity
-                    await _jamendoApiActivityRepository.AddJamendoApiActivity(JamendoAPIActivityType.GetJamendoArtistDetails);
                     var serializedResponse = await response.Content.ReadAsStringAsync();
                     var deserializedResponse = MapJamendoApiArtistResponse(serializedResponse);
 
@@ -446,7 +451,8 @@ namespace Services.Implementations
                                 PhoneNumberConfirmed = false,
                                 TwoFactorEnabled = false,
                                 LockoutEnabled = false,
-                                AccessFailedCount = 0
+                                AccessFailedCount = 0,
+                                LanguageId = 1
                             }
                         };
                         result.Artist = artist;
@@ -482,11 +488,16 @@ namespace Services.Implementations
                         throw new Exception("Failed to query Jamendo. Artist not found.");
                     }
                 }
+
+                // Log the activity
+                await _activityRepository.AddActivity(null, ActivityType.GetJamendoArtistDetails, true);
+
                 return result;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                await _activityRepository.AddActivity(null, ActivityType.GetJamendoArtistDetails, false);
                 throw new Exception("Failed to get Jamendo artist details", e);
             }
         }

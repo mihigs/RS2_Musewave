@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:frontend/services/signalr_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignalRListenerWidget extends StatefulWidget {
   final Widget router;
@@ -27,7 +28,7 @@ class SignalRListenerWidgetState extends State<SignalRListenerWidget> {
       _signalRService.registerOnTrackReady((data) {
         _showSnackBar(
           context,
-          "Your track is ready!",
+          AppLocalizations.of(context)!.track_is_ready,
           action: SnackBarAction(
             label: 'Play',
             onPressed: () {
@@ -39,7 +40,7 @@ class SignalRListenerWidgetState extends State<SignalRListenerWidget> {
       _signalRService.registerTrackUploadFailed((data) {
         _showSnackBar(
           context,
-          "Track processing failed! Please try again."
+          AppLocalizations.of(context)!.track_processing_failed
         );
       });
       // other events can be added here...

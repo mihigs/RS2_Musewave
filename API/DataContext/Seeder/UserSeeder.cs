@@ -34,7 +34,8 @@ namespace DataContext.Seeder
                     TwoFactorEnabled = false,
                     LockoutEnabled = true,
                     AccessFailedCount = 0,
-                    Likes = null
+                    Likes = null,
+                    LanguageId = 1
                 };
                 List<User> casualUsers = new List<User>
                 {
@@ -49,7 +50,8 @@ namespace DataContext.Seeder
                         TwoFactorEnabled = false,
                         LockoutEnabled = true,
                         AccessFailedCount = 0,
-                        Likes = null
+                        Likes = null,
+                        LanguageId = 4
                     }
                 };
                 List<User> artistUsers = new List<User>
@@ -65,7 +67,8 @@ namespace DataContext.Seeder
                         TwoFactorEnabled = false,
                         LockoutEnabled = true,
                         AccessFailedCount = 0,
-                        Likes = null
+                        Likes = null,
+                        LanguageId = 3
                     }
                 };
 

@@ -1,0 +1,92 @@
+{
+  "@@locale": "de",
+
+  "english": "Englisch",
+  "spanish": "Spanisch",
+  "french": "Französisch",
+  "german": "Deutsch",
+  "bosnian": "Bosnisch",
+
+  "generic_error": "Ein Fehler ist aufgetreten",
+  "no_data_available": "Keine Daten verfügbar",
+
+  "submit": "Absenden",
+  "show_more": "Mehr anzeigen",
+  
+  "email": "E-Mail",
+  "email_hint": "Bitte geben Sie Ihre E-Mail ein",
+  "email_hint_invalid": "Bitte geben Sie eine gültige E-Mail ein",
+  "password": "Passwort",
+  "password_hint": "Bitte geben Sie Ihr Passwort ein",
+  "password_hint_invalid": "Das Passwort muss mindestens einen Großbuchstaben, eine Zahl und ein Sonderzeichen enthalten",
+  "login": "Anmelden",
+  "login_error": "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+
+  "home": "Startseite",
+  "search": "Suche",
+  "you": "Du",
+
+  "search_hint": "Suche nach Musik, Künstlern, Playlists...",
+  "made_for_you": "Für dich erstellt",
+  "popular_jamendo_tracks": "Beliebte Jamendo-Titel",
+
+  "explore_weekly":  "Wöchentlich entdecken",
+  "liked_tracks": "Favorisierte Titel",
+
+  "profile": "Profil",
+  "playlists": "Playlists",
+  "my_music": "Meine Musik",
+
+  "donate": "Spenden",
+  "language": "Sprache",
+  "logout": "Abmelden",
+
+  "donations": "Spenden",
+  "donations_message": "Wir leben von Spenden. Ihre Unterstützung wird sehr geschätzt!",
+  "donation_success": "Spende erfolgreich! Vielen Dank für Ihre Unterstützung.",
+  "payment_canceled": "Zahlung abgebrochen.",
+  "payment_failed": "Zahlung fehlgeschlagen: ",
+
+  "failed_to_load_languages": "Sprachen konnten nicht geladen werden.",
+  "select_language": "Sprache auswählen",
+  "language_update_success": "Sprache erfolgreich aktualisiert.",
+  "language_update_failed": "Fehler beim Aktualisieren der Sprache.",
+
+  "search_playlists": "Playlists suchen...",
+  "no_playlists": "Erstellen Sie Ihre erste Playlist, um zu beginnen",
+
+  "search_tracks": "Titel suchen...",
+  "no_tracks": "Werden Sie ein Künstler, indem Sie Ihren ersten Titel hochladen",
+
+  "no_tracks_found": "Keine Titel gefunden.",
+  "tracks": "Titel",
+  "jamendo_tracks": "Jamendo-Titel",
+  "albums": "Alben",
+  "artists": "Künstler",
+
+  "track_processing": "Titel wird verarbeitet...",
+  "track_processing_failed": "Die Verarbeitung des Titels ist leider fehlgeschlagen. Bitte versuchen Sie es erneut hochzuladen.",
+  "track_processing_success": "Titel erfolgreich verarbeitet!",
+  "upload_track_title": "Titel hochladen",
+  "upload_track_start": "Wählen Sie einen Titel aus und geben Sie ihm einen Namen, um zu starten...",
+  "upload_track_uploading": "Titel wird hochgeladen...",
+  "track_title_hint": "Bitte geben Sie den Titel des Tracks ein",
+  "select_media_button": "Medien auswählen",
+
+  "comments": "Kommentare",
+  "no_comments_found": "Keine Kommentare gefunden",
+  "add_comment": "Kommentar hinzufügen",
+
+  "add_to_playlist": "Zur Playlist hinzufügen",
+  "add_to_new_playlist": "Zu neuer Playlist hinzufügen",
+  "playlist_created": "Playlist erstellt!",
+  "no_playlist_found": "Keine Playlists gefunden",
+
+  "track_added_to_favorites": "Titel zu Favoriten hinzugefügt",
+  "track_removed_from_favorites": "Aus Favoriten entfernt",
+  
+  "track_title": "Titel",
+  "credits_by": "Von",
+
+  "track_is_ready": "Ihr Titel ist bereit!"
+}

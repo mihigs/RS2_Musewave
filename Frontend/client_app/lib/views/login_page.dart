@@ -5,6 +5,7 @@ import 'package:frontend/router.dart';
 import 'package:frontend/services/authentication_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   final AuthenticationService authService = GetIt.I<AuthenticationService>();
@@ -51,8 +52,8 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         // Show error message
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('An error occurred'),
-          duration: Duration(seconds: 3),
+          SnackBar(content: Text(AppLocalizations.of(context)!.generic_error),
+          duration: const Duration(seconds: 3),
           ),
         );
       }
@@ -63,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
         print('Login failed: $e');
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Login failed. Please try again."),
+          SnackBar(content: Text(AppLocalizations.of(context)!.login_error),
           duration: const Duration(seconds: 3),
           ),
         );
@@ -97,10 +98,10 @@ class _LoginPageState extends State<LoginPage> {
                       )),
                     TextFormField(
                       controller: _emailController,
-                      decoration: InputDecoration(labelText: 'Email'),
+                      decoration: InputDecoration(labelText: AppLocalizations.of(context)!.email),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
+                          return AppLocalizations.of(context)!.email_hint;
                         }
                         String p = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
                             "\\@" +
@@ -113,13 +114,13 @@ class _LoginPageState extends State<LoginPage> {
                         if (regExp.hasMatch(value)) {
                           return null;
                         }
-                        return 'Please enter a valid email';
+                        return AppLocalizations.of(context)!.email_hint_invalid;
                       },
                     ),
                     TextFormField(
                       controller: _passwordController,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: AppLocalizations.of(context)!.password,
                         suffixIcon: IconButton(
                           icon: Icon(
                             _obscureText
@@ -132,13 +133,13 @@ class _LoginPageState extends State<LoginPage> {
                       obscureText: _obscureText,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
+                          return AppLocalizations.of(context)!.password_hint;
                         }
                         String pattern =
                             r'^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[^a-zA-Z0-9]).{8,}$';
                         RegExp regExp = new RegExp(pattern);
                         if (!regExp.hasMatch(value)) {
-                          return 'Password must include at least one uppercase letter, one number, and one special character';
+                          return AppLocalizations.of(context)!.password_hint_invalid;
                         }
                         return null;
                       },
@@ -160,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                                   await _login();
                                 }
                               },
-                              child: Text('Log in'),
+                              child: Text(AppLocalizations.of(context)!.login),
                             ),
                           ),
                           // Container(

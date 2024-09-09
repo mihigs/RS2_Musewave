@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/constants/result_card_types.dart';
 import 'dart:ui';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ResultItemCard extends StatelessWidget {
   final String title;
@@ -93,7 +94,7 @@ class ResultItemCard extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 textAlign: TextAlign.left,
-                "By: ${credits!}",
+                "${AppLocalizations.of(context)!.credits_by}: ${credits!}",
                 style: Theme.of(context).textTheme.labelSmall,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

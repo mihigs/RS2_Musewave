@@ -19,12 +19,14 @@ namespace API.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IUsersService _usersService;
         private readonly ILogger<UserController> _logger;
+        private readonly ILanguageService _languageService;
 
-        public UserController(UserManager<User> userManager, IUsersService usersService, ILogger<UserController> logger)
+        public UserController(UserManager<User> userManager, IUsersService usersService, ILogger<UserController> logger, ILanguageService languageService)
         {
             _userManager = userManager;
             _usersService = usersService;
             _logger = logger;
+            _languageService = languageService;
         }
 
         [AllowAnonymous]
@@ -41,14 +43,15 @@ namespace API.Controllers
                 if (response.Token != null)
                 {
                     var user = await _userManager.FindByEmailAsync(model.Email);
+                    var language = await _languageService.GetLanguageById(user.LanguageId);
                     var roles = await _userManager.GetRolesAsync(user);
                     if (roles.Contains("Admin"))
                     {
-                        return Ok(new { response.Token, Role = "Admin" });
+                        return Ok(new { response.Token, Role = "Admin", LanguageCode = language.Code });
                     }
                     else
                     {
-                        return Ok(new { response.Token, Role = "User" });
+                        return Ok(new { response.Token, Role = "User", LanguageCode = language.Code });
                     }
                 }
                 else if (response.Error == LoginError.UserDoesNotExist)
@@ -131,5 +134,50 @@ namespace API.Controllers
             }
             return apiResponse;
         }
+
+        [HttpGet("GetAllLanguages")]
+        public async Task<ApiResponse> GetAllLanguages()
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                apiResponse.Data = await _languageService.GetAllLanguages();
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
+
+        [HttpPost("UpdatePreferedLanguage")]
+        public async Task<ApiResponse> UpdatePreferedLanguage(int languageId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                await _usersService.UpdatePreferedLanguage(userId, languageId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
+
     }
 }

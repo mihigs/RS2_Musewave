@@ -298,7 +298,7 @@ namespace DataContext.Migrations
                     b.ToTable("Like");
                 });
 
-            modelBuilder.Entity("Models.Entities.LoginActivity", b =>
+            modelBuilder.Entity("Models.Entities.Activity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -323,7 +323,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("LoginActivity");
+                    b.ToTable("Activity");
                 });
 
             modelBuilder.Entity("Models.Entities.Playlist", b =>
@@ -609,7 +609,7 @@ namespace DataContext.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Models.Entities.LoginActivity", b =>
+            modelBuilder.Entity("Models.Entities.Activity", b =>
                 {
                     b.HasOne("Models.Entities.User", "User")
                         .WithMany()

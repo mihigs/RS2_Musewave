@@ -80,29 +80,38 @@ class _CollectionListItemState extends State<CollectionListItem> {
       height: 85,
       child: Center(
         child: ListTile(
-          leading: IconButton(
-            icon: Icon(isPlaying && (currentPlayingTrackId == widget.track.id)
-                ? Icons.pause
-                : Icons.play_arrow),
-            onPressed: () async {
-              if(musicStreamer != null){
-                widget.streamingContext.track.isLiked = isLiked;
-                if (isPlaying) {
-                  if (currentPlayingTrackId != widget.track.id) {
-                    await musicStreamer!.stop();
-                    await musicStreamer!.startTrack(widget.streamingContext);
+          leading: Container(
+            width: 35,
+            child: IconButton(
+              icon: Icon(isPlaying && (currentPlayingTrackId == widget.track.id)
+                  ? Icons.pause
+                  : Icons.play_arrow),
+              onPressed: () async {
+                if(musicStreamer != null){
+                  widget.streamingContext.track.isLiked = isLiked;
+                  if (isPlaying) {
+                    if (currentPlayingTrackId != widget.track.id) {
+                      await musicStreamer!.stop();
+                      await musicStreamer!.startTrack(widget.streamingContext);
+                    } else {
+                      await musicStreamer!.pause();
+                    }
                   } else {
-                    await musicStreamer!.pause();
+                    await musicStreamer!.startTrack(widget.streamingContext);
                   }
-                } else {
-                  await musicStreamer!.startTrack(widget.streamingContext);
                 }
-              }
-              updateIsPlaying();
-            },
+                updateIsPlaying();
+              },
+            ),
           ),
-          title: Text(overflow: TextOverflow.clip, widget.track.title),
-          subtitle: Text(overflow: TextOverflow.clip, widget.track.artist!.user!.userName),
+          title: Text(
+            widget.track.title,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Text(
+            widget.track.artist!.user!.userName,
+            overflow: TextOverflow.ellipsis,
+          ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

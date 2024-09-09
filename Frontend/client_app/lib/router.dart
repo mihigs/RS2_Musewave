@@ -4,6 +4,7 @@ import 'package:frontend/views/album_page.dart';
 import 'package:frontend/views/artist_page.dart';
 import 'package:frontend/views/login_page.dart';
 import 'package:frontend/views/media_player_page.dart';
+import 'package:frontend/views/personal_page/language_selection_page.dart';
 import 'package:frontend/views/personal_page/upload_media_form.dart';
 import 'package:frontend/views/playlist_page.dart';
 import 'package:frontend/widgets/containers/persistent_player_container.dart';
@@ -98,6 +99,10 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         path: Routes.uploadMedia,
         builder: (_, __) => PersistentPlayerContainer(child: UploadMediaPage()),
       ),
+      GoRoute(
+        path: Routes.language,
+        builder: (_, __) => LanguageSelectionPage(),
+      ),
     ],
   );
 }
@@ -114,4 +119,5 @@ abstract class Routes {
   static const artist = '/artist';
   static const playlist = '/playlist';
   static const liked = '/liked';
+  static const language = '/language';
 }

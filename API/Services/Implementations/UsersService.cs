@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Models.Constants;
 using Models.DTOs;
 using Models.Entities;
+using Models.Enums;
 using Services.Interfaces;
 using Services.Responses;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,7 +23,7 @@ namespace Services.Implementations
         private readonly ILogger<UsersService> _logger;
         private readonly IPlaylistRepository _playlistRepository;
         private readonly IJamendoService _jamendoService;
-        private readonly ILoginActivityRepository _loginActivityRepository;
+        private readonly IActivityRepository _activityRepository;
 
         public UsersService(
             UserManager<User> userManager,
@@ -30,7 +31,7 @@ namespace Services.Implementations
             ILogger<UsersService> logger,
             IPlaylistRepository playlistRepository,
             IJamendoService jamendoService,
-            ILoginActivityRepository loginActivityRepository
+            IActivityRepository activityRepository
             )
         {
             _userManager = userManager;
@@ -38,7 +39,7 @@ namespace Services.Implementations
             _logger = logger;
             _playlistRepository = playlistRepository;
             _jamendoService = jamendoService;
-            _loginActivityRepository = loginActivityRepository;
+            _activityRepository = activityRepository;
         }
 
         public List<User> GetAllUsers()
@@ -71,15 +72,15 @@ namespace Services.Implementations
                 if (result)
                 {
                     // Log successful login
-                    await _loginActivityRepository.AddLoginActivity(userId: user.Id, isSuccessful: true);
+                    await _activityRepository.AddActivity(userId: user.Id, ActivityType.UserLogin, isSuccessful: true);
                     // Return generated token
-                    return new UserLoginResponse { Token = GenerateJwtToken(user, userRoles.ToList()) };
+                    return new UserLoginResponse { Token = GenerateJwtToken(user, userRoles.ToList()), Language = user.Language };
                 }
                 else
                 {
                     // Log unsuccessful login
-                    await _loginActivityRepository.AddLoginActivity(userId: user.Id, isSuccessful: false);
-                    return new UserLoginResponse { Error = LoginError.InvalidLoginCredentials };
+                    await _activityRepository.AddActivity(userId: user.Id, ActivityType.UserLogin, isSuccessful: false);
+                    return new UserLoginResponse { Error = LoginError.InvalidLoginCredentials, Language = user.Language };
                 }
             }
             catch (Exception ex)
@@ -97,7 +98,8 @@ namespace Services.Implementations
                 var user = new User
                 {
                     UserName = model.Email,
-                    Email = model.Email
+                    Email = model.Email,
+                    LanguageId = 1
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password); // Create user with password
@@ -214,6 +216,26 @@ namespace Services.Implementations
             {
                 // Log error
                 throw new Exception("Error getting homepage details", ex);
+            }
+        }
+
+        public async Task UpdatePreferedLanguage(string userId, int languageId)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user is null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                user.LanguageId = languageId;
+                await _userManager.UpdateAsync(user);
+            }
+            catch (Exception ex)
+            {
+                // Log error
+                throw new Exception("Error updating prefered language", ex);
             }
         }
     }

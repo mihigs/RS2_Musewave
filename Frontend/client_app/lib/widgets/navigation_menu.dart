@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NavigationMenu extends StatefulWidget {
   final int selectedIndex;
@@ -15,21 +16,21 @@ class _NavigationMenuState extends State<NavigationMenu> {
   Widget build(BuildContext context) {
     return NavigationBar(
       selectedIndex: widget.selectedIndex,
-      destinations: const <Widget>[
+      destinations: <Widget>[
         NavigationDestination(
-          selectedIcon: Icon(Icons.home),
-          icon: Icon(Icons.home_outlined),
-          label: 'Home',
+          selectedIcon: const Icon(Icons.home),
+          icon: const Icon(Icons.home_outlined),
+          label: AppLocalizations.of(context)!.home,
         ),
         NavigationDestination(
-          selectedIcon: Icon(Icons.search),
-          icon: Icon(Icons.search_outlined),
-          label: 'Search',
+          selectedIcon: const Icon(Icons.search),
+          icon: const Icon(Icons.search_outlined),
+          label: AppLocalizations.of(context)!.search,
         ),
         NavigationDestination(
-          selectedIcon: Icon(Icons.person),
-          icon: Icon(Icons.person_outlined),
-          label: 'You',
+          selectedIcon: const Icon(Icons.person),
+          icon: const Icon(Icons.person_outlined),
+          label: AppLocalizations.of(context)!.you,
         ),
       ],
       onDestinationSelected: widget.onTabTapped,

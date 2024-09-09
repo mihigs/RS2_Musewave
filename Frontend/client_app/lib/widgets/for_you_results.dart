@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/DTOs/HomepageDetailsDto.dart';
-import 'package:frontend/models/constants/names.dart';
 import 'package:frontend/models/constants/result_card_types.dart';
 import 'package:frontend/widgets/cards/result_item_card.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ForYouResults extends StatefulWidget {
   ForYouResults({
@@ -42,10 +42,10 @@ class _ForYouResultsState extends State<ForYouResults> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 20.0, bottom: 10, left: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0, bottom: 10, left: 10),
                     child: Text(
-                      'Made for you',
+                      AppLocalizations.of(context)!.made_for_you,
                       textAlign: TextAlign.left,
                     ),
                   ),
@@ -64,13 +64,13 @@ class _ForYouResultsState extends State<ForYouResults> {
                         return ResultItemCard(
                           onTap: () => GoRouter.of(context)
                               .push('/playlist/${exploreWeeklyPlaylistId}/true'),
-                          title: Names.EXPLORE_WEEKLY_PLAYLIST,
+                          title: AppLocalizations.of(context)!.explore_weekly,
                           type: ResultCardType.Playlist,
                         );
                       } else {
                         return ResultItemCard(
                           onTap: () => GoRouter.of(context).push('/liked'),
-                          title: Names.LIKED_TRACKS_PLAYLIST,
+                          title: AppLocalizations.of(context)!.liked_tracks,
                           type: ResultCardType.Playlist,
                         );
                       }
@@ -78,10 +78,10 @@ class _ForYouResultsState extends State<ForYouResults> {
                   ),
                   if (popularJamendoTracks != null &&
                       popularJamendoTracks.isNotEmpty) ...[
-                    const Padding(
-                      padding: EdgeInsets.only(top: 20.0, bottom: 10, left: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0, bottom: 10, left: 10),
                       child: Text(
-                        'Popular Jamendo Tracks',
+                        AppLocalizations.of(context)!.popular_jamendo_tracks,
                         textAlign: TextAlign.left,
                       ),
                     ),

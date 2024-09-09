@@ -1,0 +1,92 @@
+{
+  "@@locale": "bs",
+
+  "english": "Engleski",
+  "spanish": "Španski",
+  "french": "Francuski",
+  "german": "Njemački",
+  "bosnian": "Bosanski",
+
+  "generic_error": "Došlo je do greške",
+  "no_data_available": "Nema dostupnih podataka",
+
+  "submit": "Pošalji",
+  "show_more": "Prikaži više",
+  
+  "email": "Email",
+  "email_hint": "Molimo unesite svoj email",
+  "email_hint_invalid": "Molimo unesite važeći email",
+  "password": "Lozinka",
+  "password_hint": "Molimo unesite svoju lozinku",
+  "password_hint_invalid": "Lozinka mora sadržavati barem jedno veliko slovo, jedan broj i jedan poseban znak",
+  "login": "Prijava",
+  "login_error": "Prijava nije uspjela. Molimo pokušajte ponovo.",
+
+  "home": "Početna",
+  "search": "Pretraga",
+  "you": "Vi",
+
+  "search_hint": "Pretražujte muziku, izvođače, playliste...",
+  "made_for_you": "Kreirano za vas",
+  "popular_jamendo_tracks": "Popularne Jamendo pjesme",
+
+  "explore_weekly":  "Istraži sedmično",
+  "liked_tracks": "Omiljene pjesme",
+
+  "profile": "Profil",
+  "playlists": "Playliste",
+  "my_music": "Moja muzika",
+
+  "donate": "Doniraj",
+  "language": "Jezik",
+  "logout": "Odjava",
+
+  "donations": "Donacije",
+  "donations_message": "Radimo zahvaljujući donacijama. Vaša podrška je veoma cijenjena!",
+  "donation_success": "Donacija uspješna! Hvala na vašoj podršci.",
+  "payment_canceled": "Plaćanje je otkazano.",
+  "payment_failed": "Plaćanje nije uspjelo: ",
+
+  "failed_to_load_languages": "Učitavanje jezika nije uspjelo.",
+  "select_language": "Odaberite jezik",
+  "language_update_success": "Jezik uspješno ažuriran.",
+  "language_update_failed": "Ažuriranje jezika nije uspjelo.",
+
+  "search_playlists": "Pretraga playlisti...",
+  "no_playlists": "Započnite kreiranjem svoje prve playliste",
+
+  "search_tracks": "Pretraga pjesama...",
+  "no_tracks": "Postanite izvođač i postavite svoju prvu pjesmu",
+
+  "no_tracks_found": "Nema pronađenih pjesama.",
+  "tracks": "Pjesme",
+  "jamendo_tracks": "Jamendo pjesme",
+  "albums": "Albumi",
+  "artists": "Izvođači",
+
+  "track_processing": "Obrada pjesme...",
+  "track_processing_failed": "Nažalost, obrada pjesme nije uspjela. Molimo pokušajte ponovo.",
+  "track_processing_success": "Pjesma uspješno obrađena!",
+  "upload_track_title": "Postavi pjesmu",
+  "upload_track_start": "Odaberite pjesmu i dajte joj ime kako biste započeli...",
+  "upload_track_uploading": "Postavljanje pjesme...",
+  "track_title_hint": "Molimo unesite naziv pjesme",
+  "select_media_button": "Odaberite medij",
+
+  "comments": "Komentari",
+  "no_comments_found": "Nema pronađenih komentara",
+  "add_comment": "Dodajte komentar",
+
+  "add_to_playlist": "Dodaj u playlistu",
+  "add_to_new_playlist": "Dodaj u novu playlistu",
+  "playlist_created": "Playlista kreirana!",
+  "no_playlist_found": "Nema pronađenih playlisti",
+
+  "track_added_to_favorites": "Pjesma dodana u omiljene",
+  "track_removed_from_favorites": "Uklonjeno iz omiljenih",
+  
+  "track_title": "Naslov",
+  "credits_by": "Autor",
+
+  "track_is_ready": "Vaša pjesma je spremna!"
+}

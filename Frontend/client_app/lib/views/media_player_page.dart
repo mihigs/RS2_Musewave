@@ -10,6 +10,7 @@ import 'package:frontend/widgets/track_comments.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MediaPlayerPage extends StatefulWidget {
   final TracksService tracksService = GetIt.I<TracksService>();
@@ -205,7 +206,7 @@ class MediaPlayerPageState extends State<MediaPlayerPage> {
                     .then((response) => {
                           if (response) {
                             model.toggleIsLiked(),
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration: Duration(seconds: 1), content: Text(isLiked ? 'Track added to favorites' : 'Removed from favorites'),))
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration: Duration(seconds: 1), content: Text(isLiked ? AppLocalizations.of(context)!.track_added_to_favorites : AppLocalizations.of(context)!.track_removed_from_favorites),))
                           }
                         });
               }

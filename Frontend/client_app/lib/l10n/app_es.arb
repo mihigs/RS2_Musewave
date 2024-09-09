@@ -1,0 +1,92 @@
+{
+  "@@locale": "es",
+
+  "english": "Inglés",
+  "spanish": "Español",
+  "french": "Francés",
+  "german": "Alemán",
+  "bosnian": "Bosnio",
+
+  "generic_error": "Ocurrió un error",
+  "no_data_available": "No hay datos disponibles",
+
+  "submit": "Enviar",
+  "show_more": "Mostrar más",
+  
+  "email": "Correo electrónico",
+  "email_hint": "Por favor, ingrese su correo electrónico",
+  "email_hint_invalid": "Por favor, ingrese un correo electrónico válido",
+  "password": "Contraseña",
+  "password_hint": "Por favor, ingrese su contraseña",
+  "password_hint_invalid": "La contraseña debe incluir al menos una letra mayúscula, un número y un carácter especial",
+  "login": "Iniciar sesión",
+  "login_error": "Error al iniciar sesión. Por favor, intente nuevamente.",
+
+  "home": "Inicio",
+  "search": "Buscar",
+  "you": "Tú",
+
+  "search_hint": "Busca música, artistas, playlists...",
+  "made_for_you": "Hecho para ti",
+  "popular_jamendo_tracks": "Pistas populares de Jamendo",
+
+  "explore_weekly":  "Explorar semanalmente",
+  "liked_tracks": "Pistas que te gustan",
+
+  "profile": "Perfil",
+  "playlists": "Playlists",
+  "my_music": "Mi música",
+
+  "donate": "Donar",
+  "language": "Idioma",
+  "logout": "Cerrar sesión",
+
+  "donations": "Donaciones",
+  "donations_message": "Nos sustentamos con donaciones. ¡Su apoyo es muy apreciado!",
+  "donation_success": "¡Donación exitosa! Gracias por su apoyo.",
+  "payment_canceled": "Pago cancelado.",
+  "payment_failed": "Error en el pago: ",
+
+  "failed_to_load_languages": "No se pudieron cargar los idiomas.",
+  "select_language": "Seleccionar idioma",
+  "language_update_success": "Idioma actualizado con éxito.",
+  "language_update_failed": "No se pudo actualizar el idioma.",
+
+  "search_playlists": "Buscar playlists...",
+  "no_playlists": "Comience creando su primera playlist",
+
+  "search_tracks": "Buscar pistas...",
+  "no_tracks": "Conviértase en artista subiendo su primera pista",
+
+  "no_tracks_found": "No se encontraron pistas.",
+  "tracks": "Pistas",
+  "jamendo_tracks": "Pistas de Jamendo",
+  "albums": "Álbumes",
+  "artists": "Artistas",
+
+  "track_processing": "Procesando pista...",
+  "track_processing_failed": "El procesamiento de la pista falló. Por favor, intente subirla nuevamente.",
+  "track_processing_success": "¡Pista procesada con éxito!",
+  "upload_track_title": "Subir pista",
+  "upload_track_start": "Seleccione una pista y asígnele un nombre para comenzar...",
+  "upload_track_uploading": "Subiendo pista...",
+  "track_title_hint": "Por favor, ingrese el título de la pista",
+  "select_media_button": "Seleccionar medios",
+
+  "comments": "Comentarios",
+  "no_comments_found": "No se encontraron comentarios",
+  "add_comment": "Agregar un comentario",
+
+  "add_to_playlist": "Añadir a la playlist",
+  "add_to_new_playlist": "Añadir a una nueva playlist",
+  "playlist_created": "¡Playlist creada!",
+  "no_playlist_found": "No se encontraron playlists",
+
+  "track_added_to_favorites": "Pista añadida a favoritos",
+  "track_removed_from_favorites": "Eliminada de favoritos",
+  
+  "track_title": "Título",
+  "credits_by": "Por",
+
+  "track_is_ready": "¡Tu pista está lista!"
+}

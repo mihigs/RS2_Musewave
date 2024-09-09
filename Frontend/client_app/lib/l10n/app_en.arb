@@ -1,0 +1,93 @@
+{
+    "@@locale": "en",
+
+    "english": "English",
+    "spanish": "Spanish",
+    "french": "French",
+    "german": "German",
+    "bosnian": "Bosnian",
+
+    "generic_error": "An error occurred",
+    "no_data_available": "No data available",
+
+    "submit": "Submit",
+    "show_more": "Show more",
+    
+    "email": "Email",
+    "email_hint": "Please enter your email",
+    "email_hint_invalid": "Please enter a valid email",
+    "password": "Password",
+    "password_hint": "Please enter your password",
+    "password_hint_invalid": "Password must include at least one uppercase letter, one number, and one special character",
+    "login": "Log in",
+    "login_error": "Login failed. Please try again.",
+
+    "home": "Home",
+    "search": "Search",
+    "you": "You",
+
+    "search_hint": "Search for music, artists, playlists...",
+    "made_for_you": "Made for you",
+    "popular_jamendo_tracks": "Popular Jamendo Tracks",
+
+    "explore_weekly":  "Explore Weekly",
+    "liked_tracks": "Liked Tracks",
+
+    "profile": "Profile",
+    "playlists": "Playlists",
+    "my_music": "My Music",
+
+    "donate": "Donate",
+    "language": "Language",
+    "logout": "Logout",
+
+    "donations": "Donations",
+    "donations_message": "We run on donations. Your support is highly appreciated!",
+    "donation_success": "Donation successful! Thank you for your support.",
+    "payment_canceled": "Payment canceled.",
+    "payment_failed": "Payment failed: ",
+
+    "failed_to_load_languages": "Failed to load languages.",
+    "select_language": "Select a language",
+    "language_update_success": "Language updated successfully.",
+    "language_update_failed": "Failed to update language.",
+
+    "search_playlists": "Search playlists...",
+    "no_playlists": "Start by creating your first playlist",
+
+    "search_tracks": "Search tracks...",
+    "no_tracks": "Become an artist by uploading your first track",
+
+    "no_tracks_found": "No tracks found.",
+    "tracks": "Tracks",
+    "jamendo_tracks": "Jamendo Tracks",
+    "albums": "Albums",
+    "artists": "Artists",
+
+    "track_processing": "Processing track...",
+    "track_processing_failed": "Track processing has unfortunately failed. Please try uploading again.",
+    "track_processing_success": "Track processed successfuly!",
+    "upload_track_title": "Upload Track",
+    "upload_track_start": "Select a track and give it a name to get started...",
+    "upload_track_uploading": "Uploading track...",
+    "track_title_hint": "Please enter the title for the track",
+    "select_media_button": "Select Media",
+
+    "comments": "Comments",
+    "no_comments_found": "No comments found",
+    "add_comment": "Add a comment",
+
+    "add_to_playlist": "Add to playlist",
+    "add_to_new_playlist": "Add to new playlist",
+    "playlist_created": "Playlist created!",
+    "no_playlist_found": "No Playlists Found",
+
+    "track_added_to_favorites": "Track added to favorites",
+    "track_removed_from_favorites": "Removed from favorites",
+    
+    "track_title": "Title",
+    "credits_by": "By",
+
+    "track_is_ready": "Your track is ready!"
+}
+  

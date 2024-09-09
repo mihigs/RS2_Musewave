@@ -11,5 +11,6 @@ namespace Services.Interfaces
         Task<string> AddUser(UserLogin model);
         Task<User> GetUserDetails(string userId);
         Task<HomepageDetailsDto> GetHomepageDetails(string userId);
+        Task UpdatePreferedLanguage(string userId, int languageId);
     }
 }

@@ -5,13 +5,13 @@
 namespace DataContext.Migrations
 {
     /// <inheritdoc />
-    public partial class LoginActivityTracking : Migration
+    public partial class ActivityTracking : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "LoginActivity",
+                name: "Activity",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -23,9 +23,9 @@ namespace DataContext.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LoginActivity", x => x.Id);
+                    table.PrimaryKey("PK_Activity", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LoginActivity_AspNetUsers_UserId",
+                        name: "FK_Activity_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -33,8 +33,8 @@ namespace DataContext.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_LoginActivity_UserId",
-                table: "LoginActivity",
+                name: "IX_Activity_UserId",
+                table: "Activity",
                 column: "UserId");
         }
 
@@ -42,7 +42,7 @@ namespace DataContext.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "LoginActivity");
+                name: "Activity");
         }
     }
 }

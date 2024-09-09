@@ -6,6 +6,7 @@ import 'package:frontend/services/tracks_service.dart';
 import 'package:frontend/widgets/cards/result_item_card.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MyMusicTab extends StatefulWidget {
   const MyMusicTab({super.key});
@@ -55,10 +56,10 @@ class _MyMusicTabState extends State<MyMusicTab> {
       appBar: AppBar(
         title: TextField(
           controller: _searchController,
-          decoration: const InputDecoration(
-            hintText: 'Search tracks...',
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(context)!.search_tracks,
             border: InputBorder.none,
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
           ),
         ),
       ),
@@ -86,7 +87,7 @@ class _MyMusicTabState extends State<MyMusicTab> {
                   child: Column(
                     children: [
                       Text(
-                        'Become an artist by uploading your first track',
+                        AppLocalizations.of(context)!.no_tracks,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
@@ -126,7 +127,7 @@ class _MyMusicTabState extends State<MyMusicTab> {
             }
           } else {
             // In case no data is available (e.g., an empty future)
-            return const Center(child: Text('No data available'));
+            return Center(child: Text(AppLocalizations.of(context)!.no_data_available));
           }
         },
       ),
