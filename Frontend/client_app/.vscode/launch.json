@@ -2,6 +2,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Default",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [],
+            "preLaunchTask": "Build Runner"
+        },
+        {
             "name": "Android (Docker)",
             "request": "launch",
             "type": "dart",
