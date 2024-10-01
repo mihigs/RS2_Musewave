@@ -13,7 +13,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-U", "sa", "-P", "Test_123", "-Q", "SELECT 1"]
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-U", "sa", "-P", "Test_123", "-Q", "SELECT 1", "-C"]
       interval: 11s
       timeout: 5s
       retries: 7
