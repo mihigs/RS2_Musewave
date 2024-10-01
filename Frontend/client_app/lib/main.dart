@@ -35,8 +35,8 @@ class MyHttpOverrides extends HttpOverrides {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized before using SecureStorage
   GoRouter.optionURLReflectsImperativeAPIs = true;
-  const String signalrHubURL = String.fromEnvironment('SIGNALR_HUB_URL');
-  const String stripePublishableKey = String.fromEnvironment('STRIPE_PUBLIC_KEY');
+  const String signalrHubURL = String.fromEnvironment('SIGNALR_HUB_URL', defaultValue: 'http://10.0.2.2:8080/notificationHub');
+  const String stripePublishableKey = String.fromEnvironment('STRIPE_PUBLIC_KEY', defaultValue: 'pk_test_51PZGBIRwyhx2IiJVM8aVdDPGk4po7vWjCuSJbQTS4H6hLqjpTd0EtNn70NhB7CwpVE7rBByBHtAtMCujDNd2Y3ck00QomHBSp0');
 
   final getIt = GetIt.instance;
 

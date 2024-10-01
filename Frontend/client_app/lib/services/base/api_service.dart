@@ -5,7 +5,7 @@ import 'package:jwt_decoder/jwt_decoder.dart'; // For decoding JWT tokens
 
 class ApiService {
   final FlutterSecureStorage secureStorage;
-  final String baseUrl = const String.fromEnvironment('BASE_URL');
+  final String baseUrl = const String.fromEnvironment('BASE_URL', defaultValue: 'http://10.0.2.2:8080/api');
 
   ApiService({required this.secureStorage});
 
