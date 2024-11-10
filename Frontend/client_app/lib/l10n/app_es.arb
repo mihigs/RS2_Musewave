@@ -87,11 +87,15 @@
   
   "track_title": "Título",
   "credits_by": "Por",
+  "public": "Público",
+  "private": "Privado",
 
   "track_is_ready": "¡Tu pista está lista!",
 
   "track_deleted": "Canción eliminada con éxito",
   "track_update_success": "Pista de audio actualizada con éxito",
+
+  "playlist_deleted": "Lista de reproducción eliminada con éxito",
 
   "delete": "Eliminar",
   "cancel": "Cancelar",

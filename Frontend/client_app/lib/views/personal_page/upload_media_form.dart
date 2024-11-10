@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/DTOs/TrackUploadDto.dart';
 import 'package:frontend/services/authentication_service.dart';
+import 'package:frontend/services/notifiers/refresh_notifier.dart';
 import 'package:frontend/services/signalr_service.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:get_it/get_it.dart';
@@ -9,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:frontend/helpers/permission_handler.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class UploadMediaPage extends StatefulWidget {
   final TracksService tracksService = GetIt.I<TracksService>();
@@ -137,6 +139,7 @@ class _UploadMediaPageState extends State<UploadMediaPage> {
                 icon: Icon(Icons.arrow_back),
                 onPressed: () {
                   if (GoRouter.of(context).canPop()) {
+                    GetIt.I<RefreshNotifier>().refresh();
                     GoRouter.of(context).pop();
                   } else {
                     GoRouter.of(context).go('/');

@@ -118,7 +118,7 @@ class PlaylistService extends ApiService {
     Future<void> UpdatePlaylist(int playlistId, String newName, bool isPublic) async {
       try {
         await httpPut('Playlist/UpdatePlaylist', {
-          'playlistId': playlistId,
+          'id': playlistId,
           'name': newName,
           'isPublic': isPublic,
         });

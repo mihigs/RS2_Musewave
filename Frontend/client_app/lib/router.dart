@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/base/logged_in_state_info.dart';
 import 'package:frontend/views/album_page.dart';
 import 'package:frontend/views/artist_page.dart';
+import 'package:frontend/views/edit_playlist_page.dart';
 import 'package:frontend/views/login_page.dart';
 import 'package:frontend/views/media_player_page.dart';
 import 'package:frontend/views/personal_page/edit_media_form.dart';
@@ -89,6 +90,17 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         },
       ),
       GoRoute(
+        path: '${Routes.playlistEdit}/:playlistId',
+        builder: (context, state) {
+          final playlistId = state.pathParameters['playlistId'];
+          return PersistentPlayerContainer(
+            child: EditPlaylistPage(
+              playlistId: int.parse(playlistId!),
+            ),
+          );
+        },
+      ),
+      GoRoute(
         path: Routes.liked,
         builder: (context, state) {
           return PersistentPlayerContainer(
@@ -101,8 +113,6 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         builder: (_, __) => PersistentPlayerContainer(child: UploadMediaPage()),
       ),
       GoRoute(
-        // path: Routes.editMedia,
-        // builder: (_, __) => PersistentPlayerContainer(child: EditTrackPage()),
         path: '${Routes.editMedia}/:trackId',
         builder: (context, state) {
           final trackId = state.pathParameters['trackId'];
@@ -133,6 +143,7 @@ abstract class Routes {
   static const album = '/album';
   static const artist = '/artist';
   static const playlist = '/playlist';
+  static const playlistEdit = '/playlistEdit';
   static const liked = '/liked';
   static const language = '/language';
 }

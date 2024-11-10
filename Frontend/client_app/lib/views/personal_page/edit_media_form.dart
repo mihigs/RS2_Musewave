@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/track.dart';
+import 'package:frontend/services/notifiers/refresh_notifier.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class EditTrackPage extends StatefulWidget {
   final int trackId;
@@ -57,12 +59,10 @@ class _EditTrackPageState extends State<EditTrackPage> {
       setState(() {
         _isLoading = true;
       });
-      _track!.title = _trackName;
+      _track.title = _trackName;
       bool result = false;
       try {
-        if (_track != null) {
-          result = await tracksService.updateTrack(_track!);
-        }
+        result = await tracksService.updateTrack(_track);
         if (result) {
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
@@ -76,6 +76,7 @@ class _EditTrackPageState extends State<EditTrackPage> {
             SnackBar(content: Text(AppLocalizations.of(context)!.generic_error)),
           );
         }
+        GetIt.I<RefreshNotifier>().refresh();
       } catch (e) {
         // Handle error
         ScaffoldMessenger.of(context).showSnackBar(

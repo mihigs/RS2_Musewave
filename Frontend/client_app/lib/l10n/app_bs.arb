@@ -87,11 +87,15 @@
   
   "track_title": "Naslov",
   "credits_by": "Autor",
+  "public": "Javno",
+  "private": "Privatno",
 
   "track_is_ready": "Vaša pjesma je spremna!",
 
   "track_deleted": "Pjesma uspješno uklonjena",
   "track_update_success": "Muzička traka uspješno ažurirana",
+
+  "playlist_deleted": "Plejlista uspješno uklonjena",
 
   "delete": "Obriši",
   "cancel": "Otkaži",

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/services/tracks_service.dart';
+import 'package:frontend/services/playlist_service.dart';
 import 'package:frontend/widgets/confirm_dialog.dart';
 import 'package:frontend/widgets/context_menus/shared/context_menu_item.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
-class MyTrackContextMenu extends StatelessWidget {
-  final int trackId;
+class PlaylistContextMenu extends StatelessWidget {
+  final int playlistId;
   final VoidCallback onDeleteCallback;
   final Widget child;
-  final TracksService _tracksService = GetIt.I<TracksService>();
+  final PlaylistService _playlistsService = GetIt.I<PlaylistService>();
 
-  MyTrackContextMenu({
+  PlaylistContextMenu({
     Key? key,
-    required this.trackId,
+    required this.playlistId,
     required this.onDeleteCallback,
     required this.child,
   }) : super(key: key);
@@ -29,32 +29,33 @@ class MyTrackContextMenu extends StatelessWidget {
           confirmText: AppLocalizations.of(context)!.delete,
           cancelText: AppLocalizations.of(context)!.cancel,
           onConfirm: () {
-            _tracksService.deleteTrack(trackId)
-              .then(         
-                (value) => {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(AppLocalizations.of(context)!.track_deleted),
+            _playlistsService.RemovePlaylist(playlistId).then(
+              (value) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.playlist_deleted),
                     duration: const Duration(seconds: 2),
-                    ),
                   ),
-                  onDeleteCallback(),
-                },
-                onError: (error) => {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(AppLocalizations.of(context)!.generic_error),
+                );
+                onDeleteCallback();
+              },
+              onError: (error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.generic_error),
                     duration: const Duration(seconds: 2),
-                    ),
                   ),
-                },
-              );
+                );
+              },
+            );
           },
         );
       },
     );
   }
 
-  void onEdit(context) {
-    GoRouter.of(context).push('/track/edit/$trackId');
+  void onEdit(BuildContext context) {
+    GoRouter.of(context).push('/playlistEdit/$playlistId');
   }
 
   @override
@@ -95,4 +96,3 @@ class MyTrackContextMenu extends StatelessWidget {
     );
   }
 }
-

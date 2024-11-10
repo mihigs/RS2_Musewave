@@ -87,11 +87,15 @@
   
   "track_title": "Titre",
   "credits_by": "Par",
+  "private": "Privé",
+  "public": "Public",
 
   "track_is_ready": "Votre morceau est prêt !",
 
   "track_deleted": "Piste supprimée avec succès",
   "track_update_success": "Piste audio mise à jour avec succès",
+
+  "playlist_deleted": "Playlist supprimée avec succès",
   
   "delete": "Supprimer",
   "cancel": "Annuler",
@@ -101,5 +105,5 @@
   "save": "Enregistrer",
   "edit": "Modifier",
   "delete_confirmation_message": "Cette action est irréversible.",
-  "delete_confirmation_title": "Supprimer ?"
+  "delete_confirmation_title": "Supprimer?"
 }

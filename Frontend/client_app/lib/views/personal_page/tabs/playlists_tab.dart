@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/DTOs/UserPlaylistsDto.dart';
 import 'package:frontend/models/constants/result_card_types.dart';
-import 'package:frontend/models/playlist.dart';
-import 'package:frontend/services/playlist_service.dart'; // Ensure this service is correctly imported
+import 'package:frontend/services/notifiers/refresh_notifier.dart';
+import 'package:frontend/services/playlist_service.dart';
 import 'package:frontend/widgets/cards/result_item_card.dart';
+import 'package:frontend/widgets/context_menus/playlist_context_menu.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -17,31 +18,52 @@ class PlaylistsTab extends StatefulWidget {
 
 class _PlaylistsTabState extends State<PlaylistsTab> {
   final PlaylistService _playlistService = GetIt.I<PlaylistService>();
-  Future<List<UserPlaylistsDto>>? _playlistsFuture;
+  List<UserPlaylistsDto> _playlists = [];
   final TextEditingController _searchController = TextEditingController();
+  bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
-    _playlistsFuture = _playlistService.GetMyPlaylists();
+    _fetchPlaylists();
     _searchController.addListener(_onSearchChanged);
+    
+    // Listen for refresh notifications
+    GetIt.I<RefreshNotifier>().addListener(_fetchPlaylists);
+  }
+
+  void _fetchPlaylists() {
+    setState(() => _isLoading = true); // Show loading indicator on refetch
+    _playlistService.GetMyPlaylists().then((value) {
+      setState(() {
+        _playlists = value;
+        _isLoading = false;
+      });
+    }).catchError((error) {
+      setState(() {
+        _error = error.toString();
+        _isLoading = false;
+      });
+    });
   }
 
   void _onSearchChanged() {
-    if (_playlistsFuture != null) {
-      // Trigger a rebuild to filter playlists based on the updated search term.
-      setState(() {});
-    }
+    setState(() {});
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    GetIt.I<RefreshNotifier>().removeListener(_fetchPlaylists);
     super.dispose();
   }
 
   @override
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
+    List<UserPlaylistsDto> filteredPlaylists = _playlists.where((playlist) =>
+        playlist.name.toLowerCase().contains(_searchController.text.toLowerCase())).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: TextField(
@@ -53,60 +75,49 @@ Widget build(BuildContext context) {
           ),
         ),
       ),
-      body: FutureBuilder<List<UserPlaylistsDto>>(
-        future: _playlistsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
-            List<UserPlaylistsDto> playlists = snapshot.data!;
-            // Filter playlists based on the search term
-            playlists = playlists.where((playlist) =>
-                playlist.name.toLowerCase().contains(_searchController.text.toLowerCase())).toList();
-
-            if (playlists.isEmpty && _searchController.text.isEmpty) {
-              // No playlists found
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    AppLocalizations.of(context)!.no_playlists,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ),
-              );
-            } else {
-              // Display filtered playlists
-              return GridView.builder(
-                padding: const EdgeInsets.all(8.0),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: (4 / 4),
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                ),
-                itemCount: playlists.length,
-                itemBuilder: (context, index) {
-                  var playlist = playlists[index];
-                  return GestureDetector(
-                    onTap: () => GoRouter.of(context).push('/playlist/${playlist.id}/false'),
-                    child: ResultItemCard(
-                      title: playlist.name,
-                      type: ResultCardType.Playlist
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
+              ? Center(child: Text('Error: $_error'))
+              : filteredPlaylists.isEmpty && _searchController.text.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          AppLocalizations.of(context)!.no_playlists,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                      ),
+                    )
+                  : GridView.builder(
+                      padding: const EdgeInsets.all(8.0),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: (4 / 4),
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemCount: filteredPlaylists.length,
+                      itemBuilder: (context, index) {
+                        var playlist = filteredPlaylists[index];
+                        return PlaylistContextMenu(
+                          playlistId: playlist.id,
+                          onDeleteCallback: () {
+                            setState(() {
+                              _playlists.removeWhere((p) => p.id == playlist.id);
+                            });
+                          },
+                          child: GestureDetector(
+                            onTap: () => GoRouter.of(context).push('/playlist/${playlist.id}/false'),
+                            child: ResultItemCard(
+                              title: playlist.name,
+                              type: ResultCardType.Playlist,
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              );
-            }
-          } else {
-            // In case no data is available
-            return Center(child: Text(AppLocalizations.of(context)!.no_data_available));
-          }
-        },
-      ),
     );
   }
 }

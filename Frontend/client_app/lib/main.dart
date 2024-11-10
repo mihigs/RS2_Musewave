@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:frontend/services/language_service.dart';
+import 'package:frontend/services/notifiers/refresh_notifier.dart';
 import 'package:frontend/services/payments_service.dart';
 import 'package:frontend/services/search_service.dart';
 import 'package:frontend/streaming/music_streamer.dart';
@@ -74,6 +73,9 @@ void main() async {
   if (accessToken != null && !signalRService.isInitialized) {
     await signalRService.initializeConnection(accessToken);
   }
+
+  // Initialize notifiers
+  getIt.registerSingleton<RefreshNotifier>(RefreshNotifier());
 
   // Initialize Router
   final router = routerGenerator(authService.getLoggedInState());

@@ -87,11 +87,15 @@
   
   "track_title": "Titel",
   "credits_by": "Von",
+  "public": "Öffentlich",
+  "private": "Privat",
 
   "track_is_ready": "Ihr Titel ist bereit!",
 
   "track_deleted": "Titel erfolgreich entfernt",
   "track_update_success": "Musikstück erfolgreich aktualisiert",
+
+  "playlist_deleted": "Playlist erfolgreich gelöscht",
 
   "delete": "Löschen",
   "cancel": "Abbrechen",
