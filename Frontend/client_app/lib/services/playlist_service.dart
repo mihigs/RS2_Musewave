@@ -114,8 +114,27 @@ class PlaylistService extends ApiService {
         rethrow;
       }
     }
+
+    Future<void> UpdatePlaylist(int playlistId, String newName, bool isPublic) async {
+      try {
+        await httpPut('Playlist/UpdatePlaylist', {
+          'playlistId': playlistId,
+          'name': newName,
+          'isPublic': isPublic,
+        });
+      } on Exception {
+        rethrow;
+      }
+    }
+
+    Future<void> RemovePlaylist(int playlistId) async {
+      try {
+        await httpDelete('Playlist/RemovePlaylist?playlistId=$playlistId');
+      } on Exception {
+        rethrow;
+      }
+    }
   }
-  
   
   Playlist _mapToPlaylist(response) {
     if (response == null) {

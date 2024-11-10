@@ -369,5 +369,22 @@ namespace Services.Implementations
             };
             return await _commentRepository.Add(comment);
         }
+
+        public async Task DeleteTrackAsync(int trackId)
+        {
+            await _trackRepository.MarkAsDeleted(trackId);
+        }
+
+        public async Task UpdateTrackAsync(TrackUpdateDto trackUpdateDto)
+        {
+            var track = await _trackRepository.GetById(trackUpdateDto.trackId);
+            if (track is null)
+            {
+                throw new Exception("Track not found");
+            }
+            track.Title = trackUpdateDto.trackName;
+            track.AlbumId = trackUpdateDto.albumId;
+            await _trackRepository.Update(track);
+        }
     }
 }

@@ -88,5 +88,18 @@
   "track_title": "Título",
   "credits_by": "Por",
 
-  "track_is_ready": "¡Tu pista está lista!"
+  "track_is_ready": "¡Tu pista está lista!",
+
+  "track_deleted": "Canción eliminada con éxito",
+  "track_update_success": "Pista de audio actualizada con éxito",
+
+  "delete": "Eliminar",
+  "cancel": "Cancelar",
+  "confirm": "Confirmar",
+  "close": "Cerrar",
+  "back": "Atrás",
+  "save": "Guardar",
+  "edit": "Editar",
+  "delete_confirmation_message": "Esta acción es irreversible.",
+  "delete_confirmation_title": "¿Eliminar?"
 }

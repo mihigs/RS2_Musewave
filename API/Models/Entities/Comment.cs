@@ -9,5 +9,6 @@ namespace Models.Entities
         public int TrackId { get; set; }
         public virtual Track Track { get; set; }
         public string Text { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

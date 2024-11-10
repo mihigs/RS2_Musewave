@@ -102,5 +102,16 @@ namespace DataContext.Repositories
                 .Where(t => t.JamendoId != null)
                 .CountAsync();
         }
+
+        public async Task MarkAsDeleted(int id)
+        {
+            var track = await _dbContext.Tracks.FindAsync(id);
+            if (track == null)
+            {
+                return;
+            }
+            track.IsDeleted = true;
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

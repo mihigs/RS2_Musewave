@@ -15,5 +15,7 @@ namespace Services.Interfaces
         Task AddToPlaylistAsync(TogglePlaylistTrackDto addToPlaylistDto, string userId);
         Task CreatePlaylistAsync(Playlist playlist);
         Task RemoveTrackFromPlaylistAsync(int playlistId, int trackId, string userId);
+        Task UpdatePlaylistAsync(PlaylistUpdateDto playlistUpdateDto, string userId);
+        Task RemovePlaylistAsync(int playlistId, string userId);
     }
 }

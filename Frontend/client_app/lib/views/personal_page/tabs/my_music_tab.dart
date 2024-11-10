@@ -4,6 +4,7 @@ import 'package:frontend/models/track.dart';
 import 'package:frontend/router.dart';
 import 'package:frontend/services/tracks_service.dart';
 import 'package:frontend/widgets/cards/result_item_card.dart';
+import 'package:frontend/widgets/context_menus/my_track_context_menu.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -114,13 +115,21 @@ class _MyMusicTabState extends State<MyMusicTab> {
                 itemCount: tracks.length,
                 itemBuilder: (context, index) {
                   var track = tracks[index];
-                  return ResultItemCard(
-                    onTap: () =>
-                      GoRouter.of(context).push('/track/${track.id}/0/0'),
-                    title: track.title,
-                    credits: track.artist?.user?.userName,
-                    type: ResultCardType.Track,
-                    imageUrl: track.imageUrl,
+                  return MyTrackContextMenu(
+                    trackId: track.id,
+                    onDeleteCallback: () {
+                      setState(() {
+                        _tracks.remove(track);
+                      });
+                    },
+                    child: ResultItemCard(
+                      title: track.title,
+                      credits: track.artist?.user?.userName,
+                      type: ResultCardType.Track,
+                      imageUrl: track.imageUrl,
+                      onTap: () =>
+                        GoRouter.of(context).push('/track/${track.id}/0/0'),
+                    ),
                   );
                 },
               );

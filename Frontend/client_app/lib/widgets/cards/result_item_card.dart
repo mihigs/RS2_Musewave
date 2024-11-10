@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/constants/result_card_types.dart';
-import 'dart:ui';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ResultItemCard extends StatelessWidget {
@@ -9,6 +8,7 @@ class ResultItemCard extends StatelessWidget {
   final ResultCardType type;
   final String? imageUrl;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
   final String? credits;
 
   const ResultItemCard({
@@ -18,6 +18,7 @@ class ResultItemCard extends StatelessWidget {
     required this.type,
     this.imageUrl,
     this.onTap,
+    this.onLongPress,
     this.credits,
   }) : super(key: key);
 
@@ -27,6 +28,7 @@ class ResultItemCard extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: onTap,
+          onLongPress: onLongPress,
           child: AspectRatio(
             aspectRatio: 1, // Makes the widget square
             child: Card(

@@ -247,5 +247,57 @@ namespace API.Controllers
             }
             return apiResponse;
         }
+
+        [HttpPut("UpdatePlaylist")]
+        public async Task<ApiResponse> UpdatePlaylist(PlaylistUpdateDto playlistUpdateDto)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                await _playlistService.UpdatePlaylistAsync(playlistUpdateDto, userId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
+
+        [HttpDelete("RemovePlaylist")]
+        public async Task<ApiResponse> RemovePlaylist(int playlistId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return apiResponse;
+                }
+                string userId = userIdClaim.Value;
+                await _playlistService.RemovePlaylistAsync(playlistId, userId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
     }
 }

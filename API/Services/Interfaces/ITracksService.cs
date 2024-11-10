@@ -19,5 +19,7 @@ namespace Services.Interfaces
         Task<IEnumerable<Track>> GetTracksAsync(TrackQuery query);
         Task<IEnumerable<Comment>> GetTrackComments(int trackId);
         Task<Comment> AddCommentToTrack(int trackId, string text, string userId);
+        Task DeleteTrackAsync(int trackId);
+        Task UpdateTrackAsync(TrackUpdateDto trackUpdateDto);
     }
 }

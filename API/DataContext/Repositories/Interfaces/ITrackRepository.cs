@@ -13,5 +13,6 @@ namespace DataContext.Repositories.Interfaces
         Task<Track> GetById(int id);
         Task<int> GetMusewaveTrackCount();
         Task<int> GetJamendoTrackCount();
+        Task MarkAsDeleted(int id);
     }
 }

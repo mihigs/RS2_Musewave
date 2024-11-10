@@ -10,6 +10,7 @@ namespace Models.Entities
         public virtual List<PlaylistTrack> Tracks { get; set; } = new List<PlaylistTrack>();
         public bool IsPublic { get; set; }
         public bool IsExploreWeekly { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 
     public class PlaylistTrack

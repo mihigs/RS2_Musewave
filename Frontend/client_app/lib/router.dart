@@ -4,6 +4,7 @@ import 'package:frontend/views/album_page.dart';
 import 'package:frontend/views/artist_page.dart';
 import 'package:frontend/views/login_page.dart';
 import 'package:frontend/views/media_player_page.dart';
+import 'package:frontend/views/personal_page/edit_media_form.dart';
 import 'package:frontend/views/personal_page/language_selection_page.dart';
 import 'package:frontend/views/personal_page/upload_media_form.dart';
 import 'package:frontend/views/playlist_page.dart';
@@ -100,6 +101,19 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         builder: (_, __) => PersistentPlayerContainer(child: UploadMediaPage()),
       ),
       GoRoute(
+        // path: Routes.editMedia,
+        // builder: (_, __) => PersistentPlayerContainer(child: EditTrackPage()),
+        path: '${Routes.editMedia}/:trackId',
+        builder: (context, state) {
+          final trackId = state.pathParameters['trackId'];
+          return PersistentPlayerContainer(child:
+            EditTrackPage(
+              trackId: int.parse(trackId!),
+            )
+          );
+        },
+      ),
+      GoRoute(
         path: Routes.language,
         builder: (_, __) => LanguageSelectionPage(),
       ),
@@ -114,6 +128,7 @@ abstract class Routes {
   static const search = '/search';
   static const profile = '/profile';
   static const uploadMedia = '/profile/upload';
+  static const editMedia = '/track/edit';
   static const track = '/track';
   static const album = '/album';
   static const artist = '/artist';

@@ -88,5 +88,18 @@
   "track_title": "Naslov",
   "credits_by": "Autor",
 
-  "track_is_ready": "Vaša pjesma je spremna!"
+  "track_is_ready": "Vaša pjesma je spremna!",
+
+  "track_deleted": "Pjesma uspješno uklonjena",
+  "track_update_success": "Muzička traka uspješno ažurirana",
+
+  "delete": "Obriši",
+  "cancel": "Otkaži",
+  "confirm": "Potvrdi",
+  "close": "Zatvori",
+  "back": "Nazad",
+  "save": "Sačuvaj",
+  "edit": "Uredi",
+  "delete_confirmation_message": "Ova akcija je nepovratna.",
+  "delete_confirmation_title": "Izbrisati?"
 }
