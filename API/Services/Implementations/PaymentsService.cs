@@ -5,8 +5,6 @@ using Models.DTOs;
 using Models.Entities;
 using Services.Interfaces;
 using Stripe;
-using System;
-using System.Threading.Tasks;
 
 namespace Services.Implementations
 {
@@ -53,7 +51,10 @@ namespace Services.Implementations
             {
                 Amount = donation.Amount,
                 Currency = donation.Currency,
-                UserId = userId
+                UserId = userId,
+                PaymentIntentId = donation.PaymentIntentId,
+                PaymentStatus = donation.PaymentStatus,
+                PaymentMethodId = donation.PaymentMethodId
             });
         }
     }
