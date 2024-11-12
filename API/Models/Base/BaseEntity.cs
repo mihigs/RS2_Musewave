@@ -1,8 +1,9 @@
 ﻿namespace Models.Base
 {
-    public class StripeSettings
+    public class BaseEntity
     {
-        public string SecretKey { get; set; }
-        public string PublicKey { get; set; }
+        public int Id { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 }

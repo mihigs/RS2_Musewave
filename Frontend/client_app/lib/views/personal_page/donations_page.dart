@@ -74,6 +74,9 @@ class DonationsPage extends StatelessWidget {
       DonationDto donation = DonationDto(
         amount: paymentIntentResult.amount,
         currency: paymentIntentResult.currency,
+        paymentIntentId: paymentIntentResult.id,
+        paymentStatus: paymentIntentResult.status.name,
+        paymentMethodId: paymentIntentResult.paymentMethodId,
       );
       await paymentsService.logDonation(donation);
 

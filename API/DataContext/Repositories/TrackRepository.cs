@@ -89,18 +89,32 @@ namespace DataContext.Repositories
                 .FirstOrDefault(t => t.JamendoId.Equals(jamendoId));
         }
 
-        public async Task<int> GetMusewaveTrackCount()
+        public async Task<int> GetMusewaveTrackCount(int? month = null, int? year = null)
         {
             return await _dbContext.Tracks
-                .Where(t => t.JamendoId == null)
+                .Where(t =>
+                    t.JamendoId == null &&
+                    (!month.HasValue || t.CreatedAt.Month == month.Value) &&
+                    (!year.HasValue || t.CreatedAt.Year == year.Value))
                 .CountAsync();
         }
 
-        public async Task<int> GetJamendoTrackCount()
+        public async Task<int> GetJamendoTrackCount(int? month = null, int? year = null)
         {
             return await _dbContext.Tracks
-                .Where(t => t.JamendoId != null)
+                .Where(t => t.JamendoId != null && (!month.HasValue || t.CreatedAt.Month == month) && (!year.HasValue || t.CreatedAt.Year == year))
                 .CountAsync();
+        }
+
+        public async Task MarkAsDeleted(int id)
+        {
+            var track = await _dbContext.Tracks.FindAsync(id);
+            if (track == null)
+            {
+                return;
+            }
+            track.IsDeleted = true;
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

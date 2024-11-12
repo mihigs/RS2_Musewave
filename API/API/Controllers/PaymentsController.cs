@@ -3,10 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.DTOs;
 using Services.Interfaces;
 using Stripe;
-using System;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace API.Controllers
 {

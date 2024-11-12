@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/router.dart';
 import 'package:frontend/services/authentication_service.dart';
+import 'package:frontend/services/notifiers/refresh_notifier.dart';
 import 'package:frontend/views/personal_page/tabs/my_music_tab.dart';
 import 'package:frontend/views/personal_page/tabs/playlists_tab.dart';
 import 'package:frontend/views/personal_page/tabs/profile_tab.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class PersonalPage extends StatelessWidget {
   final AuthenticationService authService = GetIt.I<AuthenticationService>();
+  final RefreshNotifier refreshNotifier = GetIt.I<RefreshNotifier>();
 
   PersonalPage({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -35,9 +38,7 @@ class PersonalPage extends StatelessWidget {
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                              child: Text(user
-                                  .userName)), // Display the user's full name
+                          Expanded(child: Text(user.userName)),
                           IconButton(
                             icon: Icon(Icons.queue),
                             onPressed: () {
@@ -54,12 +55,15 @@ class PersonalPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    body: TabBarView(
-                      children: [
-                        ProfileTab(),
-                        PlaylistsTab(),
-                        MyMusicTab(),
-                      ],
+                    body: ChangeNotifierProvider.value(
+                      value: refreshNotifier,
+                      child: TabBarView(
+                        children: [
+                          ProfileTab(),
+                          PlaylistsTab(),
+                          MyMusicTab(),
+                        ],
+                      ),
                     ),
                   ),
                 ),

@@ -105,6 +105,11 @@ namespace Services.Implementations
             return playlist;
         }
 
+        public async Task CreatePlaylistAsync(Playlist playlist)
+        {
+            await _playlistRepository.Add(playlist);
+        }
+
         public async Task AddToPlaylistAsync(TogglePlaylistTrackDto addToPlaylistDto, string userId)
         {
             var playlist = await _playlistRepository.GetPlaylistDetails(addToPlaylistDto.PlaylistId);
@@ -117,11 +122,6 @@ namespace Services.Implementations
                 throw new UnauthorizedAccessException("You are not the owner of the playlist");
             }
             await _playlistRepository.AddToPlaylistAsync(addToPlaylistDto.PlaylistId, addToPlaylistDto.TrackId, userId);
-        }
-
-        public async Task CreatePlaylistAsync(Playlist playlist)
-        {
-            await _playlistRepository.Add(playlist);
         }
 
         public async Task RemoveTrackFromPlaylistAsync(int playlistId, int trackId, string userId)
@@ -137,6 +137,40 @@ namespace Services.Implementations
             }
 
             await _playlistRepository.RemoveTrackFromPlaylistAsync(playlistId, trackId);
+        }
+
+        public async Task UpdatePlaylistAsync(PlaylistUpdateDto playlistUpdateDto, string userId)
+        {
+            var playlist = await _playlistRepository.GetPlaylistDetails(playlistUpdateDto.Id);
+            if (playlist == null)
+            {
+                throw new KeyNotFoundException("Playlist not found");
+            }
+            else if (playlist.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("You are not the owner of the playlist");
+            }
+
+            playlist.Name = playlistUpdateDto.Name;
+            playlist.IsPublic = playlistUpdateDto.IsPublic;
+            await _playlistRepository.Update(playlist);
+        }
+
+        public async Task RemovePlaylistAsync(int playlistId, string userId)
+        {
+            var playlist = await _playlistRepository.GetPlaylistDetails(playlistId);
+            if (playlist == null)
+            {
+                throw new KeyNotFoundException("Playlist not found");
+            }
+            else if (playlist.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("You are not the owner of the playlist");
+            }
+
+            playlist.IsDeleted = true;
+
+            await _playlistRepository.Update(playlist);
         }
     }
 }

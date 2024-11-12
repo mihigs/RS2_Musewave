@@ -10,6 +10,7 @@ namespace Models.Entities
         public string UserName { get; set; }
         public int LanguageId { get; set; }
         public Language Language { get; set; }
+        public DateTime JoinDate { get; set; }
 
         public User()
         {

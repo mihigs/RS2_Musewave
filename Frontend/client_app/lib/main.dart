@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:frontend/services/language_service.dart';
+import 'package:frontend/services/notifiers/refresh_notifier.dart';
 import 'package:frontend/services/payments_service.dart';
 import 'package:frontend/services/search_service.dart';
 import 'package:frontend/streaming/music_streamer.dart';
@@ -35,8 +34,8 @@ class MyHttpOverrides extends HttpOverrides {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized before using SecureStorage
   GoRouter.optionURLReflectsImperativeAPIs = true;
-  const String signalrHubURL = String.fromEnvironment('SIGNALR_HUB_URL');
-  const String stripePublishableKey = String.fromEnvironment('STRIPE_PUBLIC_KEY');
+  const String signalrHubURL = String.fromEnvironment('SIGNALR_HUB_URL', defaultValue: 'http://10.0.2.2:8080/notificationHub');
+  const String stripePublishableKey = String.fromEnvironment('STRIPE_PUBLIC_KEY', defaultValue: 'pk_test_51PZGBIRwyhx2IiJVM8aVdDPGk4po7vWjCuSJbQTS4H6hLqjpTd0EtNn70NhB7CwpVE7rBByBHtAtMCujDNd2Y3ck00QomHBSp0');
 
   final getIt = GetIt.instance;
 
@@ -74,6 +73,9 @@ void main() async {
   if (accessToken != null && !signalRService.isInitialized) {
     await signalRService.initializeConnection(accessToken);
   }
+
+  // Initialize notifiers
+  getIt.registerSingleton<RefreshNotifier>(RefreshNotifier());
 
   // Initialize Router
   final router = routerGenerator(authService.getLoggedInState());

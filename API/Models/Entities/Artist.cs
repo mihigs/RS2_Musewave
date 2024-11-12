@@ -8,5 +8,6 @@ namespace Models.Entities
         public string? JamendoArtistId { get; set; }
         public string? ArtistImageUrl { get; set; }
         public virtual User User { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

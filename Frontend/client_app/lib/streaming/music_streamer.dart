@@ -11,7 +11,7 @@ class MusicStreamer extends ChangeNotifier {
   final TracksService _tracksService = GetIt.I<TracksService>();
   final AudioPlayer _player = AudioPlayer();
   ConcatenatingAudioSource? _playlist;
-  final String _listenerUrl = const String.fromEnvironment('LISTENER_URL');
+  final String _listenerUrl = const String.fromEnvironment('LISTENER_URL', defaultValue: 'http://10.0.2.2:8082/api');
   final bool _isWeb = kIsWeb;
   double initialVolume = 0.6;
   Timer? _playTimer;

@@ -10,6 +10,6 @@
 
         Task<int> GetTotalTimeListened(string userId);
 
-        Task<int> GetAllUserTotalTimeListened();
+        Task<int> GetAllUserTotalTimeListened(int? month = null, int? year = null);
     }
 }

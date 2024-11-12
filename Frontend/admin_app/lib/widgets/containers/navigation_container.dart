@@ -1,5 +1,6 @@
 import 'package:admin_app/views/dashboards_page.dart';
 import 'package:admin_app/views/genre_tracker_page.dart';
+import 'package:admin_app/views/reports_page.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_app/views/personal_page/personal_page.dart';
 import 'package:admin_app/widgets/navigation_menu.dart';
@@ -32,6 +33,7 @@ class _ContainerWithNavigationState extends State<ContainerWithNavigation>
       DashboardsPage(),
       GenreTracker(),
       PersonalPage(),
+      ReportsPage(),
       // Add more views here
     ];
   }

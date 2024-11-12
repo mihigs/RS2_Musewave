@@ -5,7 +5,7 @@ import 'package:jwt_decoder/jwt_decoder.dart'; // For decoding JWT tokens
 
 class ApiService {
   final FlutterSecureStorage secureStorage;
-  final String baseUrl = const String.fromEnvironment('BASE_URL');
+  final String baseUrl = const String.fromEnvironment('BASE_URL', defaultValue: 'http://10.0.2.2:8080/api');
 
   ApiService({required this.secureStorage});
 
@@ -39,7 +39,43 @@ class ApiService {
     );
     return _parseResponse(response);
   }
-  
+
+  Future<dynamic> httpDelete(String endpoint, {Map<String, dynamic>? queryParams}) async {
+    final token = await getTokenFromStorage();
+    if (token == null) {
+      // Redirect to login
+      return null;
+    }
+
+    final uri = Uri.parse('$baseUrl/$endpoint').replace(queryParameters: queryParams);
+    final response = await http.delete(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    return _parseResponse(response);
+  }
+
+  Future<dynamic> httpPut<T>(String endpoint, T data) async {
+    final token = await getTokenFromStorage();
+    if (token == null) {
+      // Redirect to login
+      return null;
+    }
+    final response = await http.put(
+      Uri.parse('$baseUrl/$endpoint'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(data),
+    );
+    return _parseResponse(response);
+  }
+
   Future<dynamic> _parseResponse(http.Response response) async {
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = await jsonDecode(response.body);

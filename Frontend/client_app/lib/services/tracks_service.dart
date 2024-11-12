@@ -136,6 +136,27 @@ class TracksService extends ApiService {
     }
   }
 
+  Future<bool> updateTrack(Track track) async {
+    try {
+      final response = await httpPut('Tracks/UpdateTrack', {
+        "trackId": track.id,
+        "trackName": track.title,
+      });
+      return response != null;
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  Future<bool> deleteTrack(int trackId) async {
+    try {
+      final response = await httpDelete('Tracks/DeleteTrack?trackId=$trackId');
+      return response != null;
+    } on Exception {
+      rethrow;
+    }
+  }
+
   Future<Track> getTrack(int trackId) async {
     try {
       final response = await httpGet('Tracks/GetTrackDetails?trackId=$trackId');

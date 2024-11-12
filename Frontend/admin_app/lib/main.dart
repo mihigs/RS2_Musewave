@@ -21,7 +21,6 @@ class MyHttpOverrides extends HttpOverrides {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized before using SecureStorage
   GoRouter.optionURLReflectsImperativeAPIs = true;
-  const String signalrHubURL = String.fromEnvironment('SIGNALR_HUB_URL');
 
   final getIt = GetIt.instance;
 

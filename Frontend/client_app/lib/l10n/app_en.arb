@@ -87,7 +87,24 @@
     
     "track_title": "Title",
     "credits_by": "By",
+    "public": "Public",
+    "private": "Private",
 
-    "track_is_ready": "Your track is ready!"
+    "track_is_ready": "Your track is ready!",
+
+    "track_deleted": "Track successfully removed",
+    "track_update_success": "Track updated successfully",
+
+    "playlist_deleted": "Playlist successfully deleted",
+
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "back": "Back",
+    "save": "Save",
+    "edit": "Edit",
+    "delete_confirmation_message": "This action is irreversible.",
+    "delete_confirmation_title": "Delete?"
 }
   

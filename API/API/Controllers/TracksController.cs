@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Models.DTOs;
 using Models.DTOs.Queries;
 using Models.Entities;
-using Services.Implementations;
 using Services.Interfaces;
 using System.Security.Claims;
 
@@ -249,6 +248,72 @@ namespace API.Controllers
                 // Return a 201 Created response
                 apiResponse.StatusCode = System.Net.HttpStatusCode.Created;
                 return CreatedAtAction(nameof(UploadTrack), apiResponse);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
+
+        [HttpPut("UpdateTrack")]
+        public async Task<IActionResult> UpdateTrack(TrackUpdateDto trackUpdateDto)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return BadRequest(apiResponse);
+                }
+                string userId = userIdClaim.Value;
+                var track = await _tracksService.GetTrackByIdAsync(trackUpdateDto.trackId, userId);
+                if (track is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("Track not found");
+                    return NotFound(apiResponse);
+                }
+                await _tracksService.UpdateTrackAsync(trackUpdateDto);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+        }
+
+        [HttpDelete("DeleteTrack")]
+        public async Task<IActionResult> DeleteTrack(int trackId)
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    apiResponse.Errors.Add("User not found");
+                    return BadRequest(apiResponse);
+                }
+                string userId = userIdClaim.Value;
+                var track = await _tracksService.GetTrackByIdAsync(trackId, userId);
+                if (track is null)
+                {
+                    apiResponse.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    apiResponse.Errors.Add("Track not found");
+                    return NotFound(apiResponse);
+                }
+                await _tracksService.DeleteTrackAsync(trackId);
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(apiResponse);
             }
             catch (Exception ex)
             {

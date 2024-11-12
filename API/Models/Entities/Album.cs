@@ -9,6 +9,7 @@ namespace Models.Entities
         public virtual Artist Artist { get; set; }
         public virtual List<Track> Tracks { get; set; }
         public string? CoverImageUrl { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public Album()
         {

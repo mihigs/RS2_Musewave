@@ -185,7 +185,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Activity", (string)null);
+                    b.ToTable("Activity");
                 });
 
             modelBuilder.Entity("Models.Entities.Album", b =>
@@ -205,6 +205,9 @@ namespace DataContext.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -216,7 +219,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("ArtistId");
 
-                    b.ToTable("Albums", (string)null);
+                    b.ToTable("Albums");
                 });
 
             modelBuilder.Entity("Models.Entities.Artist", b =>
@@ -233,6 +236,9 @@ namespace DataContext.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("JamendoArtistId")
                         .HasColumnType("nvarchar(max)");
 
@@ -248,7 +254,7 @@ namespace DataContext.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Artists", (string)null);
+                    b.ToTable("Artists");
                 });
 
             modelBuilder.Entity("Models.Entities.Comment", b =>
@@ -261,6 +267,9 @@ namespace DataContext.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -282,7 +291,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Models.Entities.Genre", b =>
@@ -305,7 +314,7 @@ namespace DataContext.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres", (string)null);
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("Models.Entities.Language", b =>
@@ -362,7 +371,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Like", (string)null);
+                    b.ToTable("Like");
                 });
 
             modelBuilder.Entity("Models.Entities.Playlist", b =>
@@ -375,6 +384,9 @@ namespace DataContext.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsExploreWeekly")
                         .HasColumnType("bit");
@@ -397,7 +409,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Playlists", (string)null);
+                    b.ToTable("Playlists");
                 });
 
             modelBuilder.Entity("Models.Entities.PlaylistTrack", b =>
@@ -412,7 +424,62 @@ namespace DataContext.Migrations
 
                     b.HasIndex("TrackId");
 
-                    b.ToTable("PlaylistTrack", (string)null);
+                    b.ToTable("PlaylistTrack");
+                });
+
+            modelBuilder.Entity("Models.Entities.Report", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DailyLoginCount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("MonthlyDonationsAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("MonthlyDonationsCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MonthlyJamendoApiActivity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MonthlyTimeListened")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewArtistCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewJamendoTrackCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewMusewaveTrackCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewUserCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReportDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ReportMonth")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReportYear")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("Models.Entities.SearchHistory", b =>
@@ -447,7 +514,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SearchHistory", (string)null);
+                    b.ToTable("SearchHistory");
                 });
 
             modelBuilder.Entity("Models.Entities.Track", b =>
@@ -476,6 +543,9 @@ namespace DataContext.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("JamendoId")
                         .HasColumnType("nvarchar(max)");
 
@@ -495,7 +565,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("ArtistId");
 
-                    b.ToTable("Tracks", (string)null);
+                    b.ToTable("Tracks");
                 });
 
             modelBuilder.Entity("Models.Entities.TrackGenre", b =>
@@ -510,7 +580,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("TrackGenres", (string)null);
+                    b.ToTable("TrackGenres");
                 });
 
             modelBuilder.Entity("Models.Entities.User", b =>
@@ -534,6 +604,9 @@ namespace DataContext.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("JoinDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("LanguageId")
                         .HasColumnType("int");
@@ -605,6 +678,18 @@ namespace DataContext.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PaymentIntentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentMethodId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -616,7 +701,7 @@ namespace DataContext.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserDonations", (string)null);
+                    b.ToTable("UserDonations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
