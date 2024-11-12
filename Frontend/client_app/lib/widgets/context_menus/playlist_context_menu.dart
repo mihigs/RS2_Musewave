@@ -78,6 +78,7 @@ class PlaylistContextMenu extends StatelessWidget {
             PopupMenuItem(
               child: ContextMenuItem(
                 icon: Icons.edit,
+                iconColor: Colors.black,
                 label: AppLocalizations.of(context)!.edit,
                 onPressed: () => onEdit(context),
               ),
@@ -85,6 +86,7 @@ class PlaylistContextMenu extends StatelessWidget {
             PopupMenuItem(
               child: ContextMenuItem(
                 icon: Icons.delete,
+                iconColor: Colors.black,
                 label: AppLocalizations.of(context)!.delete,
                 onPressed: () => onDelete(context),
               ),

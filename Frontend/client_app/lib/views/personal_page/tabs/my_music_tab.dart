@@ -68,6 +68,7 @@ class _MyMusicTabState extends State<MyMusicTab> {
   @override
   void dispose() {
     _searchController.dispose();
+    GetIt.I<RefreshNotifier>().removeListener(_loadTracks);
     super.dispose();
   }
 

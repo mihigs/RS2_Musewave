@@ -17,7 +17,13 @@ class SearchService extends ApiService {
       return SearchQueryResults.fromJson(response['data']);
 
     } on Exception {
-      rethrow;
+      return new SearchQueryResults(
+        tracks: [],
+        albums: [],
+        artists: [],
+        jamendoTracks: [],
+        playlists: [],
+      );
     }
   }
 

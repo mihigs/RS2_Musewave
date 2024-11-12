@@ -3,12 +3,14 @@ import 'package:go_router/go_router.dart';
 
 class ContextMenuItem extends StatelessWidget {
   final IconData icon;
+  Color iconColor;
   final String label;
   final VoidCallback onPressed;
 
-  const ContextMenuItem({
+  ContextMenuItem({
     Key? key,
     required this.icon,
+    this.iconColor = Colors.white,
     required this.label,
     required this.onPressed,
   }) : super(key: key);
@@ -17,7 +19,7 @@ class ContextMenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       dense: true,
-      leading: Icon(icon, color: Colors.white),
+      leading: Icon(icon, color: iconColor),
       title: Text(label),
       onTap: () {
         GoRouter.of(context).pop();
