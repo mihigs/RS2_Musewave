@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Models.Base;
+using QuestPDF.Infrastructure;
 using Services.Implementations;
 using System.Text;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+QuestPDF.Settings.License = LicenseType.Community;
 var builder = WebApplication.CreateBuilder(args);
 
 // Set database configuration

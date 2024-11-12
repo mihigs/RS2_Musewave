@@ -18,6 +18,7 @@ namespace DataContext
         public DbSet<UserDonation> UserDonations { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Playlist> Playlists { get; set; }
+        public DbSet<Report> Reports { get; set; }
 
         public MusewaveDbContext(DbContextOptions<MusewaveDbContext> options)
             : base(options)

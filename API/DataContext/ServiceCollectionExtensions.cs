@@ -25,6 +25,7 @@ namespace DataContext
             services.AddScoped<ISearchHistoryRepository, SearchHistoryRepository>();
             services.AddScoped<IUserDonationRepository, UserDonationRepository>();
             services.AddScoped<ILanguageRepository, LanguageRepository>();
+            services.AddScoped<IReportingRepository, ReportingRepository>();
 
             return services;
         }

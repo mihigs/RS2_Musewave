@@ -23,6 +23,7 @@ namespace Services.Implementations
             services.AddScoped<ISearchService, SearchService>();
             services.AddScoped<IPaymentsService, PaymentsService>();
             services.AddScoped<ILanguageService, LanguageService>();
+            services.AddScoped<IReportingService, ReportingService>();
 
             return services;
         }

@@ -1,5 +1,4 @@
 ﻿using DataContext.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Models.Entities;
 
 namespace DataContext.Repositories

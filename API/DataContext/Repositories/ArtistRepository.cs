@@ -27,9 +27,13 @@ namespace DataContext.Repositories
                 .FirstOrDefault(a => a.UserId == userId);
         }
 
-        public async Task<int> GetArtistCount()
+        public async Task<int> GetArtistCount(int? month = null, int? year = null)
         {
-            return await _dbContext.Set<Artist>().CountAsync();
+            return await _dbContext.Set<Artist>()
+                .Where(a =>
+                    (month == null || a.CreatedAt.Month == month.Value) &&
+                    (year == null || a.CreatedAt.Year == year.Value))
+                .CountAsync();
         }
 
         public async Task<Artist?> GetArtistByJamendoId(string jamendoArtistId)

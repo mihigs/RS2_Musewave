@@ -32,9 +32,15 @@ namespace DataContext.Repositories
                 .FirstOrDefaultAsync(u => u.UserName == name);
         }
 
-        public async Task<int> GetUserCount()
+        public async Task<int> GetUserCount(bool withArtists = true, int? month = null, int? year = null)
         {
-            return await _dbContext.Set<User>().CountAsync();
+            return await _dbContext.Set<User>()
+                .Where(u =>
+                    (month == null || u.JoinDate.Month == month.Value) &&
+                    (year == null || u.JoinDate.Year == year.Value) &&
+                    (withArtists || u.ArtistId == null))
+                .CountAsync();
         }
+
     }
 }

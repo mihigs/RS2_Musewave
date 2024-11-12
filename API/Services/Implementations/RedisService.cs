@@ -54,10 +54,31 @@ namespace Services.Implementations
             return totalTimeListened.HasValue ? (int)totalTimeListened : 0;
         }
 
-        public async Task<int> GetAllUserTotalTimeListened()
+        public async Task<int> GetAllUserTotalTimeListened(int? month = null, int? year = null)
         {
             var db = _redisConnection.GetDatabase();
-            var keys = _redisConnection.GetServer(_redisConnection.GetEndPoints().First()).Keys(pattern: "musewave:user:*:totalTimeListened");
+            var server = _redisConnection.GetServer(_redisConnection.GetEndPoints().First());
+
+            // Define the key pattern based on the month and year parameters
+            string pattern;
+            if (month.HasValue && year.HasValue)
+            {
+                pattern = $"musewave:user:*:totalTimeListened:{year.Value}:{month.Value:D2}";
+            }
+            else if (year.HasValue)
+            {
+                pattern = $"musewave:user:*:totalTimeListened:{year.Value}:*";
+            }
+            else if (month.HasValue)
+            {
+                pattern = $"musewave:user:*:totalTimeListened:*:{month.Value:D2}";
+            }
+            else
+            {
+                pattern = "musewave:user:*:totalTimeListened";
+            }
+
+            var keys = server.Keys(pattern: pattern);
             int totalAllUsersTimeListened = 0;
 
             foreach (var key in keys)
@@ -68,7 +89,6 @@ namespace Services.Implementations
 
             return totalAllUsersTimeListened;
         }
-
 
     }
 }

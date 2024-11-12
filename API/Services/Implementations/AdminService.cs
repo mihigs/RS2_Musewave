@@ -1,6 +1,8 @@
 ﻿using DataContext.Repositories;
 using DataContext.Repositories.Interfaces;
 using Models.DTOs;
+using Models.DTOs.Queries;
+using Models.Entities;
 using Services.Interfaces;
 
 namespace Services.Implementations
