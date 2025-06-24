@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/services/language_service.dart';
+import 'package:frontend/services/mood_tracker_service.dart';
 import 'package:frontend/services/notifiers/refresh_notifier.dart';
 import 'package:frontend/services/payments_service.dart';
 import 'package:frontend/services/search_service.dart';
@@ -32,10 +33,15 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized before using SecureStorage
+  WidgetsFlutterBinding
+      .ensureInitialized(); // Ensure bindings are initialized before using SecureStorage
   GoRouter.optionURLReflectsImperativeAPIs = true;
-  const String signalrHubURL = String.fromEnvironment('SIGNALR_HUB_URL', defaultValue: 'http://10.0.2.2:8080/notificationHub');
-  const String stripePublishableKey = String.fromEnvironment('STRIPE_PUBLIC_KEY', defaultValue: 'pk_test_51PZGBIRwyhx2IiJVM8aVdDPGk4po7vWjCuSJbQTS4H6hLqjpTd0EtNn70NhB7CwpVE7rBByBHtAtMCujDNd2Y3ck00QomHBSp0');
+  const String signalrHubURL = String.fromEnvironment('SIGNALR_HUB_URL',
+      defaultValue: 'http://10.0.2.2:8080/notificationHub');
+  const String stripePublishableKey = String.fromEnvironment(
+      'STRIPE_PUBLIC_KEY',
+      defaultValue:
+          'pk_test_51PZGBIRwyhx2IiJVM8aVdDPGk4po7vWjCuSJbQTS4H6hLqjpTd0EtNn70NhB7CwpVE7rBByBHtAtMCujDNd2Y3ck00QomHBSp0');
 
   final getIt = GetIt.instance;
 
@@ -46,10 +52,13 @@ void main() async {
   final secureStorage = FlutterSecureStorage();
   getIt.registerSingleton(secureStorage);
 
-  final currentLanguageCode = await secureStorage.read(key: 'language_code').then((value) => value ?? 'en');
+  final currentLanguageCode = await secureStorage
+      .read(key: 'language_code')
+      .then((value) => value ?? 'en');
 
   // Initialize and register the SignalRServices
-  final signalRService = getIt.registerSingleton<SignalRService>(SignalRService(signalrHubURL));
+  final signalRService =
+      getIt.registerSingleton<SignalRService>(SignalRService(signalrHubURL));
 
   // Register services
   getIt.registerSingleton(ApiService(secureStorage: secureStorage));
@@ -60,8 +69,11 @@ void main() async {
   getIt.registerSingleton(DashboardService(secureStorage));
   getIt.registerSingleton(SearchService(secureStorage));
   getIt.registerSingleton(LanguageService(secureStorage));
-  final paymentsService = getIt.registerSingleton(PaymentsService(secureStorage));
-  final authService = getIt.registerSingleton(AuthenticationService(secureStorage: secureStorage));
+  getIt.registerSingleton(MoodTrackerService(secureStorage));
+  final paymentsService =
+      getIt.registerSingleton(PaymentsService(secureStorage));
+  final authService = getIt
+      .registerSingleton(AuthenticationService(secureStorage: secureStorage));
 
   // Initialize Stripe
   paymentsService.initialize(stripePublishableKey);

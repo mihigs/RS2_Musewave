@@ -5,6 +5,7 @@ import 'package:frontend/views/artist_page.dart';
 import 'package:frontend/views/edit_playlist_page.dart';
 import 'package:frontend/views/login_page.dart';
 import 'package:frontend/views/media_player_page.dart';
+import 'package:frontend/views/new_mood_record_page.dart';
 import 'package:frontend/views/personal_page/edit_media_form.dart';
 import 'package:frontend/views/personal_page/language_selection_page.dart';
 import 'package:frontend/views/personal_page/upload_media_form.dart';
@@ -67,12 +68,12 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         path: '${Routes.artist}/:artistId/:isJamendoArtist',
         builder: (context, state) {
           final artistId = state.pathParameters['artistId'];
-          final isJamendoArtist = state.pathParameters['isJamendoArtist'] == 'true' ? true : false;
+          final isJamendoArtist =
+              state.pathParameters['isJamendoArtist'] == 'true' ? true : false;
           return PersistentPlayerContainer(
             child: ArtistPage(
-              artistId: int.parse(artistId!),
-              isJamendoArtist: isJamendoArtist
-            ),
+                artistId: int.parse(artistId!),
+                isJamendoArtist: isJamendoArtist),
           );
         },
       ),
@@ -80,12 +81,12 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         path: '${Routes.playlist}/:playlistId/:isExploreWeekly',
         builder: (context, state) {
           final playlistId = state.pathParameters['playlistId'];
-          final isExploreWeekly = state.pathParameters['isExploreWeekly'] == 'true' ? true : false;
+          final isExploreWeekly =
+              state.pathParameters['isExploreWeekly'] == 'true' ? true : false;
           return PersistentPlayerContainer(
             child: PlaylistPage(
-              playlistId: int.parse(playlistId!),
-              isExploreWeekly: isExploreWeekly
-            ),
+                playlistId: int.parse(playlistId!),
+                isExploreWeekly: isExploreWeekly),
           );
         },
       ),
@@ -116,16 +117,19 @@ GoRouter routerGenerator(LoggedInStateInfo loggedInState) {
         path: '${Routes.editMedia}/:trackId',
         builder: (context, state) {
           final trackId = state.pathParameters['trackId'];
-          return PersistentPlayerContainer(child:
-            EditTrackPage(
-              trackId: int.parse(trackId!),
-            )
-          );
+          return PersistentPlayerContainer(
+              child: EditTrackPage(
+            trackId: int.parse(trackId!),
+          ));
         },
       ),
       GoRoute(
         path: Routes.language,
         builder: (_, __) => LanguageSelectionPage(),
+      ),
+      GoRoute(
+        path: Routes.newMoodRecord,
+        builder: (_, __) => NewMoodRecordPage(),
       ),
     ],
   );
@@ -146,4 +150,5 @@ abstract class Routes {
   static const playlistEdit = '/playlistEdit';
   static const liked = '/liked';
   static const language = '/language';
+  static const newMoodRecord = '/new_mood_record';
 }

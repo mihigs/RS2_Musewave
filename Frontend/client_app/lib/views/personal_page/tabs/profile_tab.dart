@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/router.dart';
 import 'package:frontend/services/authentication_service.dart';
 import 'package:frontend/services/payments_service.dart'; // Import PaymentsService
+import 'package:frontend/views/mood_tracker_page.dart';
 import 'package:frontend/views/personal_page/donations_page.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +22,21 @@ class ProfileTab extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          Container(
+            padding: const EdgeInsets.all(20),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => MoodTrackerPage()));
+              },
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+              ),
+              child: Text("Mood Tracker"),
+            ),
+          ),
           Container(
             padding: const EdgeInsets.all(20),
             child: ElevatedButton(

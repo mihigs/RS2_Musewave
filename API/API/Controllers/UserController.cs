@@ -178,5 +178,23 @@ namespace API.Controllers
             return apiResponse;
         }
 
+        [HttpGet("GetAllUsers")]
+        public async Task<ApiResponse> GetAllUsers()
+        {
+            ApiResponse apiResponse = new ApiResponse();
+            try
+            {
+                apiResponse.Data = _userManager.Users;
+                apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                apiResponse.Errors.Add(ex.Message);
+                throw;
+            }
+            return apiResponse;
+        }
+
     }
 }

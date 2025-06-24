@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:frontend/models/base/logged_in_state_info.dart';
+import 'package:frontend/models/mood_tracker.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/services/base/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -13,7 +14,8 @@ class AuthenticationService extends ApiService {
   final LoggedInStateInfo loggedInState = new LoggedInStateInfo();
   final SignalRService signalrService = GetIt.I<SignalRService>();
 
-  AuthenticationService({required this.secureStorage}) : super(secureStorage: secureStorage);
+  AuthenticationService({required this.secureStorage})
+      : super(secureStorage: secureStorage);
 
   Future<UserLoginResponse> login(String email, String password) async {
     UserLoginResponse result = new UserLoginResponse();
@@ -26,10 +28,13 @@ class AuthenticationService extends ApiService {
       );
 
       if (response.statusCode == 200) {
-        const String NameIdentifierClaimType = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
+        const String NameIdentifierClaimType =
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
         final token = jsonDecode(response.body)['token'] as String;
-        final userId = JwtDecoder.decode(token)[NameIdentifierClaimType] as String;
-        final languageCode = jsonDecode(response.body)['languageCode'] as String;
+        final userId =
+            JwtDecoder.decode(token)[NameIdentifierClaimType] as String;
+        final languageCode =
+            jsonDecode(response.body)['languageCode'] as String;
         // Initialize SignalR connection
         signalrService.initializeConnection(token);
         // Store data in secure storage
@@ -75,6 +80,25 @@ class AuthenticationService extends ApiService {
     try {
       final response = await httpGet('User/GetUserDetails');
       return User.fromJson(response['data']);
+    } on Exception {
+      loggedInState.logout();
+      rethrow;
+    }
+  }
+
+  Future<List<User>> getAllUsers() async {
+    try {
+      final response = await httpGet('User/GetAllUsers');
+
+      List<dynamic> data = List<dynamic>.from(response['data']);
+
+      final List<User> result = List.empty(growable: true);
+
+      for (var item in data) {
+        result.add(User.fromJson(item));
+      }
+
+      return result;
     } on Exception {
       loggedInState.logout();
       rethrow;

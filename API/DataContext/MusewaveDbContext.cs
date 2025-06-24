@@ -20,6 +20,8 @@ namespace DataContext
         public DbSet<Playlist> Playlists { get; set; }
         public DbSet<Report> Reports { get; set; }
 
+        public DbSet<MoodTracker> MoodTrackers { get; set; }
+
         public MusewaveDbContext(DbContextOptions<MusewaveDbContext> options)
             : base(options)
         {

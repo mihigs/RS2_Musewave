@@ -24,6 +24,7 @@ namespace Services.Implementations
             services.AddScoped<IPaymentsService, PaymentsService>();
             services.AddScoped<ILanguageService, LanguageService>();
             services.AddScoped<IReportingService, ReportingService>();
+            services.AddScoped<IMoodTrackerService, MoodTrackerService>();
 
             return services;
         }

@@ -26,6 +26,7 @@ namespace DataContext
             services.AddScoped<IUserDonationRepository, UserDonationRepository>();
             services.AddScoped<ILanguageRepository, LanguageRepository>();
             services.AddScoped<IReportingRepository, ReportingRepository>();
+            services.AddScoped<IMoodTrackerRepository, MoodTrackerRepository>();
 
             return services;
         }

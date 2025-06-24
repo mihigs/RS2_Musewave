@@ -1,0 +1,1 @@
+enum MoodType { HAPPY, SAD, STRESSED, EXCITED, TIRED }
